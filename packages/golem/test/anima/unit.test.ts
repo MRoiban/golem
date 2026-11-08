@@ -1,7 +1,7 @@
 import { expect, test } from "bun:test";
-import { parseColor } from "../src/color";
-import { resolveMotion } from "../src/motion";
-import { modelKey } from "../src/runtime";
+import { parseColor } from "../../src/anima/color";
+import { resolveMotion } from "../../src/anima/motion";
+import { modelKey } from "../../src/anima/runtime";
 
 test("parseColor", () => {
   expect(parseColor("#205ea6")).toEqual([0x20, 0x5e, 0xa6, 255]);

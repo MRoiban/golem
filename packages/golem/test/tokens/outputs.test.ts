@@ -6,8 +6,8 @@ import { join } from "node:path";
 import {
   ANIMA_COLORS, ANIMA_NUMBERS, THEME_NAMES, animaSlotsCss, animaThemeLibrary, animaThemeValues,
   glyphyStyle, onyxCss, outputs, resolve,
-} from "../src/generate";
-import { animaColors, animaNumbers, base, density, icon, themes } from "../src/source";
+} from "../../src/tokens/generate";
+import { animaColors, animaNumbers, base, density, icon, themes } from "../../src/tokens/source";
 
 /** The declarations inside the CSS block whose selector list contains `selector`. */
 function blockVars(css: string, selector: string): Set<string> {

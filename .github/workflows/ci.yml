@@ -1,10 +1,14 @@
 name: CI
 on:
-  push: { branches: [main] }
+  push:
+    branches: [main]
+    tags: ["v*"]
   pull_request:
 jobs:
   check:
     runs-on: ubuntu-latest
+    # A v* tag runs the same checks, then attaches the tarball to a GitHub release (nothing goes to npm).
+    permissions: { contents: write }
     steps:
       - uses: actions/checkout@v4
       - name: Read the pinned Anima commit
@@ -36,6 +40,16 @@ jobs:
       - run: bun run typecheck
       - run: bun run test
       - run: bun run sizes
+      - run: bun run pack
+      - run: bun run smoke
       - run: bunx playwright install --with-deps chromium firefox
       - run: bunx playwright test
         env: { GOLEM_E2E_WORKERS: "2" }
+      - name: Release (v* tags only)
+        if: startsWith(github.ref, 'refs/tags/v')
+        env: { GH_TOKEN: "${{ github.token }}", TAG: "${{ github.ref_name }}" }
+        run: |
+          version=$(jq -r .version packages/golem/package.json)
+          [ "$TAG" = "v$version" ] || { echo "tag $TAG does not match packages/golem version $version"; exit 1; }
+          gh release create "$TAG" release/*.tgz --title "$TAG" \
+            --notes "@mroiban/golem $version, with the Anima runtime built from $(jq -r .commit anima-pin.json)."

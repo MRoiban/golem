@@ -1,12 +1,12 @@
-// Theme bridge. Two paths, both fed by @golem/tokens:
+// Theme bridge. Two paths, both fed by @mroiban/golem/tokens:
 //  1. Colour slots (the default, zero script): the generated anima-slots.css sets
 //     --anima-<token>: var(--onyx-…) on every <anima-icon>; scenes that declare
 //     <color name="<token>"> follow the page theme live, also off screen.
 //  2. The Theme data model, for scenes that import golem-theme.animl and bind $theme:<token>
 //     (needed where colours animate or mix, which slots cannot do). writeThemeData copies the
 //     icon's resolved CSS values into the model: colours from --anima-<token>, numbers (shadow,
-//     radius) from --golem-anima-<token>, both generated per theme by @golem/tokens.
-import { ANIMA_COLORS, ANIMA_NUMBERS, animaNumberVar } from "@golem/tokens/anima";
+//     radius) from --golem-anima-<token>, both generated per theme by @mroiban/golem/tokens.
+import { ANIMA_COLORS, ANIMA_NUMBERS, animaNumberVar } from "../tokens/anima";
 import { cssColorToRgba } from "./color";
 import type { AnimaIconElement } from "./types";
 

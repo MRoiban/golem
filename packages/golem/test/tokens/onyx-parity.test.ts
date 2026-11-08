@@ -2,7 +2,7 @@
 // so pages on Onyx or @bedrock/ui can switch to Golem's CSS without a visible change.
 import { describe, expect, test } from "bun:test";
 import * as Onyx from "@mroiban/onyx";
-import { onyxCss, onyxVariableNames, resolve } from "../src/generate";
+import { onyxCss, onyxVariableNames, resolve } from "../../src/tokens/generate";
 
 type Table = Record<string, string>;
 const onyxTables = (theme: "dark" | "light"): Table => ({

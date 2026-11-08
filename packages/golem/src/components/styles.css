@@ -1,4 +1,4 @@
-/* Golem components. Import after Onyx's (or @bedrock/ui's) styles.css and @golem/tokens' CSS. */
+/* Golem components. Import after Onyx's (or @bedrock/ui's) styles.css and @mroiban/golem/tokens.css. */
 @layer onyx.base, onyx.components, golem.tokens, golem.components;
 
 @layer golem.components {

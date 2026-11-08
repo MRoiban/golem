@@ -25,18 +25,18 @@ side is done (no provider needed; the runtime is found through meta tags). These
 in `@bedrock/ui` and Bedrock:
 
 1. **Re-export Golem components in place of Onyx's**, with identical props. Today:
-   `export * from "@mroiban/onyx"`, then `export { Switch } from "@golem/components"` (an explicit
+   `export * from "@mroiban/onyx"`, then `export { Switch } from "@mroiban/golem"` (an explicit
    export takes precedence over the star export).
 2. **Append Golem's CSS to the prebuilt stylesheet** in `scripts/build-css.ts`, after Onyx's:
-   `@golem/tokens/golem.css`, `@golem/tokens/anima-slots.css`, `@golem/components/styles.css`
+   `@mroiban/golem/tokens.css`, `@mroiban/golem/anima-slots.css`, `@mroiban/golem/styles.css`
    (about 3.9 KB gz together).
 3. **Serve Anima and inject the meta tags.** Bedrock's dev server and deployed pebbles serve the
    Anima runtime and Golem's compiled scenes at a fixed path (e.g. `/_bedrock/anima/`) and add
    `<meta name="golem-anima-runtime" content="/_bedrock/anima/anima.js">` and
    `<meta name="golem-anima-scenes" content="/_bedrock/anima/scenes/">` to every pebble page.
-   With Anima public, the natural source is Golem's own release: its tarball can carry the runtime
-   and compiled scenes built from the pinned Anima commit (both MIT), so Bedrock serves files from
-   `node_modules`. That waits on the package-name decision (design.md §11).
+   The files ship in Golem's release tarball: `@mroiban/golem/runtime/anima.js` and
+   `runtime/scenes/*.ani`, built from the pinned Anima commit (MIT, licence in
+   `runtime/ANIMA-LICENSE`). Bedrock serves that folder from `node_modules`.
 
 Without item 3, pebbles still work and show plain Onyx.
 

@@ -4,7 +4,7 @@ import { configureAnima, type AnimaConfig } from "./runtime";
 import { onDocumentThemeChange } from "./theme";
 
 export type GolemContextValue = {
-  /** Golem theme name (a @golem/tokens theme), written to <html data-theme>. */
+  /** Golem theme name (a @mroiban/golem/tokens theme), written to <html data-theme>. */
   theme: string;
   motion: Motion;
   /** Bumped whenever document theme attributes or variables change. */

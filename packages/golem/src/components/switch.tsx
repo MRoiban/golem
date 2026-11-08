@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Switch as OnyxSwitch, type SwitchProps as OnyxSwitchProps } from "@mroiban/onyx";
-import { AnimaControl, type AnimaHandle, type AnimaStatus } from "@golem/anima-react";
+import { AnimaControl, type AnimaHandle, type AnimaStatus } from "../anima";
 
 export type SwitchProps = OnyxSwitchProps;
 

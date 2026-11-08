@@ -1,0 +1,23 @@
+{
+  "name": "@mroiban/golem",
+  "version": "0.1.0",
+  "description": "Onyx components with Anima motion, and the design tokens that theme both.",
+  "license": "MIT",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./anima": "./src/anima/index.ts",
+    "./tokens": "./src/tokens/index.ts",
+    "./styles.css": "./src/components/styles.css",
+    "./tokens.css": "./dist/tokens/golem.css",
+    "./anima-slots.css": "./dist/tokens/anima-slots.css"
+  },
+  "peerDependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "dependencies": {
+    "@mroiban/onyx": "https://github.com/MRoiban/onyx/releases/download/v0.2.2/mroiban-onyx-0.2.2.tgz"
+  }
+}
