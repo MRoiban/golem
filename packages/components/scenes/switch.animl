@@ -1,0 +1,39 @@
+<!-- Golem Switch motion part: the track and thumb of Onyx's Switch, drawn by Anima.
+     Geometry is Onyx's compact switch in px: track 31.5 x 17.5, padding 2, thumb 13.5, travel 14.
+     Colours are Golem token slots (var(--anima-<token>)), so the drawing follows the page theme.
+     Inputs (written by React): on, down. Trigger: pop (fired on a user toggle).
+     No a11y: the Onyx <button role="switch"> underneath owns semantics, focus and keyboard. -->
+<anima version="0.1" name="golem-switch" title="Switch" grid="32" viewBox="0 0 31.5 17.5">
+  <color name="inputBorder" value="#878580"/>
+  <color name="buttonBg" value="#205ea6"/>
+  <color name="buttonFg" value="#fffcf0"/>
+  <color name="shadowInk" value="#100f0f"/>
+  <bool name="on" default="false"/>
+  <bool name="down" default="false"/>
+  <trigger name="pop"/>
+  <path id="off" d="M8.75 0H22.75A8.75 8.75 0 0 1 22.75 17.5H8.75A8.75 8.75 0 0 1 8.75 0Z" fill="inputBorder"/>
+  <path id="onbg" d="M8.75 0H22.75A8.75 8.75 0 0 1 22.75 17.5H8.75A8.75 8.75 0 0 1 8.75 0Z" fill="buttonBg" opacity="0"/>
+  <group id="thumb" x="8.75" y="8.75">
+    <circle id="tshadow" cx="0" cy="0.6" r="6.9" fill="shadowInk" opacity="0.18"/>
+    <circle id="knob" cx="0" cy="0" r="6.75" fill="buttonFg"/>
+  </group>
+  <ease name="std" curve="cubic(0.2, 0, 0, 1)"/>
+  <ease name="emph" curve="cubic(0.2, 0, 0.16, 1)"/>
+  <layer name="state" initial="off">
+    <state name="off"><pose thumb.x="8.75" onbg.opacity="0"/><on when="on" to="on" blend="0.16" ease="std"/></state>
+    <state name="on"><pose thumb.x="22.75" onbg.opacity="1"/><on when="!on" to="off" blend="0.16" ease="std"/></state>
+  </layer>
+  <timeline name="stretch" duration="0.24" reducedMotion="end">
+    <track target="thumb.scaleX">0 1 emph; 0.08 1.36 emph; 0.24 1</track>
+    <track target="thumb.scaleY">0 1 emph; 0.08 0.9 emph; 0.24 1</track>
+  </timeline>
+  <layer name="fx" initial="idle">
+    <state name="idle"><on when="pop" to="go"/></state>
+    <state name="go" play="stretch"><on when="pop" to="again"/><on when="@end" to="idle"/></state>
+    <state name="again" play="stretch"><on when="pop" to="go"/><on when="@end" to="idle"/></state>
+  </layer>
+  <layer name="press" initial="rest">
+    <state name="rest"><on when="down" to="held" blend="0.1" ease="std"/></state>
+    <state name="held"><pose knob.scaleX="1.18"/><on when="!down" to="rest" blend="0.16" ease="std"/></state>
+  </layer>
+</anima>
