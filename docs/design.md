@@ -94,9 +94,17 @@ drops into Onyx and `@bedrock/ui` unchanged:
 
 Values are literals or references (`{palette.blue-600}`, `{radius-md}`). Light and dark were seeded
 from Onyx 0.2.2's exported tables. `test/onyx-parity.test.ts` checks that Golem emits every Onyx
-variable and that each resolves to Onyx's exact value in both themes. The custom theme **Rose**
-(magenta accent, rounder controls) has an authored light and dark variant. Dark themes are authored,
-not derived.
+variable and that each resolves to Onyx's exact value in both themes. Two custom themes, each with
+an authored light and dark variant:
+
+- **Flexoki**: the workbench theme Typewriter and babel-ui each keep a copy of today. It is
+  authored from the public Flexoki palette (MIT) and its UI roles: bg and bg-2 for surfaces;
+  ui, ui-2 and ui-3 for borders, hover and selection; tx-2 for secondary text; 400-weight accents in
+  dark. No code is taken from Typewriter or babel-ui.
+- **Rose**: a demonstration of a brand theme (magenta accent, rounder controls through base-token
+  overrides).
+
+Dark themes are authored, not derived.
 
 ### 4.2 Outputs
 
@@ -263,19 +271,29 @@ core-only scene where possible, a fallback test, and a size line.
 `@bedrock/ui` today is `export * from "@mroiban/onyx"`, four Bedrock components that need a Bedrock
 client, and a prebuilt stylesheet (Onyx's CSS with the Codicon font, plus Bedrock layouts).
 
-**Recommendation: Golem sits beside `@bedrock/ui` for now, and `@bedrock/ui` later re-exports Golem.**
+**Decision (owner, 2026-11-08): pebbles get motion without any code changes.** Golem stays its own
+package; `@bedrock/ui` re-exports it. A pebble that imports `Switch` from `@bedrock/ui` and loads
+`@bedrock/ui/styles.css` gets the Anima motion part, and still gets plain Onyx where Anima is
+missing or motion is reduced.
 
 - Golem must work on any Onyx page, including babel-ui (Electron, its own Onyx copy). It cannot
-  depend on Bedrock, so it cannot be absorbed into `@bedrock/ui`.
+  depend on Bedrock, so it is not absorbed into `@bedrock/ui`.
 - Golem does not replace `@bedrock/ui`. AppShell, UserMenu, SignInGate and UploadButton depend on
   Bedrock's client and belong to Bedrock.
-- Golem's CSS layers on top of `@bedrock/ui/styles.css` without changes (the `golem.tokens` and
-  `golem.components` layers come after `onyx.*`). A pebble today can add
-  `@golem/components` + `golem.css` + `anima-slots.css` next to `@bedrock/ui`.
-- Later, once a few components are proven, `@bedrock/ui` can re-export Golem's components in place
-  of the matching Onyx ones and include Golem's token CSS in its prebuilt stylesheet. Pebbles then
-  get motion parts with no code change, and still plain Onyx without the Anima runtime. That change
-  belongs in `@bedrock/ui`; it is a proposal in `docs/proposals.md`.
+
+What "no code changes" needs, and where each part lives:
+
+| Need | Where | Status |
+| --- | --- | --- |
+| Golem components work without a `GolemProvider` (motion follows `prefers-reduced-motion`; colours follow the page CSS) | Golem `useGolem()` | Done, e2e `?provider=off` |
+| The runtime is found without app code: `<meta name="golem-anima-runtime">` and `<meta name="golem-anima-scenes">` | Golem `runtime.ts` | Done, e2e |
+| `@bedrock/ui` exports Golem's `Switch` (and later components) in place of Onyx's, same props | `@bedrock/ui` `src/index.ts` | Proposal |
+| `@bedrock/ui/styles.css` appends `golem.css`, `anima-slots.css` and `@golem/components/styles.css` | `@bedrock/ui` `scripts/build-css.ts` | Proposal |
+| Bedrock serves the Anima runtime and Golem's compiled scenes, and injects the two meta tags into every pebble page | Bedrock dev server and deploy | Proposal; depends on how Anima is consumed (§11) |
+
+Golem's CSS already layers on top of `@bedrock/ui/styles.css` without changes (the `golem.tokens`
+and `golem.components` layers come after `onyx.*`), so the stylesheet change is an append. The
+proposals are in `docs/proposals.md`.
 
 ## 8. Consuming Anima while it changes
 
@@ -302,14 +320,14 @@ budget exits non-zero). Numbers at Anima `05f37885`:
 
 | What | min+gz | Budget |
 | --- | ---: | ---: |
-| `@golem/anima-react` (JS) | 3.52 KB | 4 KB |
+| `@golem/anima-react` (JS) | 3.68 KB | 4 KB |
 | `@golem/components` Switch (JS) | 0.64 KB | 2 KB |
 | `@golem/components` styles.css | 0.75 KB | 1 KB |
-| `golem.css` (4 themes; replaces Onyx's token blocks when used) | 2.59 KB | 6 KB |
-| `anima-slots.css` | 0.55 KB | 1 KB |
+| `golem.css` (6 themes; replaces Onyx's token blocks when used) | 2.73 KB | 6 KB |
+| `anima-slots.css` | 0.56 KB | 1 KB |
 | `switch.ani` | 0.80 KB | Anima gate: 64 KB per scene |
 | Anima runtime, core + web (no optional modules needed) | 20.70 KB | Anima gate: 24 KB |
-| App-UI total (Golem JS + CSS + runtime + scenes) | 26.96 KB | Anima gate: 128 KB |
+| App-UI total (Golem JS + CSS + runtime + scenes) | 27.13 KB | Anima gate: 128 KB |
 
 The runtime is loaded only when motion is on; with motion off, Golem costs its JS and CSS only.
 Per-component rule: JS ≤ 2 KB, scene ≤ 8 KB gz, and no optional Anima module without a size line
@@ -338,19 +356,27 @@ Observed now, to extract once both apps have settled (not designed here):
 - **Dialogs and toasts**: babel-ui `dialogs.ts` (queued Onyx prompts), `toasts.ts`; Typewriter
   `dialogs.tsx`.
 
-## 11. Open questions for the owner
+## 11. Owner decisions and open questions
 
-1. **Golem vs `@bedrock/ui`.** Agree with "beside now, `@bedrock/ui` re-exports Golem later" (§7)?
-2. **Private Anima from a public repo.** Golem builds Anima from a sibling checkout and commits
-   nothing from it. Anima's repo now carries an MIT licence but is still private. Which of these do
-   you want?
+Decided (2026-11-08):
+
+- **Golem vs `@bedrock/ui`**: pebbles get motion without any code changes (§7).
+- **Licence**: MIT.
+- **First real custom theme**: Flexoki, light and dark, authored in the token source from the public
+  Flexoki palette and its UI roles. Rose stays as a demonstration.
+- **Harmony and derived dark modes**: out of scope; dark themes are authored.
+
+Open:
+
+1. **Private Anima from a public repo.** Golem builds Anima from a sibling checkout and commits
+   nothing from it. Anima's repo now carries an MIT licence but is still private. This also decides
+   how Bedrock serves the runtime (§7). Options:
    - (a) keep Anima-dependent tests local-only (current);
    - (b) add a deploy key or token secret so CI can check out Anima;
    - (c) publish the Anima runtime (and the CLI, for compiling scenes) as a release tarball, as Onyx
      does, and depend on that;
    - (d) allow Golem to commit its compiled `.ani` scenes, which are built from Golem's own public
      AniML.
-3. **Licence** for Golem: none is set.
-4. **Package scope and publishing**: `@golem/*` is a placeholder; nothing is published.
-5. **Custom theme**: Rose is a demonstration. Should the Flexoki workbench theme from
-   Typewriter/babel-ui be the first real custom theme in the token source?
+2. **Package scope and publishing**: undecided. `@golem/*` stays a private workspace name and
+   nothing is published. It needs deciding before `@bedrock/ui` can depend on Golem other than by
+   path or git URL.

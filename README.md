@@ -41,3 +41,7 @@ bun run sizes             # size report and budgets
 ```
 
 Anima is private and still changing. Golem builds it from a local checkout into `.anima/` and never commits its runtime or compiled scenes.
+
+## Licence
+
+MIT. See [LICENSE](LICENSE). Onyx is MIT; the Codicon glyphs it ships are CC BY 4.0 (Microsoft); the Flexoki palette is MIT (Steph Ango).

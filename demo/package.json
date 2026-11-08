@@ -1,5 +1,6 @@
 {
   "name": "@golem/demo",
+  "license": "MIT",
   "private": true,
   "type": "module",
   "dependencies": {

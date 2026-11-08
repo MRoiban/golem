@@ -10,8 +10,22 @@ export type GolemContextValue = {
   /** Bumped whenever document theme attributes or variables change. */
   themeVersion: number;
 };
-const GolemContext = React.createContext<GolemContextValue>({ theme: "dark", motion: "css", themeVersion: 0 });
-export const useGolem = () => React.useContext(GolemContext);
+const GolemContext = React.createContext<GolemContextValue | null>(null);
+
+function useSystemReduced() {
+  return React.useSyncExternalStore(onSystemMotionChange, systemPrefersReduced, () => false);
+}
+
+/**
+ * The Golem context. Without a GolemProvider, components still work with no app code: motion
+ * follows prefers-reduced-motion, the theme is whatever the page's CSS says, and the Anima runtime
+ * comes from the page's <meta name="golem-anima-runtime"> (see runtime.ts).
+ */
+export function useGolem(): GolemContextValue {
+  const ctx = React.useContext(GolemContext);
+  const reduced = useSystemReduced();
+  return ctx ?? { theme: "", motion: resolveMotion("system", reduced), themeVersion: 0 };
+}
 
 export type GolemProviderProps = {
   theme?: string;
@@ -26,8 +40,7 @@ export type GolemProviderProps = {
 export function GolemProvider({ theme = "dark", motion: setting = "system", anima, document: onDocument = true, children }: GolemProviderProps) {
   // Configure before children mount (their effects run before ours).
   React.useMemo(() => { if (anima) configureAnima(anima); }, [anima?.runtime, anima?.scenes]);
-  const [reduced, setReduced] = React.useState(systemPrefersReduced);
-  React.useEffect(() => onSystemMotionChange(() => setReduced(systemPrefersReduced())), []);
+  const reduced = useSystemReduced();
   const motion = resolveMotion(setting, reduced);
   const [themeVersion, bump] = React.useReducer((n: number) => n + 1, 0);
   React.useEffect(() => onDocumentThemeChange(bump), []);

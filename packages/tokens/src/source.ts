@@ -321,12 +321,48 @@ const roseOverrides = {
   "input-radius": "10px",
 } as const;
 
+/**
+ * Flexoki: the workbench theme Typewriter and babel-ui use, authored here from the public Flexoki
+ * palette (https://stephango.com/flexoki, MIT) and its UI roles: bg, bg-2, ui, ui-2, ui-3, tx-2, tx.
+ * Onyx's own themes are Flexoki-based too; this theme follows Flexoki's roles strictly (flatter
+ * borders, tx-2 for secondary text, neutral selection, 400-weight accents in dark).
+ */
+const flexokiLight: ThemeTokens = {
+  ...lightColors,
+  "text-muted": "{palette.base-600}",            // tx-2
+  "text-description": "{palette.base-600}",      // tx-2
+  "border-subtle": "{palette.base-100}",         // ui
+  "border-default": "{palette.base-150}",        // ui-2
+  "border-strong": "{palette.base-200}",         // ui-3
+  "state-hover": "{palette.base-100}",           // ui
+  "state-active": "{palette.base-200}",          // ui-3
+  "state-selected": "{palette.base-150}",        // ui-2
+  "control-secondary-bg": "{palette.base-100}",
+  "control-secondary-hover-bg": "{palette.base-150}",
+};
+const flexokiDark: ThemeTokens = {
+  ...darkColors,
+  "text-muted": "{palette.base-500}",            // tx-2
+  "text-description": "{palette.base-500}",      // tx-2
+  "text-link": "{palette.blue-400}",
+  "border-subtle": "{palette.base-900}",         // ui
+  "border-default": "{palette.base-850}",        // ui-2
+  "border-strong": "{palette.base-800}",         // ui-3
+  "state-hover": "{palette.base-900}",
+  "state-active": "{palette.base-800}",
+  "state-selected": "{palette.base-850}",
+  "tone-info-fg": "{palette.blue-400}",          // Flexoki dark accents are the 400s
+  "tone-danger-fg": "{palette.red-400}",
+};
+
 export const themes = {
   dark: { name: "dark", label: "Dark", scheme: "dark", colors: darkColors },
   light: { name: "light", label: "Light", scheme: "light", colors: lightColors },
   rose: { name: "rose", label: "Rose", scheme: "light", colors: roseLight,
     overrides: { ...roseOverrides, "control-input-border": "{palette.base-300}" } },
   "rose-dark": { name: "rose-dark", label: "Rose dark", scheme: "dark", colors: roseDark, overrides: roseOverrides },
+  flexoki: { name: "flexoki", label: "Flexoki", scheme: "light", colors: flexokiLight },
+  "flexoki-dark": { name: "flexoki-dark", label: "Flexoki dark", scheme: "dark", colors: flexokiDark },
 } as const satisfies Record<string, Theme>;
 export type ThemeName = keyof typeof themes;
 

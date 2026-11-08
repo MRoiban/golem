@@ -1,7 +1,7 @@
 import { expect, test } from "@playwright/test";
 import { HAS_ANIMA, NEEDS_ANIMA, resolvedColor, settled, watchConsole } from "./helpers";
 
-const THEMES = ["dark", "light", "rose", "rose-dark"] as const;
+const THEMES = ["dark", "light", "rose", "rose-dark", "flexoki", "flexoki-dark"] as const;
 
 test.describe("no console errors", () => {
   for (const q of ["motion=anima", "motion=css", "motion=reduced", "anima=off&motion=anima"]) {
@@ -11,7 +11,7 @@ test.describe("no console errors", () => {
       await page.goto(`/?${q}`);
       await settled(page, q === "motion=anima");
       for (const id of ["autosave", "sync", "beta"]) await page.getByTestId(id).click();
-      for (const t of ["Light", "Rose", "Rose dark", "Dark"]) await page.getByRole("radio", { name: t, exact: true }).click();
+      for (const t of ["Light", "Rose", "Rose dark", "Flexoki", "Flexoki dark", "Dark"]) await page.getByRole("radio", { name: t, exact: true }).click();
       await page.waitForTimeout(300);
       c.expectClean();
     });
@@ -183,4 +183,28 @@ test.describe("phone width", () => {
       await expect(page.getByTestId("beta")).toHaveAttribute("aria-checked", "true");
     });
   }
+});
+
+test.describe("no provider, no code (pebble that only swapped imports)", () => {
+  test("motion from the page's meta tags, theme from <html data-theme>", async ({ page }) => {
+    test.skip(!HAS_ANIMA, NEEDS_ANIMA);
+    const c = watchConsole(page);
+    await page.goto("/?provider=off&many=0");
+    await expect(page.getByTestId("no-provider")).toBeVisible();
+    await settled(page, true);
+    await expect(page.locator("html")).not.toHaveAttribute("data-golem-motion", /./);
+    await page.getByRole("radio", { name: "Light", exact: true }).click();
+    const fill = await page.getByTestId("autosave").evaluate((b) =>
+      getComputedStyle(b.parentElement!.querySelector("anima-icon")!.shadowRoot!.querySelector("[fill*=buttonBg]")!).fill);
+    expect(fill).toBe(await resolvedColor(page, "var(--onyx-control-button-bg)"));
+    c.expectClean();
+  });
+  test.describe("with the OS asking for reduced motion", () => {
+    test.use({ reducedMotion: "reduce" });
+    test("plain Onyx", async ({ page }) => {
+      await page.goto("/?provider=off&many=0");
+      await expect(page.getByTestId("motion")).toHaveText("reduced");
+      await expect(page.locator("anima-icon")).toHaveCount(0);
+    });
+  });
 });

@@ -11,16 +11,35 @@ export type AnimaConfig = {
 export type RuntimeState = "idle" | "loading" | "ready" | "absent";
 
 let config: AnimaConfig = { runtime: null, scenes: "/anima/scenes/" };
+let configured = false;
+
+/**
+ * Zero-configuration default: the page (or the server that serves it, e.g. Bedrock) can declare
+ * where Anima lives, so components get motion without any app code:
+ *   <meta name="golem-anima-runtime" content="/anima/anima.js">
+ *   <meta name="golem-anima-scenes" content="/anima/scenes/">
+ * An explicit configureAnima() (or GolemProvider's `anima` prop) always wins.
+ */
+function fromDocument() {
+  if (configured || typeof document === "undefined") return;
+  configured = true;
+  const meta = (n: string) => document.querySelector<HTMLMetaElement>(`meta[name="${n}"]`)?.content || null;
+  const runtime = meta("golem-anima-runtime");
+  const scenes = meta("golem-anima-scenes");
+  if (runtime) config = { ...config, runtime };
+  if (scenes) config = { ...config, scenes };
+}
 let state: RuntimeState = "idle";
 let loading: Promise<boolean> | null = null;
 const listeners = new Set<() => void>();
 const setState = (s: RuntimeState) => { state = s; for (const l of listeners) l(); };
 
 export function configureAnima(next: Partial<AnimaConfig>) {
+  configured = true;
   config = { ...config, ...next };
   if (state === "absent") { state = "idle"; loading = null; }
 }
-export const animaConfig = () => config;
+export const animaConfig = () => { fromDocument(); return config; };
 export const runtimeState = () => state;
 export function onRuntimeState(f: () => void) { listeners.add(f); return () => { listeners.delete(f); }; }
 
@@ -29,6 +48,7 @@ export function loadAnima(): Promise<boolean> {
   if (typeof window === "undefined") return Promise.resolve(false);
   if (customElements.get("anima-icon")) { if (state !== "ready") setState("ready"); return Promise.resolve(true); }
   if (loading) return loading;
+  fromDocument();
   if (!config.runtime) { setState("absent"); return (loading = Promise.resolve(false)); }
   setState("loading");
   const url = config.runtime;
@@ -50,7 +70,7 @@ export function loadAnima(): Promise<boolean> {
 const models = new Map<string, Promise<AnimaModel>>();
 const docs = new Map<string, Promise<object>>();
 export const modelKey = (src: string, component?: string) => `${src}#${component ?? ""}`;
-export const sceneUrl = (name: string) => (/[/.]/.test(name) ? name : `${config.scenes}${name}.ani`);
+export const sceneUrl = (name: string) => (/[/.]/.test(name) ? name : `${animaConfig().scenes}${name}.ani`);
 
 function fetchDoc(src: string): Promise<object> {
   let p = docs.get(src);

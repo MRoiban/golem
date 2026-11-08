@@ -7,7 +7,7 @@ test.skip(!process.env.SHOTS, "set SHOTS=1 to write docs/screenshots");
 
 test.describe("desktop", () => {
   test.use({ viewport: { width: 760, height: 900 }, deviceScaleFactor: 2 });
-  for (const theme of ["dark", "light", "rose", "rose-dark"]) {
+  for (const theme of ["dark", "light", "rose", "rose-dark", "flexoki", "flexoki-dark"]) {
     test(`theme ${theme}`, async ({ page }) => {
       test.skip(!HAS_ANIMA, NEEDS_ANIMA);
       await page.goto(`/?motion=anima&theme=${theme}&many=12`);
