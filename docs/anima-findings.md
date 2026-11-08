@@ -14,7 +14,7 @@ edit Anima; each item lists Golem's workaround. Measured against Anima `05f37885
 | F7 | Authoring trap | Core guards use `!x`, bind expressions use `not x` | None needed (the validator hint is clear) |
 | F8 | Cost | Rounded-rect `corners` need the `paint` module | Uses paths and circles |
 | F9 | Bug | Partial stroke trim repeats a round-cap dot at the far endpoint | Grows the slash along a rotated axis |
-| F9 | Bug | SVG matrix rounding collapses tiny reciprocal transforms | Quantizes travel distances and clamps near-zero axes to 0.001 |
+| F10 | Bug | SVG matrix rounding collapses tiny reciprocal transforms | Quantizes travel distances and clamps near-zero axes to 0.001 |
 
 ## F1. Non-square viewBox scenes are drawn squashed
 
@@ -112,7 +112,7 @@ Workaround: Golem grows a horizontal slash with `scaleX` from 0 to 1 inside a 45
 group. It keeps constant transverse stroke width, has a single growing tip, and needs core only.
 Proposal: for a non-wrapping trim, use a gap longer than the remaining path so the dash cannot
 repeat at the far endpoint.
-## F9. SVG transform quantization can collapse reciprocal geometry transforms
+## F10. SVG transform quantization can collapse reciprocal geometry transforms
 Measured against pinned `8ffd7148`: the web SVG renderer serializes a scale of `0.000001` as
 `matrix(0 0 0 1 0 0)`, although `Player.values()["xUnits.scaleX"]` still reports `0.000001`.
 A nested inverse scale of `1000000` cannot recover the lost geometry: the initial indicator is

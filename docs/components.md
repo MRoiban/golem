@@ -13,21 +13,16 @@ Golem does not wrap it; use Onyx's directly).
 | Switch | Thumb stretches as it travels, squashes while pressed | choice | done |
 | Checkbox | Check stroke draws in; indeterminate dash morphs; box pops | choice | done |
 | RadioGroup | Selected dot grows in with a small overshoot; old dot shrinks | choice | done |
-| Toggle | Pressed state eases in, press squash | choice | done |
+| Toggle | Pressed fill grows from the centre, press squash | choice | done |
 | Button | Press squash; `loading` morphs label space into a spinner; optional success check / error shake | actions | planned |
 | Spinner | Anima-drawn arc spinner (Onyx timing) | actions | planned |
 | Progress | Fill eases to value; indeterminate sweep | actions | planned |
 | Meter | Fill eases to value, tone colour follows thresholds | actions | planned |
-| Tabs | Selected indicator travels between tabs and stretches | indicators | planned |
-| ToggleGroup | Selected pill travels between items | indicators | planned |
-| SectionSelect | Selected pill travels between sections | indicators | planned |
-| Slider | Thumb squashes while dragged; keyboard step pop; Onyx range fill follows | ranges | done |
-| PasswordField | Eye opens/closes when visibility toggles | ranges | done |
 | Tabs | Selected indicator travels between tabs and stretches | indicators | done |
-| ToggleGroup | Selected pill travels between items | indicators | done |
-| SectionSelect | Selected pill travels between sections | indicators | done |
-| Slider | Thumb squashes while dragged; range fill follows | ranges | planned |
-| PasswordField | Eye opens/closes when visibility toggles | ranges | planned |
+| ToggleGroup | Selected pill travels between items (single selection; multiple keeps Onyx's painting) | indicators | done |
+| SectionSelect | The popup's highlight travels between options | indicators | done |
+| Slider | Thumb squashes while dragged; keyboard step pop; Onyx range fill follows | ranges | done |
+| PasswordField | Codicon eye blinks while the slash draws in or out | ranges | done |
 | Collapsible | Chevron rotates with overshoot | disclosure | done |
 | Accordion | Chevron per item rotates with overshoot | disclosure | done |
 | Toast | Tone icon draws in (check, cross, info, warning) | disclosure | done |

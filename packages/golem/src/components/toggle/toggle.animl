@@ -1,16 +1,18 @@
-<!-- The 20px compact toggle can be any width (text, icon, md size). A square fill stretches
-     to the button's box; CSS clips to Onyx's live radius. No content is redrawn or scaled. -->
+<!-- The 20px compact toggle can be any width (text, icon, md size). The fill is a circle that
+     grows from the centre (an ellipse once the scene stretches to the button's box) until it
+     covers the corners (r 10 x 1.42 > the half-diagonal); CSS clips it to Onyx's live radius, so
+     mid-growth it never shows square corners inside the rounded button. No content is redrawn. -->
 <anima version="0.1" name="golem-toggle" grid="20" viewBox="0 0 20 20">
   <color name="selected" value="#343331"/>
   <bool name="on" default="false"/>
   <bool name="down" default="false"/>
   <group id="press" pivot="10 10">
-    <path id="background" d="M0 0H20V20H0Z" fill="selected" pivot="10 10" scale="0" opacity="0"/>
+    <circle id="background" cx="10" cy="10" r="10" fill="selected" pivot="10 10" scale="0" opacity="0"/>
   </group>
   <ease name="std" curve="cubic(0.2, 0, 0, 1)"/>
   <layer name="value" initial="off">
     <state name="off"><pose background.scale="0" background.opacity="0"/><on when="on" to="on" blend="0.16" ease="std"/></state>
-    <state name="on"><pose background.scale="1" background.opacity="1"/><on when="!on" to="off" blend="0.1" ease="std"/></state>
+    <state name="on"><pose background.scale="1.42" background.opacity="1"/><on when="!on" to="off" blend="0.1" ease="std"/></state>
   </layer>
   <layer name="press" initial="rest">
     <state name="rest"><on when="down" to="held" blend="0.1" ease="std"/></state>

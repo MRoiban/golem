@@ -16,7 +16,7 @@ Decisions from Onyx v0.2.2 source:
 Scenes require only bind. Positions and target sizes/radii come from rendered Onyx DOM;
 Anima core timelines supply 200 ms travel and leading-edge stretch. Reciprocal transforms carry
 numeric distances into timeline translations. Zero-distance axes need 0.001, since 0.000001
-rounds to zero in SVG matrices (F9). Onyx renders until each scene is ready.
+rounds to zero in SVG matrices (F10). Onyx renders until each scene is ready.
 
 Evidence:
 - Pinned build validates all scenes. Only bind is required; runtime 23,139 B gz (22.60 KB),
@@ -26,7 +26,7 @@ Evidence:
 - Screenshot run: 19 Chromium tests pass, producing 48 PNGs. Opened and inspected every PNG:
   each component's six themes + fallback + phone; SectionSelect's six popup themes + fallback
   + phone; 0/40/80/200 ms frames for all three, plus reverse Tabs frames.
-- Screenshot-driven fixes: tiny initial transforms collapsed the drawing (F9); quantized measured
+- Screenshot-driven fixes: tiny initial transforms collapsed the drawing (F10); quantized measured
   distances also eliminate width drift after resize. Editor tabs now have only top corners rounded
   and an open bottom, matching Onyx. Added space between demo examples. No double painting,
   clipping or horizontal overflow; popup fallback and animated selected boxes coincide.

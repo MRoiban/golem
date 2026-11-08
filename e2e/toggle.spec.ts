@@ -24,11 +24,11 @@ for (const motion of ["anima", "css"]) test(`toggle semantics, keyboard, forms: 
 test("toggle drawing follows state and stays below untouched content", async ({ page }) => {
   test.skip(!HAS_ANIMA, NEEDS_ANIMA);
   await page.goto("/?c=toggle&motion=anima"); await settled(page, true);
-  expect((await values(page, "toggle-text"))["background.scale"]).toBe(1);
+  expect((await values(page, "toggle-text"))["background.scale"]).toBeCloseTo(1.42, 2);
   expect((await values(page, "toggle-icon"))["background.scale"]).toBe(0);
   const icon = page.getByTestId("toggle-icon");
   await expect(icon.locator(":scope > svg")).toHaveCount(1);
-  await icon.click(); await expect.poll(async () => (await values(page, "toggle-icon"))["background.scale"]).toBe(1);
+  await icon.click(); await expect.poll(async () => (await values(page, "toggle-icon"))["background.scale"]).toBeCloseTo(1.42, 2);
   await page.keyboard.press("Space"); await expect.poll(async () => (await values(page, "toggle-icon"))["background.scale"]).toBe(0);
   await page.getByRole("button", { name: "Change pressed" }).click();
   await expect.poll(async () => (await values(page, "toggle-controlled"))["background.scale"]).toBe(0);
