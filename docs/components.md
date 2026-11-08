@@ -21,8 +21,8 @@ Golem does not wrap it; use Onyx's directly).
 | Tabs | Selected indicator travels between tabs and stretches | indicators | planned |
 | ToggleGroup | Selected pill travels between items | indicators | planned |
 | SectionSelect | Selected pill travels between sections | indicators | planned |
-| Slider | Thumb squashes while dragged; range fill follows | ranges | planned |
-| PasswordField | Eye opens/closes when visibility toggles | ranges | planned |
+| Slider | Thumb squashes while dragged; keyboard step pop; Onyx range fill follows | ranges | done |
+| PasswordField | Eye opens/closes when visibility toggles | ranges | done |
 | Collapsible | Chevron rotates with overshoot | disclosure | planned |
 | Accordion | Chevron per item rotates with overshoot | disclosure | planned |
 | Toast | Tone icon draws in (check, cross, info, warning) | disclosure | planned |

@@ -1,0 +1,11 @@
+.golem-slider { min-width: 0; width: 100%; }
+.golem-slider [data-slot='slider-thumb'] { position: relative; }
+/* Absolute positioning uses the thumb's padding box; include its retained transparent border.
+   The drawing inherits every Radix translation, including RTL, vertical and pointer capture. */
+.golem-slider__part {
+  position: absolute;
+  inset: calc(-1 * var(--onyx-space-0-5));
+  pointer-events: none;
+  --anima-inverse: var(--onyx-slider-thumb-bg, var(--onyx-text-inverse));
+}
+.golem-slider [data-golem-thumb='ready'] { background: transparent; border-color: transparent; }
