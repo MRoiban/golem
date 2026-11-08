@@ -1,0 +1,21 @@
+<!-- Onyx retains its 16px control box, border, input background, focus and disabled opacity.
+     Fade the selected inner fill alongside the 6px dot so its shrinking exit is visible on light
+     themes too. CSS sizes this scene to the actual Onyx control box. Core only. -->
+<anima version="0.1" name="golem-radio-group" grid="16" viewBox="0 0 16 16">
+  <color name="buttonFg" value="#fffcf0"/>
+  <color name="buttonBg" value="#205ea6"/>
+  <bool name="on" default="false"/>
+  <circle id="active" cx="8" cy="8" r="7.5" fill="buttonBg" opacity="0"/>
+  <circle id="dot" cx="8" cy="8" r="3" pivot="8 8" scale="0" fill="buttonFg"/>
+  <ease name="std" curve="cubic(0.2, 0, 0, 1)"/>
+  <timeline name="grow" duration="0.16" reducedMotion="end"><track target="dot.scale">0 0 std; 0.1 1.15 std; 0.16 1</track></timeline>
+  <layer name="fill" initial="off">
+    <state name="off"><pose active.opacity="0"/><on when="on" to="on" blend="0.1" ease="std"/></state>
+    <state name="on"><pose active.opacity="1"/><on when="!on" to="off" blend="0.08" ease="std"/></state>
+  </layer>
+  <layer name="value" initial="off">
+    <state name="off"><pose dot.scale="0"/><on when="on" to="growing"/></state>
+    <state name="growing" play="grow"><on when="!on" to="off" blend="0.08" ease="std"/><on when="@end" to="on"/></state>
+    <state name="on"><pose dot.scale="1"/><on when="!on" to="off" blend="0.08" ease="std"/></state>
+  </layer>
+</anima>
