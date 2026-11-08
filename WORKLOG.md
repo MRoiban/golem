@@ -26,6 +26,9 @@ Don't: commit .anima/ or compiled .ani; edit Anima/Onyx/@bedrock/ui; involve Har
 - Don't name a Golem file `anima.json`: the Anima CLI reads any anima.json above a source file as its project config and fails ("unknown project field"). The pin is `anima-pin.json`. — build-anima failure
 - The local ../anima checkout moves under another agent (seen at p7 05f37885 and 6b5a4245); build-anima warns when it isn't at the pin. For pin-exact local builds, use a clean clone: `git clone https://github.com/MRoiban/anima` + `npm ci --ignore-scripts`. — build-anima warning
 
+- `bun test <word>` is a path *filter*, not a directory: `bun test packages` also ran Anima's tests in CI's ./anima checkout. Use `bun test ./packages/`. — CI run 42468759108
+- GitHub release downloads (the Onyx tarball) returned 504 for a while on 2026-11-08; CI now caches ~/.bun/install/cache and retries bun install. — CI runs 42466033831, 42468553844
+
 ## Log
 - 2026-11-08 09:36 [claude]: survey + scaffold → core-only Switch scene prototype compiles (3,972 B .ani) and renders the stretch correctly (evidence: scratchpad/s/sheet.png via `anima render --sheet 8`).
 - 2026-11-08 10:05 [claude]: tokens (Onyx parity + completeness, 27 tests), bridge, Switch, demo, e2e (38 tests, Chromium + Firefox), sizes script, docs → bridge 3.52 KB gz after moving the token tables out (was 6.11); runtime 20.70 KB gz core-only; switch.ani 0.80 KB gz; first mount 15.6 ms compile + 8.4 ms instantiate, cached 0.77 ms per control, 28 controls all drawn 393 ms after navigation start (evidence: bun scripts/sizes.ts; demo metrics, Chromium)

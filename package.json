@@ -12,7 +12,7 @@
     "build:anima": "bun scripts/build-anima.ts",
     "build": "bun run build:tokens && bun run build:anima",
     "dev": "bun demo/server.ts",
-    "test": "bun test packages",
+    "test": "bun test ./packages/",
     "e2e": "playwright test",
     "typecheck": "tsc --noEmit -p .",
     "sizes": "bun scripts/sizes.ts"
