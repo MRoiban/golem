@@ -42,7 +42,8 @@ test("numeric easing is interruptible and settles at the new target", async ({ p
   await set(90); await advance(64);
   const mid = (await values(page, "controlled"))["fill.scaleX"]!;
   expect(mid).toBeGreaterThan(start); expect(mid).toBeLessThan(.9);
-  await set(0); await advance(64);
+  // Retarget mid-flight; check the reversal after half the duration (see meter.spec.ts).
+  await set(0); await advance(128);
   expect((await values(page, "controlled"))["fill.scaleX"]!).toBeLessThan(mid);
-  await advance(320); expect((await values(page, "controlled"))["fill.scaleX"]).toBe(0);
+  await advance(256); expect((await values(page, "controlled"))["fill.scaleX"]).toBe(0);
 });
