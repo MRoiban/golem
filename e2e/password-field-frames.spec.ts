@@ -14,10 +14,14 @@ test("eye closes and reopens", async ({ page }) => {
     await page.waitForTimeout(50); // Inputs queue while playback is paused.
     await step(0);
     let t = 0;
-    for (const at of [0, 0.04, 0.08, 0.16]) {
+    for (const at of [0, 0.04, 0.08, 0.12, 0.2]) {
       await step(at - t); t = at;
       await button.screenshot({ path: `docs/screenshots/password-field/frames-${direction}-${Math.round(at * 1000)}ms.png` });
     }
   }
-  await page.getByTestId("plain").locator("xpath=..").getByRole("button").screenshot({ path: "docs/screenshots/password-field/frames-plain.png" });
+  // Onyx's own glyphs, for comparison with the drawing at rest (open) and revealed (closed).
+  const plain = page.getByTestId("plain").locator("xpath=..").getByRole("button");
+  await plain.screenshot({ path: "docs/screenshots/password-field/frames-plain.png" });
+  await plain.click();
+  await plain.screenshot({ path: "docs/screenshots/password-field/frames-plain-closed.png" });
 });

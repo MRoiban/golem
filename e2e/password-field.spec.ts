@@ -60,12 +60,14 @@ test("drawing follows pointer, keyboard, controlled props and starts at rest", a
   await page.goto("/?c=password-field&motion=anima");
   await settled(page, true);
   expect((await values(page, "revealed"))["slash.scaleX"]).toBe(1);
-  expect((await values(page, "revealed"))["lid.scaleY"]).toBeCloseTo(0.16, 2);
+  // Mounted revealed: slash drawn, and no blink in flight (the eye is at full height).
+  expect((await values(page, "revealed"))["eye.scaleY"] ?? 1).toBeCloseTo(1, 2);
   expect((await values(page, "filled"))["slash.scaleX"] ?? 0).toBe(0);
   await toggle(page, "filled").click();
   await expect.poll(async () => (await values(page, "filled"))["slash.scaleX"]).toBe(1);
   await toggle(page, "filled").press("Enter");
-  await expect.poll(async () => (await values(page, "filled"))["lid.scaleY"] ?? 1).toBe(1);
+  await expect.poll(async () => (await values(page, "filled"))["slash.scaleX"] ?? 0).toBe(0);
+  await expect.poll(async () => (await values(page, "filled"))["eye.scaleY"] ?? 1).toBeCloseTo(1, 2);
   await page.getByRole("button", { name: "Change visibility" }).click();
   await expect.poll(async () => (await values(page, "controlled"))["slash.scaleX"]).toBe(1);
   const geometry = await toggle(page, "filled").evaluate((b) => {
