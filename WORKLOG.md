@@ -1,10 +1,10 @@
 # Work log
 
 ## Now
-Goal: first milestone (design doc, tokens, bridge, Switch + demo + e2e), then report to the owner.
-State: milestone 1 merged to main (PR #1, 79f6ba4, CI green). Unit tests 30 pass; typecheck clean; e2e 38 pass (Chromium + Firefox); 12 screenshots in docs/screenshots, all reviewed; sizes within budget (bun run sizes).
-Next: wait for the owner's answers to docs/design.md §11 (Golem vs @bedrock/ui, consuming private Anima, licence, scope, Flexoki theme). Then the next components (Button, Tabs, Checkbox).
-Don't: edit other repos; commit .anima/ or compiled .ani; add a licence; involve Harmony.
+Goal: apply the owner's decisions (2026-11-08): MIT licence; Flexoki as the first real custom theme; pebbles get motion with no code changes; package scope undecided.
+State: branch flexoki-theme (stacked on worklog-m1 = PR #2): MIT LICENSE; flexoki/flexoki-dark themes; provider-free useGolem(); meta-tag runtime discovery; demo ?provider=off; docs updated. Unit 36 pass, typecheck clean, e2e 46 pass. PR #2's CI is failing on GitHub release downloads (HTTP 504 from GitHub, also reproduced locally).
+Next: open the PR from flexoki-theme; merge PR #2 and then this one when CI recovers; report.
+Don't: edit @bedrock/ui or Bedrock (the "no code changes" work there is in docs/proposals.md); commit .anima/; involve Harmony.
 
 ## Gotchas
 - Harmony and derived dark modes are out of scope; dark themes, including custom ones, are authored by hand. — owner instruction 2026-11-08
@@ -21,8 +21,12 @@ Don't: edit other repos; commit .anima/ or compiled .ani; add a licence; involve
 
 - Grid and flex items stretch the `.golem-switch` wrapper, and the overlay fills the wrapper, so the wrapper must be `width/height: max-content` with `justify-self: start`. — screenshot showed stretched pills; e2e now asserts wrapper box == button box
 
+- Never define a wrapper component inside another component's render (the demo's `Wrap`): it remounts the whole tree on every render. — caught before running the e2e live-theme test
+
 ## Log
 - 2026-11-08 09:36 [claude]: survey + scaffold → core-only Switch scene prototype compiles (3,972 B .ani) and renders the stretch correctly (evidence: scratchpad/s/sheet.png via `anima render --sheet 8`).
 - 2026-11-08 10:05 [claude]: tokens (Onyx parity + completeness, 27 tests), bridge, Switch, demo, e2e (38 tests, Chromium + Firefox), sizes script, docs → bridge 3.52 KB gz after moving the token tables out (was 6.11); runtime 20.70 KB gz core-only; switch.ani 0.80 KB gz; first mount 15.6 ms compile + 8.4 ms instantiate, cached 0.77 ms per control, 28 controls all drawn 393 ms after navigation start (evidence: bun scripts/sizes.ts; demo metrics, Chromium)
 - 2026-11-08 10:40 [claude]: e2e 38 pass / 14 skipped (screenshots spec without SHOTS) after the Firefox 404 wording fix and longer timeouts; fixed the grid-stretch bug found in the screenshots; final sizes: bridge 3.52, Switch 0.64, CSS 0.75 + 2.59 + 0.55, runtime 20.70, app-UI total 26.96 KB gz (evidence: e2e2.log, bun run sizes)
 - 2026-11-08 10:50 [claude]: PR #1 CI green → merged (79f6ba4); reported to the owner
+- 2026-11-08 11:20 [claude]: owner decisions applied on flexoki-theme → e2e 46 pass (incl. ?provider=off in Chromium + Firefox), bridge 3.68 KB gz, golem.css 2.73 KB gz with 6 themes; Flexoki screenshots reviewed (evidence: e2e3.log, bun run sizes)
+- 2026-11-08 11:20 [claude]: PR #2 CI failed 3× on GitHub 504/5xx downloading Bun and the Onyx release tarball; reproduced locally with curl (504), so not a code problem → retry later

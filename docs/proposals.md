@@ -18,14 +18,26 @@ bugs and missing APIs are in [anima-findings.md](anima-findings.md).
    prefers-reduced-motion. That is intentional, but worth documenting next to the theme docs:
    consumers who need an exception (a progress bar) cannot override it.
 
-## `@bedrock/ui`
+## `@bedrock/ui` and Bedrock
 
-1. **Re-export Golem components** in place of the matching Onyx ones once a few are proven (Switch
-   now), and append `@golem/tokens/golem.css` and `anima-slots.css` to the prebuilt `styles.css`.
-   Pebbles then get Anima motion parts when the runtime is present, and plain Onyx when it is not,
-   with no code change.
-2. **Serve the Anima runtime and scenes** from a Bedrock-known path (e.g. `/_bedrock/anima/`) so
-   `GolemProvider` needs no per-pebble configuration.
+The owner decided that pebbles get Anima motion without any code changes (design.md §7). Golem's
+side is done (no provider needed; the runtime is found through meta tags). These changes are needed
+in `@bedrock/ui` and Bedrock:
+
+1. **Re-export Golem components in place of Onyx's**, with identical props. Today:
+   `export * from "@mroiban/onyx"`, then `export { Switch } from "@golem/components"` (an explicit
+   export takes precedence over the star export).
+2. **Append Golem's CSS to the prebuilt stylesheet** in `scripts/build-css.ts`, after Onyx's:
+   `@golem/tokens/golem.css`, `@golem/tokens/anima-slots.css`, `@golem/components/styles.css`
+   (about 3.9 KB gz together).
+3. **Serve Anima and inject the meta tags.** Bedrock's dev server and deployed pebbles serve the
+   Anima runtime and Golem's compiled scenes at a fixed path (e.g. `/_bedrock/anima/`) and add
+   `<meta name="golem-anima-runtime" content="/_bedrock/anima/anima.js">` and
+   `<meta name="golem-anima-scenes" content="/_bedrock/anima/scenes/">` to every pebble page.
+   Where the files come from depends on the open question of how private Anima is consumed
+   (design.md §11).
+
+Without item 3, pebbles still work and show plain Onyx.
 
 ## Anima
 

@@ -11,9 +11,12 @@ import { Switch } from "@golem/components";
 
 // URL parameters (tests use them): ?theme=light|dark|rose|rose-dark  ?motion=system|anima|css|reduced
 // ?anima=off (no Anima runtime: the fallback)  ?many=N (N extra switches, for mount timing)
+// ?provider=off: no GolemProvider and no configuration, as a pebble that only swapped its imports
+// (motion follows the OS, the runtime comes from the page's <meta name="golem-anima-runtime">).
 const params = new URLSearchParams(location.search);
 const ANIMA = params.get("anima") === "off" ? null : "/anima/anima.js";
 const MANY = Math.min(500, Number(params.get("many") ?? 24));
+const PROVIDER = params.get("provider") !== "off";
 
 function Segmented<T extends string>({ label, value, options, onChange }: {
   label: string; value: T; options: [T, string][]; onChange: (v: T) => void;
@@ -67,12 +70,22 @@ function SettingRow({ id, label, description, children }: { id: string; label: s
   );
 }
 
+const ANIMA_CONFIG = { runtime: ANIMA, scenes: "/anima/scenes/" };
+/** The demo with or without GolemProvider (?provider=off). Module-level so it never remounts the tree. */
+function Wrap({ theme, motion, children }: { theme: string; motion: MotionSetting; children: React.ReactNode }) {
+  return PROVIDER
+    ? <GolemProvider theme={theme} motion={motion} anima={ANIMA_CONFIG}>{children}</GolemProvider>
+    : <>{children}</>;
+}
+
 function App() {
   const [theme, setTheme] = React.useState(params.get("theme") ?? "dark");
   const [motion, setMotion] = React.useState<MotionSetting>((params.get("motion") as MotionSetting) ?? "system");
   const [sync, setSync] = React.useState(true);
+  // Without a provider the page owns <html data-theme>, as any Onyx page does.
+  React.useLayoutEffect(() => { if (!PROVIDER) document.documentElement.dataset.theme = theme; }, [theme]);
   return (
-    <GolemProvider theme={theme} motion={motion} anima={{ runtime: ANIMA, scenes: "/anima/scenes/" }}>
+    <Wrap theme={theme} motion={motion}>
       <main className="page onyx-theme-root">
         <header className="head">
           <h1>Golem</h1>
@@ -80,8 +93,9 @@ function App() {
           <div className="controls">
             <Segmented label="Theme" value={theme} onChange={setTheme}
               options={Object.values(themes).map((t) => [t.name, t.label])} />
-            <Segmented label="Motion" value={motion} onChange={setMotion}
+            {PROVIDER ? <Segmented label="Motion" value={motion} onChange={setMotion}
               options={[["system", "System"], ["anima", "Anima"], ["css", "Onyx"], ["reduced", "Reduced"]]} />
+              : <p className="lede" data-testid="no-provider">No GolemProvider: motion follows the system setting.</p>}
           </div>
         </header>
 
@@ -122,7 +136,7 @@ function App() {
           </CardBody>
         </Card>
       </main>
-    </GolemProvider>
+    </Wrap>
   );
 }
 

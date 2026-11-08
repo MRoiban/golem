@@ -27,7 +27,7 @@ const rows: Row[] = [
   { what: "@golem/anima-react (bridge, JS)", bytes: bridgeAndTokens.length, gz: gz(bridgeAndTokens), budget: 4 * KB },
   { what: "@golem/components (Switch, JS)", bytes: components.length, gz: gz(components), budget: 2 * KB },
   { what: "@golem/components styles.css", bytes: css.length, gz: gz(css), budget: 1 * KB },
-  { what: "@golem/tokens golem.css (4 themes)", bytes: onyxCss().length, gz: gz(onyxCss()), budget: 6 * KB, note: "replaces Onyx's own token blocks when used" },
+  { what: "@golem/tokens golem.css (6 themes)", bytes: onyxCss().length, gz: gz(onyxCss()), budget: 6 * KB, note: "replaces Onyx's own token blocks when used" },
   { what: "@golem/tokens anima-slots.css", bytes: animaSlotsCss().length, gz: gz(animaSlotsCss()), budget: 1 * KB },
 ];
 const build = join(root, ".anima/build.json");

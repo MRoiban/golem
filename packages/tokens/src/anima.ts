@@ -22,9 +22,9 @@ export type AnimaColor = keyof typeof animaColors;
 
 /** Anima numeric theme values (Theme model numbers), per theme. `motion` is written at runtime. */
 export const animaNumbers = {
-  shadow: { dark: 0.24, light: 0.08, rose: 0.08, "rose-dark": 0.24 },
-  buttonRadius: { dark: 6, light: 6, rose: 14, "rose-dark": 14 },
-} as const satisfies Record<string, Record<"dark" | "light" | "rose" | "rose-dark", number>>;
+  shadow: { dark: 0.24, light: 0.08, rose: 0.08, "rose-dark": 0.24, flexoki: 0.08, "flexoki-dark": 0.24 },
+  buttonRadius: { dark: 6, light: 6, rose: 14, "rose-dark": 14, flexoki: 6, "flexoki-dark": 6 },
+} as const satisfies Record<string, Record<"dark" | "light" | "rose" | "rose-dark" | "flexoki" | "flexoki-dark", number>>;
 
 export const ANIMA_COLORS = Object.keys(animaColors) as AnimaColor[];
 export const ANIMA_NUMBERS = Object.keys(animaNumbers) as (keyof typeof animaNumbers)[];
