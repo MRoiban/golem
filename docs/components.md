@@ -120,7 +120,13 @@ Use the helpers in `e2e/helpers.ts` (`settled`, `watchConsole`, `expectDecorativ
 
 ```sh
 SHOTS=1 GALLERY=<name> bunx playwright test e2e/gallery.spec.ts e2e/<name>-frames.spec.ts --project chromium
+bun scripts/contact-sheet.ts <name>     # docs/screenshots/<name>/sheet.png: everything in one image
 ```
+
+Frames go in `docs/screenshots/<name>/frames-*.png`. The contact sheet is for triage; open the
+originals for detail. Element screenshots at half-pixel positions can look shifted by up to 1 CSS
+px: measure boxes (`getBoundingClientRect`, including the SVG in the shadow root) before deciding
+the drawing is misaligned.
 
 Open every PNG you write and check it: the drawing sits exactly on Onyx's box (no offset, no
 squash, no double painting of Onyx's own part under the drawing), colours match the theme, the

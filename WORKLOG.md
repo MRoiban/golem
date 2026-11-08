@@ -1,10 +1,33 @@
 # Work log
 
 ## Now
-Goal (owner 2026-11-08): implement every component in docs/components.md's catalogue; validate each milestone with screenshots and state tests, then prove it to the owner (screenshots + test results per component).
-State: main 9413be7 has the component kit (PR #7). Five GPT-6.1-sol agents are running (T3 delegate_task, worktrees, branch `comp/<group>`, PR each, they don't merge): choice (Checkbox, RadioGroup, Toggle; port 4641), actions (Button, Spinner, Progress, Meter; 4642), indicators (Tabs, ToggleGroup, SectionSelect; 4643), ranges (Slider, PasswordField; 4644), disclosure (Collapsible, Accordion, Toast, Alert; 4645). Their briefs: scratchpad briefs/<group>.md (session-local); their notes: worklog/<group>.md on their branches.
-Next: per PR: read the description, open its screenshots, run its spec + switch.spec locally, fix or send back, merge one at a time (expect one-line conflicts in components/index.ts, styles.css, demo/sections/index.ts, docs/components.md). Then full suite + gallery on main, update design.md/README, report to the owner with proof.
-Don't: commit .anima/ or release/; edit Anima/Onyx/@bedrock/ui; involve Harmony; push a v* tag without the owner.
+Goal (owner 2026-11-08): every component in docs/components.md's catalogue, each milestone validated with screenshots and state tests, then proven to the owner.
+State: main 9413be7 = component kit (PR #7). 5 agents running (table below). PR #8 (this log + contact sheets) open.
+Next: review each agent PR with the protocol below as it arrives; merge one at a time; then the full suite + gallery + sheets on main, and a proof page for the owner (an artifact: per component its sheet, test counts per browser, size line).
+Don't: commit .anima/, release/ or .cache/; edit Anima/Onyx/@bedrock/ui; involve Harmony; push a v* tag without the owner; let agents merge.
+
+## Agents
+GPT-6.1-sol, xhigh, via T3 delegate_task (worktree, branch `comp/<group>`, PR, no merge). Briefs: session scratchpad briefs/<group>.md (= docs/components.md + setup + rules + done). Their notes: worklog/<group>.md on their branch. A completion wakes me; never poll.
+
+| Group | Components | Port | PR | Status |
+| --- | --- | --- | --- | --- |
+| choice | Checkbox, RadioGroup, Toggle | 4641 | — | running |
+| actions | Button, Spinner, Progress, Meter | 4642 | — | running |
+| indicators | Tabs, ToggleGroup, SectionSelect | 4643 | — | running |
+| ranges | Slider, PasswordField | 4644 | — | running |
+| disclosure | Collapsible, Accordion, Toast, Alert | 4645 | — | running |
+
+## Review protocol (per agent PR)
+1. Read the PR description and diff; reject shared-code changes that aren't minimal and additive.
+2. Check out the branch; `ANIMA_DIR=~/.cache/golem/anima-8ffd7148 bun run build:anima`; typecheck, unit, sizes.
+3. Run its specs + e2e/switch.spec.ts myself (GOLEM_E2E_PORT 4631, my port). Timeouts under load: rerun before calling it a failure.
+4. Regenerate its gallery + frames, `bun scripts/contact-sheet.ts <ids>`, look at each sheet.png; open originals for anything suspicious, and measure (getBoundingClientRect inside the shadow root) before believing a pixel offset.
+5. Thin or doubtful PR: an independent GPT-6.1-sol reviewer that gets the code and sheets, not the author's summary.
+6. Fix small findings myself; send big ones back to the agent's thread. Merge; resolve the one-line conflicts; update the table and Log.
+
+## Open decisions (owner)
+- First release tag v0.1.0 (publishes a GitHub release): waiting for a yes.
+- If agents differ on numeric geometry (Anima `bind` module vs core-only), I choose one approach repo-wide and record it here.
 
 ## Gotchas
 - Harmony and derived dark modes are out of scope; dark themes, including custom ones, are authored by hand. — owner instruction 2026-11-08
@@ -28,6 +51,9 @@ Don't: commit .anima/ or release/; edit Anima/Onyx/@bedrock/ui; involve Harmony;
 - Parallel agents need distinct Playwright ports: GOLEM_E2E_PORT (default 4621); and a pinned Anima checkout outside ../anima, which moves: ~/.cache/golem/anima-8ffd7148 (clean clone + npm ci). — this session
 - Bun's CSS bundler hoists @import-ed layer blocks above the file's own `@layer a, b;` statement; pack.ts restates the order at the top of dist/styles.css. — bun build of styles.css
 
+- Playwright element screenshots at half-pixel positions look shifted by up to ~1 CSS px: the switch frames looked offset right, but wrapper, button, overlay and shadow SVG all measured 935.5,343.75,31.5×17.5. Measure before "fixing" alignment. — .cache/measure.ts
+- A Playwright script outside the repo (e.g. in the scratchpad) resolves Bun's global playwright-core 1.65, whose browsers aren't installed; run ad-hoc scripts from the repo (.cache/ is gitignored). — "Executable doesn't exist … chromium_headless_shell-1254"
+
 ## Log
 - 2026-11-08 09:36 [claude]: survey + scaffold → core-only Switch scene prototype compiles (3,972 B .ani) and renders the stretch correctly (evidence: scratchpad/s/sheet.png via `anima render --sheet 8`).
 - 2026-11-08 10:05 [claude]: tokens (Onyx parity + completeness, 27 tests), bridge, Switch, demo, e2e (38 tests, Chromium + Firefox), sizes script, docs → bridge 3.52 KB gz after moving the token tables out (was 6.11); runtime 20.70 KB gz core-only; switch.ani 0.80 KB gz; first mount 15.6 ms compile + 8.4 ms instantiate, cached 0.77 ms per control, 28 controls all drawn 393 ms after navigation start (evidence: bun scripts/sizes.ts; demo metrics, Chromium)
@@ -41,3 +67,4 @@ Don't: commit .anima/ or release/; edit Anima/Onyx/@bedrock/ui; involve Harmony;
 - 2026-11-08 19:10 [claude]: merged the 3 workspace packages into packages/golem (@mroiban/golem, subpaths . /anima /tokens + CSS) and added pack/smoke/tag-release → typecheck ok, 36 unit, 46 e2e pass, tarball 46.4 KB, smoke (tsc strict without skipLibCheck, Bun.build, SSR) ok incl. ONYX_TGZ override; main entry 3.90 KB gz (evidence: bun run sizes, bun run smoke)
 - 2026-11-08 19:40 [claude]: PR #6 merged (single package; CI: pack from pin 8ffd7148, smoke ok, 46 e2e). component-kit groundwork → Switch e2e 46/46 on ?c=switch, gallery writes docs/screenshots/switch/*.png (looked at light.png: correct)
 - 2026-11-08 19:55 [claude]: PR #7 merged (9413be7, CI green); 5 agents delegated (groups above). Dream: Now rewritten (was pre-merge), linker gotcha corrected (packages/components no longer exists), old milestone-1 screenshots at docs/screenshots/*.png stay; per-component ones go in docs/screenshots/<id>/
+- 2026-11-08 20:10 [claude]: workflow adapted: scripts/contact-sheet.ts (one sheet.png per component: 6 themes, fallback, phone, frames); switch frames moved to docs/screenshots/switch/frames-*.png, milestone-1 top-level PNGs removed (superseded by the gallery); WORKLOG restructured (Agents table, Review protocol, Open decisions). Switch sheet reviewed: all themes and fallback correct; apparent 1 px frame offset is screenshot rounding (measured)
