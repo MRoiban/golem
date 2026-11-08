@@ -34,8 +34,9 @@ in `@bedrock/ui` and Bedrock:
    Anima runtime and Golem's compiled scenes at a fixed path (e.g. `/_bedrock/anima/`) and add
    `<meta name="golem-anima-runtime" content="/_bedrock/anima/anima.js">` and
    `<meta name="golem-anima-scenes" content="/_bedrock/anima/scenes/">` to every pebble page.
-   Where the files come from depends on the open question of how private Anima is consumed
-   (design.md §11).
+   With Anima public, the natural source is Golem's own release: its tarball can carry the runtime
+   and compiled scenes built from the pinned Anima commit (both MIT), so Bedrock serves files from
+   `node_modules`. That waits on the package-name decision (design.md §11).
 
 Without item 3, pebbles still work and show plain Onyx.
 

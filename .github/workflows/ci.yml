@@ -7,15 +7,39 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Read the pinned Anima commit
+        id: anima
+        run: echo "commit=$(jq -r .commit anima-pin.json)" >> "$GITHUB_OUTPUT"
+      - uses: actions/checkout@v4
+        with:
+          repository: MRoiban/anima
+          ref: ${{ steps.anima.outputs.commit }}
+          path: anima
+      - uses: actions/setup-node@v4
+        with: { node-version: 24 }
       - uses: oven-sh/setup-bun@v2
         with: { bun-version: 1.4.3 }
-      - run: bun install --frozen-lockfile
+      # Onyx comes from a GitHub release tarball; cache it, and retry when the release CDN is down.
+      - uses: actions/cache@v4
+        with:
+          path: ~/.bun/install/cache
+          key: bun-${{ runner.os }}-${{ hashFiles('bun.lock') }}
+      - name: bun install (with retries)
+        run: |
+          for i in 1 2 3 4 5; do
+            bun install --frozen-lockfile && exit 0
+            echo "bun install failed (attempt $i); retrying in $((i * 30)) s"; sleep $((i * 30))
+          done
+          exit 1
+      - name: Install Anima's build tools
+        run: npm ci --ignore-scripts --no-audit --no-fund
+        working-directory: anima
       - run: bun run build:tokens
+      - run: bun run build:anima
+        env: { ANIMA_DIR: "${{ github.workspace }}/anima" }
       - run: bun run typecheck
       - run: bun run test
       - run: bun run sizes
-      # Anima is private, so CI has no .anima/: the e2e suite runs the plain-Onyx paths and skips
-      # tests that need the runtime (see docs/design.md §8).
-      - run: bunx playwright install --with-deps chromium
-      - run: bunx playwright test --project chromium
+      - run: bunx playwright install --with-deps chromium firefox
+      - run: bunx playwright test
         env: { GOLEM_E2E_WORKERS: "2" }

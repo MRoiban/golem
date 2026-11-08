@@ -2,7 +2,7 @@
 
 The product layer of the stack: Onyx is the stone, Anima the soul.
 
-Golem joins [Onyx](https://github.com/MRoiban/onyx) (React primitives with semantic theming) and Anima (animation and interactivity) into one UI layer for Bedrock pebbles:
+Golem joins [Onyx](https://github.com/MRoiban/onyx) (React primitives with semantic theming) and [Anima](https://github.com/MRoiban/anima) (animation and interactivity) into one UI layer for Bedrock pebbles:
 
 - **Tokens** (`@golem/tokens`): one source that generates Onyx's CSS variables, Anima's theme model and colour slots, and Glyphy's style targets.
 - **Bridge** (`@golem/anima-react`): `GolemProvider` and `<AnimaControl>`: lazy runtime loading, a shared model cache, progressive mounting, theme sync and reduced motion.
@@ -33,14 +33,15 @@ Without `anima` (or with a runtime that fails to load) every component is plain 
 ```sh
 bun install
 bun run build:tokens      # packages/tokens/dist
-bun run build:anima       # .anima/: Anima runtime + compiled scenes, from ANIMA_DIR (default ../anima)
+bun run build:anima       # .anima/: Anima runtime + compiled scenes, from ANIMA_DIR (default ../anima),
+                          # at the commit pinned in anima-pin.json
 bun run dev               # demo on http://localhost:4620 (?theme= ?motion= ?anima=off ?many=N)
 bun run test              # unit tests
 bun run e2e               # Playwright, Chromium + Firefox (Anima tests skip without .anima/)
 bun run sizes             # size report and budgets
 ```
 
-Anima is private and still changing. Golem builds it from a local checkout into `.anima/` and never commits its runtime or compiled scenes.
+[Anima](https://github.com/MRoiban/anima) is still changing, so Golem pins a commit (`anima-pin.json`), builds it from a checkout into `.anima/`, and never commits its runtime or compiled scenes. CI checks out the pinned commit and runs the full suite.
 
 ## Licence
 

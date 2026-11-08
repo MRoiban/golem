@@ -95,5 +95,5 @@ module (runtime 20.7 KB gz).
 
 - `kit/build.py` and `kit/onyx_common.py` point the Anima CLI and Codicons at another session's
   scratchpad (`/tmp/claude-1000/...`). The build only works on that machine and session.
-- `web/vendor/anima.js` (318 KB, 30 modules) is a vendored private runtime. Golem builds its own
+- `web/vendor/anima.js` (318 KB, 30 modules) is a vendored runtime. Golem builds its own
   from a checkout instead (`scripts/build-anima.ts`).

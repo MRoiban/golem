@@ -1,10 +1,10 @@
 # Work log
 
 ## Now
-Goal: apply the owner's decisions (2026-11-08): MIT licence; Flexoki as the first real custom theme; pebbles get motion with no code changes; package scope undecided.
-State: branch flexoki-theme (stacked on worklog-m1 = PR #2): MIT LICENSE; flexoki/flexoki-dark themes; provider-free useGolem(); meta-tag runtime discovery; demo ?provider=off; docs updated. Unit 36 pass, typecheck clean, e2e 46 pass. PR #2's CI is failing on GitHub release downloads (HTTP 504 from GitHub, also reproduced locally).
-Next: open the PR from flexoki-theme; merge PR #2 and then this one when CI recovers; report.
-Don't: edit @bedrock/ui or Bedrock (the "no code changes" work there is in docs/proposals.md); commit .anima/; involve Harmony.
+Goal: Anima is public (owner, 2026-11-08): pin it and run the full suite in CI. Package naming is still open (ideas given to the owner).
+State: branch anima-public: anima-pin.json (main 8ffd714), CI checks out the pin and runs build:anima + full e2e (Chromium + Firefox); docs updated. Built against the pin locally: identical output (runtime 21,196 B gz).
+Next: PR, merge when CI is green.
+Don't: commit .anima/ or compiled .ani; edit Anima/Onyx/@bedrock/ui; involve Harmony.
 
 ## Gotchas
 - Harmony and derived dark modes are out of scope; dark themes, including custom ones, are authored by hand. — owner instruction 2026-11-08
@@ -23,6 +23,12 @@ Don't: edit @bedrock/ui or Bedrock (the "no code changes" work there is in docs/
 
 - Never define a wrapper component inside another component's render (the demo's `Wrap`): it remounts the whole tree on every render. — caught before running the e2e live-theme test
 
+- Don't name a Golem file `anima.json`: the Anima CLI reads any anima.json above a source file as its project config and fails ("unknown project field"). The pin is `anima-pin.json`. — build-anima failure
+- The local ../anima checkout moves under another agent (seen at p7 05f37885 and 6b5a4245); build-anima warns when it isn't at the pin. For pin-exact local builds, use a clean clone: `git clone https://github.com/MRoiban/anima` + `npm ci --ignore-scripts`. — build-anima warning
+
+- `bun test <word>` is a path *filter*, not a directory: `bun test packages` also ran Anima's tests in CI's ./anima checkout. Use `bun test ./packages/`. — CI run 42468759108
+- GitHub release downloads (the Onyx tarball) returned 504 for a while on 2026-11-08; CI now caches ~/.bun/install/cache and retries bun install. — CI runs 42466033831, 42468553844
+
 ## Log
 - 2026-11-08 09:36 [claude]: survey + scaffold → core-only Switch scene prototype compiles (3,972 B .ani) and renders the stretch correctly (evidence: scratchpad/s/sheet.png via `anima render --sheet 8`).
 - 2026-11-08 10:05 [claude]: tokens (Onyx parity + completeness, 27 tests), bridge, Switch, demo, e2e (38 tests, Chromium + Firefox), sizes script, docs → bridge 3.52 KB gz after moving the token tables out (was 6.11); runtime 20.70 KB gz core-only; switch.ani 0.80 KB gz; first mount 15.6 ms compile + 8.4 ms instantiate, cached 0.77 ms per control, 28 controls all drawn 393 ms after navigation start (evidence: bun scripts/sizes.ts; demo metrics, Chromium)
@@ -30,3 +36,4 @@ Don't: edit @bedrock/ui or Bedrock (the "no code changes" work there is in docs/
 - 2026-11-08 10:50 [claude]: PR #1 CI green → merged (79f6ba4); reported to the owner
 - 2026-11-08 11:20 [claude]: owner decisions applied on flexoki-theme → e2e 46 pass (incl. ?provider=off in Chromium + Firefox), bridge 3.68 KB gz, golem.css 2.73 KB gz with 6 themes; Flexoki screenshots reviewed (evidence: e2e3.log, bun run sizes)
 - 2026-11-08 11:20 [claude]: PR #2 CI failed 3× on GitHub 504/5xx downloading Bun and the Onyx release tarball; reproduced locally with curl (504), so not a code problem → retry later
+- 2026-11-08 11:45 [claude]: Anima public → anima-pin.json (8ffd714), CI checks out the pin + full e2e; built from a clean clone at the pin: switch.ani 823 B gz, runtime 21,196 B gz, identical to p7 (evidence: build-anima with ANIMA_DIR=clone)
