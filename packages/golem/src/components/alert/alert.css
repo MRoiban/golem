@@ -1,0 +1,15 @@
+.golem-tone-icon {
+  display: inline-flex;
+  position: relative;
+  width: 1em;
+  height: 1em;
+  font-size: 16px;
+  line-height: 1;
+  vertical-align: baseline;
+  pointer-events: none;
+}
+.golem-tone-icon__motion { visibility: hidden; }
+.golem-tone-icon[data-anima='ready'] > .codicon { visibility: hidden; }
+.golem-tone-icon[data-anima='ready'] > .golem-tone-icon__motion { visibility: visible; }
+/* Neutral uses the same info glyph, in Onyx's neutral foreground. */
+.golem-tone-icon[data-icon-tone='neutral'] anima-icon { --anima-infoFg: var(--onyx-display-fg); }

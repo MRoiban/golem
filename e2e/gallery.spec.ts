@@ -10,6 +10,16 @@ const only = process.env.GALLERY ? `&c=${process.env.GALLERY}` : "";
 async function shootSections(page: import("@playwright/test").Page, name: string) {
   for (const s of await page.locator("[data-testid^='section-']").all()) {
     const id = (await s.getAttribute("data-testid"))!.slice("section-".length);
+    // Mount-only icon draws may have been paused offscreen by the Anima host.
+    await s.scrollIntoViewIfNeeded();
+    await page.waitForTimeout(300);
+    // A phone-height card can contain offscreen parts even after scrolling the card.
+    await s.locator("anima-icon").evaluateAll(icons => {
+      for (const el of icons) {
+        const icon = el as HTMLElement & { player?: { step(dt: number): void }; invalidate(): void };
+        icon.player?.step(0); icon.player?.step(1); icon.invalidate();
+      }
+    });
     await s.screenshot({ path: `docs/screenshots/${id}/${name}.png`, animations: "disabled" });
   }
 }
