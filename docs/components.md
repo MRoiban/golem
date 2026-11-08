@@ -21,12 +21,6 @@ Golem does not wrap it; use Onyx's directly).
 | Tabs | Selected indicator travels between tabs and stretches | indicators | done |
 | ToggleGroup | Selected pill travels between items (single selection; multiple keeps Onyx's painting) | indicators | done |
 | SectionSelect | The popup's highlight travels between options | indicators | done |
-| Checkbox | Check stroke draws in; indeterminate dash morphs; box pops | choice | planned |
-| RadioGroup | Selected dot grows in with a small overshoot; old dot shrinks | choice | planned |
-| Toggle | Pressed state eases in, press squash | choice | planned |
-| Tabs | Selected indicator travels between tabs and stretches | indicators | planned |
-| ToggleGroup | Selected pill travels between items | indicators | planned |
-| SectionSelect | Selected pill travels between sections | indicators | planned |
 | Slider | Thumb squashes while dragged; keyboard step pop; Onyx range fill follows | ranges | done |
 | PasswordField | Codicon eye blinks while the slash draws in or out | ranges | done |
 | Collapsible | Chevron rotates with overshoot | disclosure | done |
