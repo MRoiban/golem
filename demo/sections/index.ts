@@ -6,6 +6,8 @@ import SpinnerSection from "./spinner";
 import ProgressSection from "./progress";
 import MeterSection from "./meter";
 import SwitchSection from "./switch";
+import SliderSection from "./slider";
+import PasswordFieldSection from "./password-field";
 
 export const SECTIONS: { id: string; Component: React.ComponentType }[] = [
   { id: "switch", Component: SwitchSection },
@@ -13,4 +15,6 @@ export const SECTIONS: { id: string; Component: React.ComponentType }[] = [
   { id: "progress", Component: ProgressSection },
   { id: "spinner", Component: SpinnerSection },
   { id: "button", Component: ButtonSection },
+  { id: "slider", Component: SliderSection },
+  { id: "password-field", Component: PasswordFieldSection },
 ];

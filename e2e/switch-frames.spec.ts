@@ -1,36 +1,10 @@
-// Switch screenshots for docs/screenshots/ (SHOTS=1 bunx playwright test e2e/switch-frames.spec.ts --project chromium).
+// Switch motion frames: docs/screenshots/switch/frames-*.png (SHOTS=1 bunx playwright test e2e/switch-frames.spec.ts --project chromium).
+// Themes, fallback and phone come from e2e/gallery.spec.ts.
 import { test } from "@playwright/test";
 import { HAS_ANIMA, NEEDS_ANIMA, settled } from "./helpers";
 
-const out = (name: string) => `docs/screenshots/${name}.png`;
+const out = (name: string) => `docs/screenshots/switch/${name}.png`;
 test.skip(!process.env.SHOTS, "set SHOTS=1 to write docs/screenshots");
-
-test.describe("desktop", () => {
-  test.use({ viewport: { width: 760, height: 900 }, deviceScaleFactor: 2 });
-  for (const theme of ["dark", "light", "rose", "rose-dark", "flexoki", "flexoki-dark"]) {
-    test(`theme ${theme}`, async ({ page }) => {
-      test.skip(!HAS_ANIMA, NEEDS_ANIMA);
-      await page.goto(`/?c=switch&motion=anima&theme=${theme}&many=12`);
-      await settled(page, true);
-      await page.screenshot({ path: out(`theme-${theme}`), fullPage: true });
-    });
-  }
-  test("fallback (no Anima)", async ({ page }) => {
-    await page.goto("/?c=switch&motion=anima&anima=off&many=12");
-    await settled(page, false);
-    await page.screenshot({ path: out("fallback-no-anima"), fullPage: true });
-  });
-});
-
-test.describe("phone", () => {
-  test.use({ viewport: { width: 360, height: 780 }, deviceScaleFactor: 2 });
-  test("phone, light", async ({ page }) => {
-    test.skip(!HAS_ANIMA, NEEDS_ANIMA);
-    await page.goto("/?c=switch&motion=anima&theme=light&many=12");
-    await settled(page, true);
-    await page.screenshot({ path: out("phone-light"), fullPage: true });
-  });
-});
 
 test.describe("stretch", () => {
   test.use({ deviceScaleFactor: 6 });
@@ -51,7 +25,7 @@ test.describe("stretch", () => {
         icon.invalidate();
       }, at - t);
       t = at;
-      await wrap.screenshot({ path: out(`stretch-${String(Math.round(at * 1000)).padStart(3, "0")}ms`) });
+      await wrap.screenshot({ path: out(`frames-stretch-${String(Math.round(at * 1000)).padStart(3, "0")}ms`) });
     }
   });
 });

@@ -7,6 +7,8 @@
 @import "./progress/progress.css" layer(golem.components);
 @import "./spinner/spinner.css" layer(golem.components);
 @import "./button/button.css" layer(golem.components);
+@import "./slider/slider.css" layer(golem.components);
+@import "./password-field/password-field.css" layer(golem.components);
 
 @layer golem.components {
   .golem-anima > anima-icon {

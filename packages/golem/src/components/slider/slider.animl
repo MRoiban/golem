@@ -1,0 +1,29 @@
+<!-- Onyx thumb: 14 x 14 px, 2 px border; the host scales with Onyx's thumb-size token.
+     Only paint deforms. Position is inherited from the real Radix thumb; no numeric bindings.
+     Core only. Onyx keeps its track, fill, shadow and focus outline. -->
+<anima version="0.1" name="golem-slider" grid="14" viewBox="0 0 14 14">
+  <color name="inverse" value="#fffcf0"/>
+  <color name="focusRing" value="#4385be"/>
+  <bool name="down" default="false"/>
+  <trigger name="pop"/>
+  <group id="pulse" x="7" y="7">
+    <group id="thumb">
+      <circle id="knob" cx="0" cy="0" r="6" fill="inverse" stroke="focusRing" stroke-width="2"/>
+    </group>
+  </group>
+  <ease name="std" curve="cubic(0.2, 0, 0, 1)"/>
+  <ease name="emph" curve="cubic(0.2, 0, 0.16, 1)"/>
+  <layer name="press" initial="rest">
+    <state name="rest"><on when="down" to="held" blend="0.1" ease="std"/></state>
+    <state name="held"><pose thumb.scaleX="1.16" thumb.scaleY="0.86"/><on when="!down" to="rest" blend="0.16" ease="std"/></state>
+  </layer>
+  <timeline name="step" duration="0.2" reducedMotion="end">
+    <track target="pulse.scaleX">0 1 emph; 0.06 1.14 emph; 0.2 1</track>
+    <track target="pulse.scaleY">0 1 emph; 0.06 1.14 emph; 0.2 1</track>
+  </timeline>
+  <layer name="keyboard" initial="idle">
+    <state name="idle"><on when="pop" to="go"/></state>
+    <state name="go" play="step"><on when="pop" to="again"/><on when="@end" to="idle"/></state>
+    <state name="again" play="step"><on when="pop" to="go"/><on when="@end" to="idle"/></state>
+  </layer>
+</anima>

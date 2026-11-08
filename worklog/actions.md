@@ -20,9 +20,9 @@ hooks, helpers, scripts or WORKLOG. Scenes built from clean pinned Anima 8ffd714
   Anima owns the geometry, tone fades and indeterminate sweep (1.12s).
 
 ## Anima findings and test gotchas
-- F9: numeric bind has no smoothing/operator or animated property reads; bindings override blends.
+- F10: numeric bind has no smoothing/operator or animated property reads; bindings override blends.
   Local input interpolation is the workaround; bind adds 1,943 B gz to core-only runtime.
-- F10: five-decimal trim dash rounding leaves a repeated micro-dash and round-cap dot at the far
+- F9: five-decimal trim dash rounding leaves a repeated micro-dash and round-cap dot at the far
   endpoint of an open path. Flat caps on result glyphs fix it (round join retained).
 - AniML no-fill is #00000000, not SVG `none`. Player values use canonical `check.stroke.trimEnd`.
 - Shared .golem-part__motion is emitted after component imports: component positioning selectors
@@ -39,7 +39,7 @@ hooks, helpers, scripts or WORKLOG. Scenes built from clean pinned Anima 8ffd714
   bridge 3.68 KB, all JS 5.42 KB, CSS .91 KB, app total 33.82 KB.
 - Gallery/frames: 12 pass Chromium, plus 4 focused state/interrupt/frame tests after fixes.
   Reviewed all 59 PNGs via contact sheets and individual light galleries; regenerated and reviewed
-  Button frames after F10. Six themes each, fallback, phone, Button result/press frames, Spinner
+  Button frames after F9. Six themes each, fallback, phone, Button result/press frames, Spinner
   turns, Progress value frames, Meter value/tone frames. No clipping/overflow/double paint left.
 - Final full run: 208 passed (7.0m), 104 Chromium + 104 Firefox. Per browser: Button 20,
   Spinner 19, Progress 21, Meter 21, Switch regression 23. No failures or skips.
@@ -48,3 +48,12 @@ hooks, helpers, scripts or WORKLOG. Scenes built from clean pinned Anima 8ffd714
   regenerated and reviewed.
 - Final scene optimization: hidden Button spin and determinate bar sweep layers stop at idle;
   added assertions and reran the full browser matrix before pushing.
+
+## Integration with current main
+- PR https://github.com/MRoiban/golem/pull/13 opened; main had merged ranges and the review workflow.
+  Resolved registry/import conflicts preserving both groups. The ranges F9 finding is the same trim
+  dot: retained its number and evidence, added Button's rounding evidence; numeric smoothing is F10.
+- Built and opened four repository contact sheets (63 reviewed PNGs total). Pinned build,
+  typecheck, 36 units and sizes pass with main: all JS 6.23 KB, CSS 1.07 KB, app total 36.10 KB gz.
+- Integrated matrix: 208 actions + Switch browser tests passed (4.7m), 104 per browser;
+  no failures/skips. All four committed contact sheets opened and reviewed.

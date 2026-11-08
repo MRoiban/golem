@@ -1,6 +1,6 @@
 <!-- Button's 10px loading slot or 14px result slot; currentColor is Onyx's actual foreground.
      Press squash acts on the real box in CSS (so text and focus geometry move together).
-     Flat glyph caps avoid trim rounding dots at path endpoints (F10).
+     Flat glyph caps avoid trim rounding dots at path endpoints (F9).
      Result persists; reveal fires only after ready and on a result change. Core only. -->
 <anima version="0.1" name="golem-button" grid="14" viewBox="0 0 14 14">
   <bool name="busy" default="false"/><bool name="success" default="false"/><bool name="error" default="false"/><trigger name="reveal"/>

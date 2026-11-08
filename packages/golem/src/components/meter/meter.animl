@@ -1,6 +1,6 @@
 <!-- Onyx's 5.25px compact track is retained, including clipping, radius and header.
      requires bind: numeric DOM-derived input controls the fill's scaleX continuously.
-     Bind has no easing operator (F9); the wrapper eases its drawing input for 240ms with Onyx emphasis.
+     Bind has no easing operator (F10); the wrapper eases its drawing input for 240ms with Onyx emphasis.
      Tone shapes cross-fade for 160ms: colour slots cannot animate (F4). -->
 <anima version="0.1" name="golem-meter" grid="100" viewBox="0 0 100 5.25" requires="bind">
   <color name="fg" value="#cecdc3"/>

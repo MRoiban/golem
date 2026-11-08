@@ -13,7 +13,7 @@ export function readFill(root: HTMLElement, meter = false) {
   };
 }
 
-// Anima bind reads inputs, not animated properties, and has no smoothing operator (F9).
+// Anima bind reads inputs, not animated properties, and has no smoothing operator (F10).
 // Interpolate only the DOM-derived drawing input here; Anima still owns geometry and tone fades.
 // Solve Onyx's emphasis cubic (.2, 0, .16, 1) with a bounded binary search.
 function emphasis(x: number) {
