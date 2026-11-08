@@ -13,6 +13,7 @@ edit Anima; each item lists Golem's workaround. Measured against Anima `05f37885
 | F6 | Missing tool | No supported way to build one bundle with chosen modules | Calls `tools/browser-build.ts` `bundle()` |
 | F7 | Authoring trap | Core guards use `!x`, bind expressions use `not x` | None needed (the validator hint is clear) |
 | F8 | Cost | Rounded-rect `corners` need the `paint` module | Uses paths and circles |
+| F9 | Bug | Partial stroke trim repeats a round-cap dot at the far endpoint | Grows the slash along a rotated axis |
 
 ## F1. Non-square viewBox scenes are drawn squashed
 
@@ -97,3 +98,16 @@ module (runtime 20.7 KB gz).
   scratchpad (`/tmp/claude-1000/...`). The build only works on that machine and session.
 - `web/vendor/anima.js` (318 KB, 30 modules) is a vendored runtime. Golem builds its own
   from a checkout instead (`scripts/build-anima.ts`).
+
+## F9. A partial trimmed stroke leaves a round-cap dot at the far endpoint
+
+Measured at the pinned `8ffd7148`. PasswordField's slash (`M1.5 1.5L10.5 10.5`, width 1,
+round caps) showed a detached dot at (10.5,10.5) while `trimEnd` was between 0 and 1.
+Evidence: `docs/screenshots/password-field/trim-artifact.png`, the original 40 ms close frame.
+`packages/core/src/svg.ts:147` emits dash lengths `[fraction × length, (1−fraction) × length]`:
+the next repeated dash begins exactly at the endpoint, and its round cap paints a dot there.
+
+Workaround: Golem grows a horizontal slash with `scaleX` from 0 to 1 inside a 45° rotated
+group. It keeps constant transverse stroke width, has a single growing tip, and needs core only.
+Proposal: for a non-wrapping trim, use a gap longer than the remaining path so the dash cannot
+repeat at the far endpoint.
