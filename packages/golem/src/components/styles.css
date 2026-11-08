@@ -5,6 +5,9 @@
 @import "./switch/switch.css" layer(golem.components);
 @import "./slider/slider.css" layer(golem.components);
 @import "./password-field/password-field.css" layer(golem.components);
+@import "./checkbox/checkbox.css" layer(golem.components);
+@import "./radio-group/radio-group.css" layer(golem.components);
+@import "./toggle/toggle.css" layer(golem.components);
 
 @layer golem.components {
   .golem-anima > anima-icon {

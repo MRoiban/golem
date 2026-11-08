@@ -1,0 +1,25 @@
+.golem-toggle {
+  position: relative;
+  isolation: isolate;
+  display: inline-flex;
+  flex-shrink: 0;
+  width: max-content;
+  height: max-content;
+  justify-self: start;
+  align-self: center;
+  vertical-align: middle;
+}
+.golem-toggle > .onyx-toggle { position: relative; z-index: 1; }
+.golem-toggle[data-anima='ready'] > .onyx-toggle { background: transparent; }
+/* Keep hover behind the animated selected fill, so it cannot obscure a shrinking fill. */
+.golem-toggle[data-anima='ready']:has(> .onyx-toggle:hover) > .golem-toggle__motion {
+  background: var(--onyx-state-hover);
+}
+/* The drawing is underneath the button, including direct text nodes, svg icons and asChild
+   content. Clip its square scene to Onyx's live radius; never transform the content. */
+.golem-toggle > .golem-toggle__motion {
+  z-index: 0;
+  border-radius: var(--onyx-toggle-radius, var(--onyx-radius-sm));
+  overflow: hidden;
+}
+.golem-toggle[data-disabled] > .golem-toggle__motion { opacity: 0.5; }

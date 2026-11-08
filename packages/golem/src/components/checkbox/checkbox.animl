@@ -1,0 +1,44 @@
+<!-- Onyx compact input: 16px (1rem), radius 4, border 1. Core-only articulated stroke:
+     the two line segments rotate/translate/scale from a check to a collinear dash.
+     The short leg extends half a stroke through the joint to match Onyx's miter without a seam.
+     Draw-on uses core stroke trims; no path morph/paint module is needed. -->
+<anima version="0.1" name="golem-checkbox" grid="16" viewBox="0 0 16 16">
+  <color name="inputBorder" value="#878580"/>
+  <color name="inputBg" value="#1c1b1a"/>
+  <color name="buttonBg" value="#205ea6"/>
+  <color name="buttonFg" value="#fffcf0"/>
+  <bool name="on" default="false"/>
+  <bool name="mixed" default="false"/>
+  <bool name="down" default="false"/>
+  <trigger name="pop"/>
+  <group id="press" pivot="8 8">
+    <group id="box" pivot="8 8">
+      <path id="border" d="M4 0H12A4 4 0 0 1 16 4V12A4 4 0 0 1 12 16H4A4 4 0 0 1 0 12V4A4 4 0 0 1 4 0Z" fill="inputBorder"/>
+      <path id="base" d="M4 1H12A3 3 0 0 1 15 4V12A3 3 0 0 1 12 15H4A3 3 0 0 1 1 12V4A3 3 0 0 1 4 1Z" fill="inputBg"/>
+      <path id="active" d="M4 0H12A4 4 0 0 1 16 4V12A4 4 0 0 1 12 16H4A4 4 0 0 1 0 12V4A4 4 0 0 1 4 0Z" fill="buttonBg" opacity="0"/>
+      <group id="mark" opacity="0">
+        <path id="short" d="M0 0H4.419417" x="4.25" y="8" rotate="45" stroke="buttonFg" stroke-width="1.767767" stroke-linecap="butt" trimEnd="0"/>
+        <path id="long" d="M0 0H7.071068" x="6.75" y="10.5" rotate="-45" stroke="buttonFg" stroke-width="1.767767" stroke-linecap="butt" trimEnd="0"/>
+      </group>
+    </group>
+  </group>
+  <ease name="std" curve="cubic(0.2, 0, 0, 1)"/>
+  <ease name="emph" curve="cubic(0.2, 0, 0.16, 1)"/>
+  <layer name="value" initial="off">
+    <state name="off"><pose active.opacity="0" mark.opacity="0" short.trimEnd="0" long.trimEnd="0"/><on when="on" to="on" blend="0.16" ease="std"/></state>
+    <state name="on"><pose active.opacity="1" mark.opacity="1" short.trimEnd="1" long.trimEnd="1"/><on when="!on" to="off" blend="0.08" ease="std"/></state>
+  </layer>
+  <layer name="shape" initial="check">
+    <state name="check"><on when="mixed" to="dash" blend="0.16" ease="std"/></state>
+    <state name="dash"><pose short.x="4.875" short.y="8" short.rotate="0" short.scaleX="0.735391" short.scaleY="0.707107" long.x="7.875" long.y="8" long.rotate="0" long.scaleX="0.459619" long.scaleY="0.707107"/><on when="!mixed" to="check" blend="0.16" ease="std"/></state>
+  </layer>
+  <timeline name="pop" duration="0.16" reducedMotion="end"><track target="box.scale">0 1 emph; 0.05 1.08 emph; 0.16 1</track></timeline>
+  <layer name="fx" initial="rest">
+    <state name="rest"><on when="pop" to="pop"/></state>
+    <state name="pop" play="pop"><on when="@end" to="rest"/></state>
+  </layer>
+  <layer name="press" initial="rest">
+    <state name="rest"><on when="down" to="held" blend="0.1" ease="std"/></state>
+    <state name="held"><pose press.scaleX="1.04" press.scaleY="0.9"/><on when="!down" to="rest" blend="0.16" ease="std"/></state>
+  </layer>
+</anima>

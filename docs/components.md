@@ -11,9 +11,9 @@ Golem does not wrap it; use Onyx's directly).
 | Component | Motion part | Group | Status |
 | --- | --- | --- | --- |
 | Switch | Thumb stretches as it travels, squashes while pressed | choice | done |
-| Checkbox | Check stroke draws in; indeterminate dash morphs; box pops | choice | planned |
-| RadioGroup | Selected dot grows in with a small overshoot; old dot shrinks | choice | planned |
-| Toggle | Pressed state eases in, press squash | choice | planned |
+| Checkbox | Check stroke draws in; indeterminate dash morphs; box pops | choice | done |
+| RadioGroup | Selected dot grows in with a small overshoot; old dot shrinks | choice | done |
+| Toggle | Pressed state eases in, press squash | choice | done |
 | Button | Press squash; `loading` morphs label space into a spinner; optional success check / error shake | actions | planned |
 | Spinner | Anima-drawn arc spinner (Onyx timing) | actions | planned |
 | Progress | Fill eases to value; indeterminate sweep | actions | planned |
