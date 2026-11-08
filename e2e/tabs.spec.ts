@@ -84,6 +84,8 @@ test("drawing mounts at rest, follows pointer, keyboard, controlled props and re
     true,
   );
   await page.keyboard.press("End");
+  // Wait for roving focus (Radix moves it in a setTimeout) before activating.
+  await expect(basic.getByRole("tab", { name: "Files", exact: true })).toBeFocused();
   await page.keyboard.press("Enter");
   await expectAligned(
     part,

@@ -51,6 +51,7 @@ for (const motion of ["anima", "css"])
     await expect(files).toHaveAttribute("data-active", "true");
     await page.keyboard.press("Home");
     await page.keyboard.press("ArrowDown");
+    await expect(page.getByRole("option", { name: "Activity log" })).toBeFocused();
     await page.keyboard.press("Enter");
     await expect(trigger).toBeFocused();
     await expect(page.getByTestId("select-value")).toHaveText("activity");
@@ -119,6 +120,7 @@ test("OS reduced motion uses Onyx", async ({ page }) => {
       .evaluate((el) => getComputedStyle(el).backgroundColor),
   ).toBe(await resolvedColor(page, "var(--onyx-state-selected)"));
   await page.keyboard.press("End");
+  await expect(page.getByRole("option", { name: "Project files" })).toBeFocused();
   await page.keyboard.press("Enter");
   await expect(page.getByTestId("select-value")).toHaveText("files");
 });

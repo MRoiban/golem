@@ -106,7 +106,10 @@ test("drawing at rest and follows pointer, clear, keyboard, controlled and verti
   const vertical = page.getByTestId("toggle-vertical");
   await vertical.getByRole("radio", { name: "Day", exact: true }).focus();
   await page.keyboard.press("ArrowDown");
+  // Radix's roving focus moves focus in a setTimeout; pressing Space before it lands toggles Day off.
+  await expect(vertical.getByRole("radio", { name: "Week view" })).toBeFocused();
   await page.keyboard.press("Space");
+  await expect(vertical.getByRole("radio", { name: "Week view" })).toHaveAttribute("aria-checked", "true");
   await expectAligned(
     vertical,
     vertical.getByRole("radio", { name: "Week view" }),
