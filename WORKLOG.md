@@ -2,8 +2,8 @@
 
 ## Now
 Goal: first milestone (design doc, tokens, bridge, Switch + demo + e2e), then report to the owner.
-State: milestone code complete on branch m1-switch. Unit tests 30 pass; typecheck clean; e2e 38 pass (Chromium + Firefox); 12 screenshots in docs/screenshots, all reviewed; sizes within budget (bun run sizes).
-Next: open the PR from m1-switch, merge when CI is green, then report to the owner (open questions are in docs/design.md §11).
+State: milestone 1 merged to main (PR #1, 79f6ba4, CI green). Unit tests 30 pass; typecheck clean; e2e 38 pass (Chromium + Firefox); 12 screenshots in docs/screenshots, all reviewed; sizes within budget (bun run sizes).
+Next: wait for the owner's answers to docs/design.md §11 (Golem vs @bedrock/ui, consuming private Anima, licence, scope, Flexoki theme). Then the next components (Button, Tabs, Checkbox).
 Don't: edit other repos; commit .anima/ or compiled .ani; add a licence; involve Harmony.
 
 ## Gotchas
@@ -25,3 +25,4 @@ Don't: edit other repos; commit .anima/ or compiled .ani; add a licence; involve
 - 2026-11-08 09:36 [claude]: survey + scaffold → core-only Switch scene prototype compiles (3,972 B .ani) and renders the stretch correctly (evidence: scratchpad/s/sheet.png via `anima render --sheet 8`).
 - 2026-11-08 10:05 [claude]: tokens (Onyx parity + completeness, 27 tests), bridge, Switch, demo, e2e (38 tests, Chromium + Firefox), sizes script, docs → bridge 3.52 KB gz after moving the token tables out (was 6.11); runtime 20.70 KB gz core-only; switch.ani 0.80 KB gz; first mount 15.6 ms compile + 8.4 ms instantiate, cached 0.77 ms per control, 28 controls all drawn 393 ms after navigation start (evidence: bun scripts/sizes.ts; demo metrics, Chromium)
 - 2026-11-08 10:40 [claude]: e2e 38 pass / 14 skipped (screenshots spec without SHOTS) after the Firefox 404 wording fix and longer timeouts; fixed the grid-stretch bug found in the screenshots; final sizes: bridge 3.52, Switch 0.64, CSS 0.75 + 2.59 + 0.55, runtime 20.70, app-UI total 26.96 KB gz (evidence: e2e2.log, bun run sizes)
+- 2026-11-08 10:50 [claude]: PR #1 CI green → merged (79f6ba4); reported to the owner
