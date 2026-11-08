@@ -9,7 +9,8 @@ export type AccordionItemProps = React.ComponentPropsWithoutRef<typeof import("@
 export type AccordionContentProps = React.ComponentPropsWithoutRef<typeof import("@mroiban/onyx").AccordionContent>;
 export type AccordionTriggerProps = React.ComponentPropsWithoutRef<typeof OnyxTrigger>;
 /** Works with single and multiple Onyx roots; the trigger DOM is the only motion input. */
-export const AccordionTrigger = React.forwardRef<HTMLButtonElement, AccordionTriggerProps>(function AccordionTrigger(props, ref) {
+// Annotated so declaration emit names Onyx's public type, not Radix's internal path (TS2742).
+export const AccordionTrigger: React.ForwardRefExoticComponent<AccordionTriggerProps & React.RefAttributes<HTMLButtonElement>> = React.forwardRef<HTMLButtonElement, AccordionTriggerProps>(function AccordionTrigger(props, ref) {
   const button = React.useRef<HTMLButtonElement | null>(null);
   const refs = useMergedRef(button, ref);
   const part = useChevron(button, "accordion", props.asChild);

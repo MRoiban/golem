@@ -13,8 +13,9 @@ edit Anima; each item lists Golem's workaround. Measured against Anima `05f37885
 | F6 | Missing tool | No supported way to build one bundle with chosen modules | Calls `tools/browser-build.ts` `bundle()` |
 | F7 | Authoring trap | Core guards use `!x`, bind expressions use `not x` | None needed (the validator hint is clear) |
 | F8 | Cost | Rounded-rect `corners` need the `paint` module | Uses paths and circles |
-| F9 | Bug | Partial stroke trim repeats a round-cap dot at the far endpoint | Grows the slash along a rotated axis |
+| F9 | Bug | Partial stroke trim repeats a round-cap dot at the far endpoint | Grows the slash along a rotated axis; flat caps for result glyphs |
 | F10 | Bug | SVG matrix rounding collapses tiny reciprocal transforms | Quantizes travel distances and clamps near-zero axes to 0.001 |
+| F11 | Gap | Numeric bindings have no temporal smoothing | Interpolates DOM-derived geometry inputs locally |
 
 ## F1. Non-square viewBox scenes are drawn squashed
 
@@ -112,6 +113,19 @@ Workaround: Golem grows a horizontal slash with `scaleX` from 0 to 1 inside a 45
 group. It keeps constant transverse stroke width, has a single growing tip, and needs core only.
 Proposal: for a non-wrapping trim, use a gap longer than the remaining path so the dash cannot
 repeat at the far endpoint.
+### Additional Button evidence and workaround
+
+At pin `8ffd7148`, the SVG renderer rounds `stroke-dasharray` lengths to five decimals. For
+Button's check (`M2 7L5.5 10.5L12 3.5`) at trimEnd `0.6334486808633097`, the dash array is
+`9.18642 5.31581`: total `14.50223`, just below the real path length `14.502234055577233`.
+The repeated dash starts again for a microscopic distance at the far endpoint; with a round
+linecap this paints a visible detached dot. It appeared in the 40/80 ms success frames.
+
+Workaround: flat caps on the check/cross (the join stays round), which makes the tiny repeated
+fragment invisible. The final button frames were regenerated and reviewed. Proposal: use a
+non-repeating gap longer than the perimeter, or retain enough precision that the trim cannot
+repeat before the actual endpoint.
+
 ## F10. SVG transform quantization can collapse reciprocal geometry transforms
 Measured against pinned `8ffd7148`: the web SVG renderer serializes a scale of `0.000001` as
 `matrix(0 0 0 1 0 0)`, although `Player.values()["xUnits.scaleX"]` still reports `0.000001`.
@@ -123,3 +137,21 @@ survives serialization and introduces only 0.001 px of movement on that axis. Nu
 remain the source of geometry; no JavaScript tweening or runtime modification is needed.
 Related authoring clarification: `<rect rx="…">` is core and can bind `rx`; the extended
 `corners` syntax in F8 requires paint. Indicators use core `rx` to match Onyx's measured radius.
+
+## F11. Numeric bindings have no temporal smoothing operator
+
+At pin `8ffd7148`, SPEC's bind chapter permits input arithmetic, comparisons and `mix`, but no
+property reads, elapsed time, or smoothing. A `<bind target="fill.scaleX" value="level"/>` changes
+immediately on the next player step; bindings run after layers and override a blend on that address
+(SPEC §7.4). Core poses and timeline keys accept literal numbers, so they cannot ease an arbitrary
+new numeric input without another mechanism.
+
+Evidence: Progress and Meter compile with `requires="bind"`; their DOM value tests cover fractional
+ranges and live ARIA updates. Golem's workaround is a local, interruptible 240 ms interpolation of
+the DOM-derived drawing input, using Onyx's emphasis cubic. Anima binds that input to geometry and
+owns the tone opacity blends and indeterminate sweep. This adds only bind to the runtime
+(23,139 B gz versus 21,196 B core-only), within the 32 KB module budget. Initial and fallback values
+settle directly, and the interpolation cancels on unmount or motion changes.
+
+Proposal: a binding smoothing modifier (duration + easing), with a current-value snapshot when
+interrupted and an explicit settle path for initial rendering.

@@ -5,6 +5,10 @@ import SwitchSection from "./switch";
 import CheckboxSection from "./checkbox";
 import RadioGroupSection from "./radio-group";
 import ToggleSection from "./toggle";
+import ButtonSection from "./button";
+import SpinnerSection from "./spinner";
+import ProgressSection from "./progress";
+import MeterSection from "./meter";
 import TabsSection from "./tabs";
 import ToggleGroupSection from "./toggle-group";
 import SectionSelectSection from "./section-select";
@@ -20,6 +24,10 @@ export const SECTIONS: { id: string; Component: React.ComponentType }[] = [
   { id: "checkbox", Component: CheckboxSection },
   { id: "radio-group", Component: RadioGroupSection },
   { id: "toggle", Component: ToggleSection },
+  { id: "button", Component: ButtonSection },
+  { id: "spinner", Component: SpinnerSection },
+  { id: "progress", Component: ProgressSection },
+  { id: "meter", Component: MeterSection },
   { id: "tabs", Component: TabsSection },
   { id: "toggle-group", Component: ToggleGroupSection },
   { id: "section-select", Component: SectionSelectSection },

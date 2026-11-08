@@ -8,7 +8,8 @@ export type CollapsibleProps = React.ComponentPropsWithoutRef<typeof import("@mr
 export type CollapsibleTriggerProps = React.ComponentPropsWithoutRef<typeof OnyxTrigger>;
 export type CollapsibleContentProps = React.ComponentPropsWithoutRef<typeof import("@mroiban/onyx").CollapsibleContent>;
 /** Onyx keeps the trigger, height animation and state. asChild keeps the caller's custom icon. */
-export const CollapsibleTrigger = React.forwardRef<HTMLButtonElement, CollapsibleTriggerProps>(function CollapsibleTrigger(props, ref) {
+// Annotated so declaration emit names Onyx's public type, not Radix's internal path (TS2742).
+export const CollapsibleTrigger: React.ForwardRefExoticComponent<CollapsibleTriggerProps & React.RefAttributes<HTMLButtonElement>> = React.forwardRef<HTMLButtonElement, CollapsibleTriggerProps>(function CollapsibleTrigger(props, ref) {
   const button = React.useRef<HTMLButtonElement | null>(null);
   const refs = useMergedRef(button, ref);
   const part = useChevron(button, "collapsible", props.asChild);

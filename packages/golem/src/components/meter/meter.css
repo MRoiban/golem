@@ -1,0 +1,6 @@
+.golem-meter { width: 100%; min-width: 0; }
+.golem-meter [data-slot='meter-track'] { position: relative; }
+.golem-meter__motion { visibility: hidden; overflow: hidden; border-radius: inherit; }
+.golem-meter[data-anima='ready'] .golem-meter__motion { visibility: visible; }
+.golem-meter[data-anima='ready'] [data-slot='meter-indicator'] { visibility: hidden; }
+.golem-meter__motion { --anima-fg: var(--onyx-tone-neutral-fg); }

@@ -2,7 +2,7 @@
 
 ## Now
 Goal (owner 2026-11-08): every component in docs/components.md's catalogue, each milestone validated with screenshots and state tests, then proven to the owner.
-State: branch integrate/components = main + PRs #9 ranges, #10 choice, #11 indicators, #12 disclosure, with review fixes; full e2e running on it. actions agent still running.
+State: PR #9 merged. PR #14 (integrate/components) = main + #10 choice, #11 indicators, #12 disclosure, #13 actions + review fixes: all 17 catalogue components; local: 600 e2e passed / 0 failed, typecheck, 36 unit, sizes, pack + smoke ok. All 5 agents done.
 Next: review each agent PR with the protocol below as it arrives; merge one at a time; then the full suite + gallery + sheets on main, and a proof page for the owner (an artifact: per component its sheet, test counts per browser, size line).
 Don't: commit .anima/, release/ or .cache/; edit Anima/Onyx/@bedrock/ui; involve Harmony; push a v* tag without the owner; let agents merge.
 
@@ -12,7 +12,7 @@ GPT-6.1-sol, xhigh, via T3 delegate_task (worktree, branch `comp/<group>`, PR, n
 | Group | Components | Port | PR | Status |
 | --- | --- | --- | --- | --- |
 | choice | Checkbox, RadioGroup, Toggle | 4641 | #10 | reviewed; Toggle fill → growing circle (square corners mid-growth) |
-| actions | Button, Spinner, Progress, Meter | 4642 | — | running |
+| actions | Button, Spinner, Progress, Meter | 4642 | #13 | reviewed; finding renumbered F11; spinner frames re-shot at 8×; follow-up: Progress/Meter fill eases by a 240 ms JS interpolation (React re-renders), Tabs-style reciprocal transforms could move it into Anima |
 | indicators | Tabs, ToggleGroup, SectionSelect | 4643 | #11 | reviewed; its finding renumbered F10 |
 | ranges | Slider, PasswordField | 4644 | #9 | reviewed; eye redrawn on Codicon geometry + blink; slider frames cropped |
 | disclosure | Collapsible, Accordion, Toast, Alert | 4645 | #12 | reviewed; no changes |
@@ -57,6 +57,8 @@ GPT-6.1-sol, xhigh, via T3 delegate_task (worktree, branch `comp/<group>`, PR, n
 - Integrating parallel component branches: merge them all into one branch; conflicts are only list files: keep both sides; rewrite demo/sections/index.ts in catalogue order (a single conflict there spans imports and the array); dedupe catalogue rows in docs/components.md by hand; renumber clashing anima-findings IDs. — integrate/components
 - Agents' frames specs tend to screenshot the whole row, so motion is invisible on the sheet: ask for crops around the moving part at ≥6× (slider fix). — PR #9 review
 
+- `bun run typecheck` does not emit declarations; only `bun run pack` does. Exported forwardRef wrappers of Radix-based Onyx parts need an explicit `React.ForwardRefExoticComponent<…>` annotation or pack fails with TS2742 (CI on PR #14). Agents now run pack + smoke (docs/components.md). — CI run 42514904665
+
 ## Log
 - 2026-11-08 09:36 [claude]: survey + scaffold → core-only Switch scene prototype compiles (3,972 B .ani) and renders the stretch correctly (evidence: scratchpad/s/sheet.png via `anima render --sheet 8`).
 - 2026-11-08 10:05 [claude]: tokens (Onyx parity + completeness, 27 tests), bridge, Switch, demo, e2e (38 tests, Chromium + Firefox), sizes script, docs → bridge 3.52 KB gz after moving the token tables out (was 6.11); runtime 20.70 KB gz core-only; switch.ani 0.80 KB gz; first mount 15.6 ms compile + 8.4 ms instantiate, cached 0.77 ms per control, 28 controls all drawn 393 ms after navigation start (evidence: bun scripts/sizes.ts; demo metrics, Chromium)
@@ -72,3 +74,4 @@ GPT-6.1-sol, xhigh, via T3 delegate_task (worktree, branch `comp/<group>`, PR, n
 - 2026-11-08 19:55 [claude]: PR #7 merged (9413be7, CI green); 5 agents delegated (groups above). Dream: Now rewritten (was pre-merge), linker gotcha corrected (packages/components no longer exists), old milestone-1 screenshots at docs/screenshots/*.png stay; per-component ones go in docs/screenshots/<id>/
 - 2026-11-08 20:10 [claude]: workflow adapted: scripts/contact-sheet.ts (one sheet.png per component: 6 themes, fallback, phone, frames); switch frames moved to docs/screenshots/switch/frames-*.png, milestone-1 top-level PNGs removed (superseded by the gallery); WORKLOG restructured (Agents table, Review protocol, Open decisions). Switch sheet reviewed: all themes and fallback correct; apparent 1 px frame offset is screenshot rounding (measured)
 - 2026-11-08 21:00 [claude]: reviewed PRs #9–#12 (descriptions, shared-file diff, sheets, full-size frames); fixes: PasswordField eye on Codicon geometry with blink (76/76 ranges e2e), slider frames cropped, Toggle growing circle; merged all four into integrate/components; static checks pass: 13 components, JS 8.34 KB, CSS 1.26 KB, runtime+bind 22.60 KB, app-UI 43.49 KB gz
+- 2026-11-08 21:40 [claude]: PR #9 merged. #13 (actions) reviewed and integrated into PR #14; findings F9/F10/F11 reconciled; CI on #14 failed at pack (TS2742 on Accordion/CollapsibleTrigger) → annotated; pack 73.4 KB from pin, smoke ok; full e2e 600 passed / 0 failed / 66 skipped (Chromium + Firefox); sizes: JS 9.58 KB, CSS 1.71 KB, runtime+bind 22.60 KB, app-UI 48.72 KB gz
