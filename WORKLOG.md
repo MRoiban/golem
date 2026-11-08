@@ -2,8 +2,8 @@
 
 ## Now
 Goal: first milestone (design doc, tokens, bridge, Switch + demo + e2e), then report to the owner.
-State: all code written, uncommitted. Unit tests 30 pass, typecheck clean; e2e 36/38 on the first full run (2 fixed since: the Firefox 404 message wording, and load-related timeouts); sizes within budget. docs/design.md, anima-findings.md and proposals.md are written. Screenshots spec exists (SHOTS=1).
-Next: confirm the full e2e run is green and look at the screenshots; commit the scaffold to main and push; put the rest on branch m1-switch and open a PR; merge when CI is green; report.
+State: milestone code complete on branch m1-switch. Unit tests 30 pass; typecheck clean; e2e 38 pass (Chromium + Firefox); 12 screenshots in docs/screenshots, all reviewed; sizes within budget (bun run sizes).
+Next: open the PR from m1-switch, merge when CI is green, then report to the owner (open questions are in docs/design.md §11).
 Don't: edit other repos; commit .anima/ or compiled .ani; add a licence; involve Harmony.
 
 ## Gotchas
@@ -19,6 +19,9 @@ Don't: edit other repos; commit .anima/ or compiled .ani; add a licence; involve
 - Onyx's Field `id` is not the wrapper div's id; select switches by data-testid or role. — e2e selector failure
 - Firefox reports a failed dynamic import as a console *warning*: "Loading failed for the module …". — e2e log
 
+- Grid and flex items stretch the `.golem-switch` wrapper, and the overlay fills the wrapper, so the wrapper must be `width/height: max-content` with `justify-self: start`. — screenshot showed stretched pills; e2e now asserts wrapper box == button box
+
 ## Log
 - 2026-11-08 09:36 [claude]: survey + scaffold → core-only Switch scene prototype compiles (3,972 B .ani) and renders the stretch correctly (evidence: scratchpad/s/sheet.png via `anima render --sheet 8`).
 - 2026-11-08 10:05 [claude]: tokens (Onyx parity + completeness, 27 tests), bridge, Switch, demo, e2e (38 tests, Chromium + Firefox), sizes script, docs → bridge 3.52 KB gz after moving the token tables out (was 6.11); runtime 20.70 KB gz core-only; switch.ani 0.80 KB gz; first mount 15.6 ms compile + 8.4 ms instantiate, cached 0.77 ms per control, 28 controls all drawn 393 ms after navigation start (evidence: bun scripts/sizes.ts; demo metrics, Chromium)
+- 2026-11-08 10:40 [claude]: e2e 38 pass / 14 skipped (screenshots spec without SHOTS) after the Firefox 404 wording fix and longer timeouts; fixed the grid-stretch bug found in the screenshots; final sizes: bridge 3.52, Switch 0.64, CSS 0.75 + 2.59 + 0.55, runtime 20.70, app-UI total 26.96 KB gz (evidence: e2e2.log, bun run sizes)
