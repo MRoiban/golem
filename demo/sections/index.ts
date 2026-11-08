@@ -2,7 +2,11 @@
 // ?c=<id>[,<id>…] shows only those sections (tests and screenshots use it).
 import type * as React from "react";
 import SwitchSection from "./switch";
+import SliderSection from "./slider";
+import PasswordFieldSection from "./password-field";
 
 export const SECTIONS: { id: string; Component: React.ComponentType }[] = [
   { id: "switch", Component: SwitchSection },
+  { id: "slider", Component: SliderSection },
+  { id: "password-field", Component: PasswordFieldSection },
 ];
