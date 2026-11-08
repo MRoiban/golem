@@ -16,7 +16,7 @@ scope for now; see "App shell: what to extract later".
 2. **Plain Onyx is the base, not an afterthought.** The Onyx control renders first, on every page
    and in every mode. Anima only takes over painting once it is ready, so "motion off", "Anima not
    installed", "runtime failed" and "still loading" all look the same: correct Onyx.
-3. **One token source.** Values are written once (`packages/tokens/src/source.ts`). Onyx's CSS,
+3. **One token source.** Values are written once (`packages/golem/src/tokens/source.ts`). Onyx's CSS,
    Anima's theme data and Glyphy's style targets are generated from it, and tests fail when any
    output lacks a token.
 4. **Abstractions come from real apps.** The app shell will be extracted from Typewriter and
@@ -54,22 +54,29 @@ anima-kit's measured lessons, and how Golem applies them:
 
 ## 3. Package layout
 
-A Bun workspace (Bun 1.4, React 19, TypeScript source exports, the `@bedrock/ui` convention):
+One package, `@mroiban/golem`, in a Bun workspace (Bun 1.4, React 19). In the repo it exports
+TypeScript source (the `@bedrock/ui` convention); `bun run pack` builds the release tarball with ESM,
+declarations, CSS, and the Anima runtime and scenes built from the pin.
 
 ```
-packages/
-  tokens/        @golem/tokens: source.ts → generate.ts → dist/ (golem.css, anima-slots.css,
-                 golem-theme.animl, anima-themes.json, glyphy-style.toml); anima.ts (names only)
-  anima-react/   @golem/anima-react: GolemProvider, <AnimaControl>, runtime loader, model cache,
-                 mount scheduler, theme bridge, motion
-  components/    @golem/components: Switch (+ scenes/switch.animl), styles.css
+packages/golem/  @mroiban/golem
+  src/tokens/      ./tokens, ./tokens.css, ./anima-slots.css: source.ts → generate.ts → dist/tokens/
+                   (golem.css, anima-slots.css, golem-theme.animl, anima-themes.json,
+                   glyphy-style.toml); anima.ts (names only)
+  src/anima/       ./anima: GolemProvider, <AnimaControl>, runtime loader, model cache, mount
+                   scheduler, theme bridge, motion
+  src/components/  . (with GolemProvider, useGolem, configureAnima) and ./styles.css: Switch
+  scenes/          switch.animl; compiled into the tarball's runtime/scenes/
 demo/            the demo page (Bun.serve + HTML import); also the Playwright target
 e2e/             Playwright tests (Chromium, Firefox)
-scripts/         build-anima.ts (runtime + scenes from an Anima checkout), sizes.ts
+scripts/         build-anima.ts (runtime + scenes from an Anima checkout), sizes.ts,
+                 pack.ts (release tarball), smoke-pack.ts (installs the tarball in a fresh project)
 docs/            design.md, anima-findings.md, proposals.md, screenshots/
 ```
 
-Dependency direction: `components → anima-react → tokens/anima`; `components → @mroiban/onyx`.
+One package rather than three: consumers install one tarball and one version, the subpaths keep
+imports as narrow as separate packages would, and the internal folders keep the layering.
+Dependency direction: `components → anima → tokens/anima`; `components → @mroiban/onyx`.
 Nothing in Golem imports Anima at build time.
 
 The demo is a plain page rather than a pebble. A pebble needs the `bedrock` link dependency and a
@@ -162,7 +169,7 @@ docs for this milestone.
   handle for triggers). *Avoided*: per-component spring configuration. Durations and easings come
   from tokens (100 / 160 / 240 ms, Onyx easings) inside the scene.
 
-## 5. The Anima bridge (`@golem/anima-react`)
+## 5. The Anima bridge (`@mroiban/golem/anima`)
 
 ### 5.1 Runtime loading
 
@@ -288,8 +295,8 @@ What "no code changes" needs, and where each part lives:
 | Golem components work without a `GolemProvider` (motion follows `prefers-reduced-motion`; colours follow the page CSS) | Golem `useGolem()` | Done, e2e `?provider=off` |
 | The runtime is found without app code: `<meta name="golem-anima-runtime">` and `<meta name="golem-anima-scenes">` | Golem `runtime.ts` | Done, e2e |
 | `@bedrock/ui` exports Golem's `Switch` (and later components) in place of Onyx's, same props | `@bedrock/ui` `src/index.ts` | Proposal |
-| `@bedrock/ui/styles.css` appends `golem.css`, `anima-slots.css` and `@golem/components/styles.css` | `@bedrock/ui` `scripts/build-css.ts` | Proposal |
-| Bedrock serves the Anima runtime and Golem's compiled scenes, and injects the two meta tags into every pebble page | Bedrock dev server and deploy | Proposal; depends on how Anima is consumed (§11) |
+| `@bedrock/ui/styles.css` appends `golem.css`, `anima-slots.css` and `@mroiban/golem/styles.css` | `@bedrock/ui` `scripts/build-css.ts` | Proposal |
+| Bedrock serves the Anima runtime and Golem's compiled scenes, and injects the two meta tags into every pebble page | Bedrock dev server and deploy | Proposal; the files ship in Golem's tarball (`runtime/`) |
 
 Golem's CSS already layers on top of `@bedrock/ui/styles.css` without changes (the `golem.tokens`
 and `golem.components` layers come after `onyx.*`), so the stylesheet change is an append. The
@@ -324,9 +331,9 @@ budget exits non-zero). Numbers at Anima `05f37885`:
 
 | What | min+gz | Budget |
 | --- | ---: | ---: |
-| `@golem/anima-react` (JS) | 3.68 KB | 4 KB |
-| `@golem/components` Switch (JS) | 0.64 KB | 2 KB |
-| `@golem/components` styles.css | 0.75 KB | 1 KB |
+| `@mroiban/golem/anima` (bridge, JS) | 3.68 KB | 4 KB |
+| `@mroiban/golem` (Switch + bridge, JS) | 3.90 KB | 6 KB |
+| `@mroiban/golem/styles.css` | 0.75 KB | 1 KB |
 | `golem.css` (6 themes; replaces Onyx's token blocks when used) | 2.73 KB | 6 KB |
 | `anima-slots.css` | 0.56 KB | 1 KB |
 | `switch.ani` | 0.80 KB | Anima gate: 64 KB per scene |
@@ -346,7 +353,7 @@ Observed now, to extract once both apps have settled (not designed here):
 - **Appearance and theme application**: Typewriter `appearance.ts` (persisted theme, editor font size,
   cross-window sync, applies Onyx variables on `<html>`, `theme-color` meta). Babel
   `services/theme.ts`, `themes.ts`, `onyx-theme.ts`, `flexoki.ts`. These should collapse onto
-  `@golem/tokens` (a Flexoki workbench theme in the source) plus a small `useAppearance`.
+  `@mroiban/golem/tokens` (a Flexoki workbench theme in the source) plus a small `useAppearance`.
 - **Commands, keybindings and palette**: babel-ui `services/commands.ts`, `keybindings.ts` (chord
   timeout, text-input reservations), `palette.ts` with a fuzzy matcher, `context.ts` (`when`
   clauses), `menus.ts`. Typewriter has a smaller `Shortcuts.tsx`. Extract Babel's model once
@@ -370,9 +377,10 @@ Decided (2026-11-08):
   Flexoki palette and its UI roles. Rose stays as a demonstration.
 - **Harmony and derived dark modes**: out of scope; dark themes are authored.
 - **Anima is public** (MIT). Golem pins a commit and CI builds and tests against it (§8).
+- **Package**: one `@mroiban/golem` with subpaths, shipped as a GitHub release tarball like Onyx
+  (never npm). The tarball carries the Anima runtime and compiled scenes built from the pin (§3).
 
 Open:
 
-1. **Package scope and publishing**: undecided. `@golem/*` stays a private workspace name and
-   nothing is published. It needs deciding before `@bedrock/ui` can depend on Golem other than by
-   path or git URL.
+1. **Cutting the first release.** CI attaches the tarball to a GitHub release when a `v*` tag
+   matching `packages/golem/package.json` (0.1.0) is pushed. No tag has been pushed yet.

@@ -5,8 +5,9 @@ node_modules/
 /anima/
 packages/components/scenes/dist/
 demo/public/vendor/
-# Generated token outputs are rebuilt from packages/tokens/src (bun run build:tokens).
-packages/tokens/dist/
+# Generated token outputs are rebuilt from packages/golem/src/tokens (bun run build:tokens). release/ is bun run pack output.
+packages/golem/dist/
 test-results/
 playwright-report/
 .cache/
+/release/

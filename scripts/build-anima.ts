@@ -10,7 +10,7 @@ import { execFileSync } from "node:child_process";
 import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { basename, join, resolve } from "node:path";
 import { gzipSync } from "node:zlib";
-import { animaThemeLibrary } from "../packages/tokens/src/generate";
+import { animaThemeLibrary } from "../packages/golem/src/tokens/generate";
 
 const root = resolve(import.meta.dir, "..");
 export const ANIMA = resolve(process.env.ANIMA_DIR ?? join(root, "..", "anima"));
@@ -75,7 +75,7 @@ writeFileSync(entry, ["index", ...modules].map((m) => `import ${JSON.stringify(j
 const code = execFileSync("node", ["--input-type=module", "-e",
   `const { bundle } = await import(${JSON.stringify(join(ANIMA, "tools/browser-build.ts"))});
    process.stdout.write(await bundle(${JSON.stringify(entry)}));`], { encoding: "utf8", cwd: ANIMA, maxBuffer: 1 << 26 });
-const header = `// Anima runtime ${commit} (core + web${modules.length ? " + " + modules.join(", ") : ""}), built by golem/scripts/build-anima.ts. Not for redistribution.\n`;
+const header = `// Anima runtime ${commit} (core + web${modules.length ? " + " + modules.join(", ") : ""}), built by golem/scripts/build-anima.ts. Anima is MIT licensed (github.com/MRoiban/anima).\n`;
 writeFileSync(join(out, "anima.js"), header + code);
 const info = { anima: { dir: ANIMA, commit }, runtime: { modules, bytes: code.length, gz: gz(code) }, scenes };
 writeFileSync(join(out, "build.json"), JSON.stringify(info, null, 2) + "\n");

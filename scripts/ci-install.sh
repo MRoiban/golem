@@ -20,5 +20,6 @@ WANT=$(grep -F "\"@mroiban/onyx@$URL\"" bun.lock | grep -o 'sha512-[A-Za-z0-9+/=
 GOT="sha512-$(openssl dgst -sha512 -binary "$TGZ" | base64 -w0)"
 if [ "$WANT" != "$GOT" ]; then echo "Onyx tarball hash mismatch: want $WANT, got $GOT"; exit 1; fi
 echo "Hash matches bun.lock ($WANT)"
+[ -n "${GITHUB_ENV:-}" ] && echo "ONYX_TGZ=$TGZ" >> "$GITHUB_ENV"  # for scripts/smoke-pack.ts
 grep -rl --include=package.json --exclude-dir=node_modules --exclude-dir=anima "$URL" . | xargs sed -i "s#$URL#file:$TGZ#"
 bun install

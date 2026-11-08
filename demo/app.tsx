@@ -1,13 +1,13 @@
 import "@mroiban/onyx/styles.css";
-import "@golem/tokens/golem.css";
-import "@golem/tokens/anima-slots.css";
-import "@golem/components/styles.css";
+import "@mroiban/golem/tokens.css";
+import "@mroiban/golem/anima-slots.css";
+import "@mroiban/golem/styles.css";
 import * as React from "react";
 import { createRoot } from "react-dom/client";
 import { Card, CardBody, CardDescription, CardHeader, CardTitle, Field, FieldDescription, Label, Switch as OnyxSwitch, ToggleGroup, ToggleGroupItem } from "@mroiban/onyx";
-import { GolemProvider, modelCacheSize, mountMetrics, onRuntimeState, runtimeState, useGolem, type MotionSetting } from "@golem/anima-react";
-import { themes } from "@golem/tokens";
-import { Switch } from "@golem/components";
+import { GolemProvider, modelCacheSize, mountMetrics, onRuntimeState, runtimeState, useGolem, type MotionSetting } from "@mroiban/golem/anima";
+import { themes } from "@mroiban/golem/tokens";
+import { Switch } from "@mroiban/golem";
 
 // URL parameters (tests use them): ?theme=light|dark|rose|rose-dark  ?motion=system|anima|css|reduced
 // ?anima=off (no Anima runtime: the fallback)  ?many=N (N extra switches, for mount timing)

@@ -13,5 +13,5 @@
     "allowImportingTsExtensions": true,
     "resolveJsonModule": true
   },
-  "include": ["packages/*/src", "packages/*/test", "packages/*/scripts", "demo", "e2e", "scripts", "playwright.config.ts"]
+  "include": ["packages/golem/src", "packages/golem/test", "packages/golem/scripts", "demo", "e2e", "scripts", "playwright.config.ts"]
 }
