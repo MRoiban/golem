@@ -1,5 +1,5 @@
-<!-- Onyx's existing chevron: 16-unit grid, scaled to its inherited icon box (12 px for
-     compact Collapsible, 14 px for Accordion). DOM aria-expanded drives open. Core only.
+<!-- Onyx's existing chevron: 16-unit grid, scaled to its native icon box (Onyx text-xs for
+     Collapsible, fixed 16 px for Accordion). DOM aria-expanded drives open. Core only.
      Right (-90 degrees) to down (0), 200 ms with a restrained emphasis overshoot. -->
 <anima version="0.1" name="golem-collapsible" grid="16" viewBox="0 0 16 16">
   <color name="desc" value="#9f9d96"/>
