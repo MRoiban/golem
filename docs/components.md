@@ -28,10 +28,10 @@ Golem does not wrap it; use Onyx's directly).
 | SectionSelect | Selected pill travels between sections | indicators | done |
 | Slider | Thumb squashes while dragged; range fill follows | ranges | planned |
 | PasswordField | Eye opens/closes when visibility toggles | ranges | planned |
-| Collapsible | Chevron rotates with overshoot | disclosure | planned |
-| Accordion | Chevron per item rotates with overshoot | disclosure | planned |
-| Toast | Tone icon draws in (check, cross, info, warning) | disclosure | planned |
-| Alert | Tone icon draws in once on mount | disclosure | planned |
+| Collapsible | Chevron rotates with overshoot | disclosure | done |
+| Accordion | Chevron per item rotates with overshoot | disclosure | done |
+| Toast | Tone icon draws in (check, cross, info, warning) | disclosure | done |
+| Alert | Tone icon draws in once on mount | disclosure | done |
 
 `none`: layout and text (Layout, Text, Card, Panel, Separator, Kbd, Link, Breadcrumb, Table, Tree,
 List, VirtualList, ScrollArea, SplitView, ResizeHandle, Sidebar, StatusBar, Toolbar), overlays whose

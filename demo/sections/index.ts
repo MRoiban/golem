@@ -10,6 +10,10 @@ import ToggleGroupSection from "./toggle-group";
 import SectionSelectSection from "./section-select";
 import SliderSection from "./slider";
 import PasswordFieldSection from "./password-field";
+import CollapsibleSection from "./collapsible";
+import AccordionSection from "./accordion";
+import ToastSection from "./toast";
+import AlertSection from "./alert";
 
 export const SECTIONS: { id: string; Component: React.ComponentType }[] = [
   { id: "switch", Component: SwitchSection },
@@ -21,4 +25,8 @@ export const SECTIONS: { id: string; Component: React.ComponentType }[] = [
   { id: "section-select", Component: SectionSelectSection },
   { id: "slider", Component: SliderSection },
   { id: "password-field", Component: PasswordFieldSection },
+  { id: "collapsible", Component: CollapsibleSection },
+  { id: "accordion", Component: AccordionSection },
+  { id: "toast", Component: ToastSection },
+  { id: "alert", Component: AlertSection },
 ];

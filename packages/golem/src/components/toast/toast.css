@@ -1,0 +1,11 @@
+/* Paint inside the native 16 px Codicon: identical box and baseline, no extra flex item. */
+.golem-toast-viewport [data-slot='toast-icon'] > .codicon { position: relative; }
+.golem-toast-viewport [data-slot='toast-icon'] > .codicon > .golem-tone-icon {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.golem-toast-viewport [data-slot='toast-icon'] > .codicon:has(> [data-anima='ready'])::before { visibility: hidden; }
+/* The queue hides stacked background toast contents; ready parts must respect that. */
+.golem-toast-viewport [data-slot='toast'][data-background] .golem-tone-icon__motion { visibility: hidden; }

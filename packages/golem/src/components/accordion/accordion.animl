@@ -1,0 +1,13 @@
+<!-- Onyx's existing chevron: 16-unit grid, scaled to its native icon box (Onyx text-xs for
+     Collapsible, fixed 16 px for Accordion). DOM aria-expanded drives open. Core only.
+     Right (-90 degrees) to down (0), 200 ms with a restrained emphasis overshoot. -->
+<anima version="0.1" name="golem-accordion" grid="16" viewBox="0 0 16 16">
+  <color name="desc" value="#9f9d96"/>
+  <bool name="open" default="false"/>
+  <path id="chevron" d="M4.5 6.25L8 9.75L11.5 6.25" stroke="desc" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" pivot="8 8" rotate="-90"/>
+  <ease name="overshoot" curve="cubic(0.2, 0, 0.16, 1.16)"/>
+  <layer name="disclosure" initial="closed">
+    <state name="closed"><pose chevron.rotate="-90"/><on when="open" to="open" blend="0.2" ease="overshoot"/></state>
+    <state name="open"><pose chevron.rotate="0"/><on when="!open" to="closed" blend="0.2" ease="overshoot"/></state>
+  </layer>
+</anima>
