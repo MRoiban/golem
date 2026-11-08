@@ -1,0 +1,6 @@
+.golem-progress { width: 100%; min-width: 0; }
+.golem-progress > .onyx-progress { position: relative; }
+.golem-progress__motion { visibility: hidden; overflow: hidden; border-radius: inherit; }
+.golem-progress[data-anima='ready'] .golem-progress__motion { visibility: visible; }
+.golem-progress[data-anima='ready'] [data-slot='progress-indicator'] { visibility: hidden; }
+.golem-progress__motion { --anima-fg: var(--onyx-tone-neutral-fg); }

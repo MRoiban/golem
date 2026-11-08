@@ -2,9 +2,23 @@
    Each component's CSS lives next to it (components/<name>/<name>.css) and is imported here into
    the golem.components layer. The release flattens this file (scripts/pack.ts). */
 @layer onyx.base, onyx.components, golem.tokens, golem.components;
+@import "./collapsible/collapsible.css" layer(golem.components);
+@import "./accordion/accordion.css" layer(golem.components);
+@import "./toast/toast.css" layer(golem.components);
+@import "./alert/alert.css" layer(golem.components);
 @import "./switch/switch.css" layer(golem.components);
+@import "./meter/meter.css" layer(golem.components);
+@import "./progress/progress.css" layer(golem.components);
+@import "./spinner/spinner.css" layer(golem.components);
+@import "./button/button.css" layer(golem.components);
 @import "./slider/slider.css" layer(golem.components);
 @import "./password-field/password-field.css" layer(golem.components);
+@import "./checkbox/checkbox.css" layer(golem.components);
+@import "./radio-group/radio-group.css" layer(golem.components);
+@import "./toggle/toggle.css" layer(golem.components);
+@import "./tabs/tabs.css" layer(golem.components);
+@import "./toggle-group/toggle-group.css" layer(golem.components);
+@import "./section-select/section-select.css" layer(golem.components);
 
 @layer golem.components {
   .golem-anima > anima-icon {

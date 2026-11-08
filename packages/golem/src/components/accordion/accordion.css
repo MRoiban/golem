@@ -1,0 +1,4 @@
+[data-golem-part='accordion'] > [data-slot='accordion-chevron'] { position: relative; }
+[data-golem-part='accordion'][data-anima='ready'] > [data-slot='accordion-chevron'] { transform: none; }
+[data-golem-part='accordion'][data-anima='ready'] > [data-slot='accordion-chevron']::before { visibility: hidden; }
+[data-golem-part='accordion'][data-anima='ready'] > [data-slot='accordion-chevron'] { transition: none; }

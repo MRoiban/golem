@@ -11,22 +11,22 @@ Golem does not wrap it; use Onyx's directly).
 | Component | Motion part | Group | Status |
 | --- | --- | --- | --- |
 | Switch | Thumb stretches as it travels, squashes while pressed | choice | done |
-| Checkbox | Check stroke draws in; indeterminate dash morphs; box pops | choice | planned |
-| RadioGroup | Selected dot grows in with a small overshoot; old dot shrinks | choice | planned |
-| Toggle | Pressed state eases in, press squash | choice | planned |
-| Button | Press squash; `loading` morphs label space into a spinner; optional success check / error shake | actions | planned |
-| Spinner | Anima-drawn arc spinner (Onyx timing) | actions | planned |
-| Progress | Fill eases to value; indeterminate sweep | actions | planned |
-| Meter | Fill eases to value, tone colour follows thresholds | actions | planned |
-| Tabs | Selected indicator travels between tabs and stretches | indicators | planned |
-| ToggleGroup | Selected pill travels between items | indicators | planned |
-| SectionSelect | Selected pill travels between sections | indicators | planned |
+| Checkbox | Check stroke draws in; indeterminate dash morphs; box pops | choice | done |
+| RadioGroup | Selected dot grows in with a small overshoot; old dot shrinks | choice | done |
+| Toggle | Pressed fill grows from the centre, press squash | choice | done |
+| Button | Press squash; foreground loading arc beside label; optional drawn success check / error shake | actions | done |
+| Spinner | Anima-drawn arc spinner (Onyx timing) | actions | done |
+| Progress | Fill eases to value; indeterminate sweep | actions | done |
+| Meter | Fill eases to value, tone colour follows thresholds | actions | done |
+| Tabs | Selected indicator travels between tabs and stretches | indicators | done |
+| ToggleGroup | Selected pill travels between items (single selection; multiple keeps Onyx's painting) | indicators | done |
+| SectionSelect | The popup's highlight travels between options | indicators | done |
 | Slider | Thumb squashes while dragged; keyboard step pop; Onyx range fill follows | ranges | done |
-| PasswordField | Eye opens/closes when visibility toggles | ranges | done |
-| Collapsible | Chevron rotates with overshoot | disclosure | planned |
-| Accordion | Chevron per item rotates with overshoot | disclosure | planned |
-| Toast | Tone icon draws in (check, cross, info, warning) | disclosure | planned |
-| Alert | Tone icon draws in once on mount | disclosure | planned |
+| PasswordField | Codicon eye blinks while the slash draws in or out | ranges | done |
+| Collapsible | Chevron rotates with overshoot | disclosure | done |
+| Accordion | Chevron per item rotates with overshoot | disclosure | done |
+| Toast | Tone icon draws in (check, cross, info, warning) | disclosure | done |
+| Alert | Tone icon draws in once on mount | disclosure | done |
 
 `none`: layout and text (Layout, Text, Card, Panel, Separator, Kbd, Link, Breadcrumb, Table, Tree,
 List, VirtualList, ScrollArea, SplitView, ResizeHandle, Sidebar, StatusBar, Toolbar), overlays whose
@@ -51,7 +51,9 @@ Rules, all of them tested:
 1. **Onyx owns semantics.** Roles, `aria-*`, focus, keyboard, Field wiring, form reset and
    controlled/uncontrolled props are Onyx's, unchanged. Props are Onyx's props (`export type
    XProps = OnyxXProps`, plus at most a few Golem-only props, documented). Forward the ref to the
-   element Onyx forwards it to.
+   element Onyx forwards it to. Annotate exported `forwardRef` components wrapping Radix-based
+   Onyx parts (`React.ForwardRefExoticComponent<Props & React.RefAttributes<El>>`), or the
+   release's declaration emit fails with TS2742.
 2. **State flows one way, from the DOM.** Read state back from the attributes Onyx renders
    (`aria-checked`, `data-state`, `aria-selected`, `aria-valuenow`, `aria-busy`, …) with
    `useDomState` (`components/shared.ts`). Never re-implement Onyx's state logic.
@@ -142,6 +144,7 @@ bun run build:tokens
 ANIMA_DIR=~/.cache/golem/anima-8ffd7148 bun run build:anima   # a clean clone at the pinned commit
 node ~/.cache/golem/anima-8ffd7148/packages/cli/src/main.ts validate <file.animl>
 bun run typecheck && bun run test && bun run sizes
+bun run pack && bun run smoke   # declaration emit + a fresh consumer install; typecheck alone misses TS2742
 GOLEM_E2E_PORT=<your port> bunx playwright test e2e/<name>.spec.ts
 ```
 

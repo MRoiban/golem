@@ -1,0 +1,34 @@
+<!-- Button's 10px loading slot or 14px result slot; currentColor is Onyx's actual foreground.
+     Press squash acts on the real box in CSS (so text and focus geometry move together).
+     Flat glyph caps avoid trim rounding dots at path endpoints (F9).
+     Result persists; reveal fires only after ready and on a result change. Core only. -->
+<anima version="0.1" name="golem-button" grid="14" viewBox="0 0 14 14">
+  <bool name="busy" default="false"/><bool name="success" default="false"/><bool name="error" default="false"/><trigger name="reveal"/>
+  <group id="spinner" x="7" y="7" opacity="0">
+    <circle id="track" cx="0" cy="0" r="6" fill="#00000000" stroke="currentColor" stroke-width="1.5" opacity="0.25"/>
+    <group id="turn"><path id="arc" d="M0 -6A6 6 0 0 1 6 0" fill="#00000000" stroke="currentColor" stroke-width="1.5"/></group>
+  </group>
+  <group id="drawing">
+    <path id="check" d="M2 7L5.5 10.5L12 3.5" fill="#00000000" stroke="currentColor" stroke-width="1.7" stroke-linecap="butt" stroke-linejoin="round" opacity="0"/>
+    <path id="cross" d="M3 3L11 11M11 3L3 11" fill="#00000000" stroke="currentColor" stroke-width="1.7" stroke-linecap="butt" opacity="0"/>
+  </group>
+  <ease name="emph" curve="cubic(0.2, 0, 0.16, 1)"/>
+  <timeline name="spin" duration="0.7" loop="loop"><track target="turn.rotate">0 0; 0.7 360</track></timeline>
+  <layer name="spin" initial="idle"><state name="idle"><on when="busy" to="go"/></state><state name="go" play="spin"><on when="!busy" to="idle"/></state></layer>
+  <layer name="busy" initial="off"><state name="off"><on when="busy" to="on"/></state><state name="on"><pose spinner.opacity="1"/><on when="!busy" to="off"/></state></layer>
+  <layer name="success" initial="off"><state name="off"><on when="success" to="on"/></state><state name="on"><pose check.opacity="1"/><on when="!success" to="off"/></state></layer>
+  <layer name="error" initial="off"><state name="off"><on when="error" to="on"/></state><state name="on"><pose cross.opacity="1"/><on when="!error" to="off"/></state></layer>
+  <timeline name="draw" duration="0.24" reducedMotion="end">
+    <track target="check.trimEnd">0 0 emph; 0.24 1</track>
+    <track target="cross.trimEnd">0 0 emph; 0.16 1</track>
+    <track target="drawing.x">0 0; 0.04 -1.5; 0.08 1.5; 0.12 -1; 0.16 1; 0.24 0</track>
+  </timeline>
+  <timeline name="check-in" duration="0.24" reducedMotion="end"><track target="check.trimEnd">0 0 emph; 0.24 1</track></timeline>
+  <layer name="result" initial="idle">
+    <state name="idle"><on when="reveal &amp;&amp; error" to="shake"/><on when="reveal &amp;&amp; success" to="draw"/></state>
+    <state name="shake" play="draw"><on when="reveal &amp;&amp; error" to="shake-again"/><on when="reveal &amp;&amp; success" to="draw"/><on when="@end" to="idle"/></state>
+    <state name="shake-again" play="draw"><on when="reveal &amp;&amp; error" to="shake"/><on when="reveal &amp;&amp; success" to="draw"/><on when="@end" to="idle"/></state>
+    <state name="draw" play="check-in"><on when="reveal &amp;&amp; error" to="shake"/><on when="reveal &amp;&amp; success" to="draw-again"/><on when="@end" to="idle"/></state>
+    <state name="draw-again" play="check-in"><on when="reveal &amp;&amp; error" to="shake"/><on when="reveal &amp;&amp; success" to="draw"/><on when="@end" to="idle"/></state>
+  </layer>
+</anima>

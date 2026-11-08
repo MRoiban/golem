@@ -1,0 +1,14 @@
+.golem-button { position: relative; display: inline-flex; width: max-content; height: max-content; max-width: 100%; justify-self: start; vertical-align: middle; }
+.golem-button[data-anima='ready'] { transition: transform var(--onyx-duration-fast) var(--onyx-ease-standard); }
+.golem-button[data-anima='ready'][data-down] { transform: scale(.97); }
+.golem-button .golem-button__motion { visibility: hidden; width: var(--golem-button-glyph-size, 14px); height: var(--golem-button-glyph-size, 14px); inset: auto; left: var(--golem-button-glyph-x, 50%); top: 50%; transform: translate(-50%, -50%); }
+.golem-button[data-anima='ready'][data-loading] .golem-button__motion,
+.golem-button[data-anima='ready'][data-result] .golem-button__motion { visibility: visible; }
+.golem-button[data-anima='ready'] [data-slot='button-spinner'] { visibility: hidden; }
+/* Retain the name and layout of the original label, but reserve its area for the result. */
+.golem-button[data-anima='ready'][data-result] [data-slot='button-label'] { opacity: 0; }
+.golem-button[data-result] .golem-button__motion { left: 50%; width: 14px; height: 14px; }
+.golem-button__announcement { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
+/* display:contents has no paint box to fade. Restore a box for native-size result labels;
+   opacity keeps their text in the accessible name, unlike visibility:hidden. */
+.golem-button[data-anima='ready'][data-result] [data-size='native'] > [data-slot='button-label'] { display: inline-flex; }

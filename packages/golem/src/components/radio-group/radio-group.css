@@ -1,0 +1,17 @@
+/* A contents wrapper preserves Onyx's grid/card geometry. The drawing portals into Onyx's own
+   control slot: it stays centred at any label length or card padding. */
+.golem-radio-group-item { display: contents; }
+.golem-radio-group-item [data-slot='radio-group-control'] { position: relative; }
+.golem-radio-group-item .golem-radio-group-item__motion {
+  inset: auto;
+  left: 50%;
+  top: 50%;
+  width: var(--onyx-radio-size, var(--onyx-space-4));
+  height: var(--onyx-radio-size, var(--onyx-space-4));
+  transform: translate(-50%, -50%);
+}
+.golem-radio-group-item[data-anima='ready'] [data-slot='radio-group-indicator'] { visibility: hidden; }
+
+.golem-radio-group-item[data-anima='ready'] [data-slot='radio-group-control'] {
+  background: var(--onyx-control-input-bg);
+}

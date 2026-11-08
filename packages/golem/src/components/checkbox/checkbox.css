@@ -1,0 +1,18 @@
+.golem-checkbox {
+  position: relative;
+  display: inline-flex;
+  flex-shrink: 0;
+  width: max-content;
+  height: max-content;
+  justify-self: start;
+  align-self: center;
+  vertical-align: middle;
+}
+/* Onyx's checkbox utility classes are unlayered; these paint-only overrides must beat them.
+   The input's focus ring, layout, invalid state and native hit target remain intact. */
+.golem-checkbox[data-anima='ready'] > .onyx-checkbox {
+  background: transparent !important;
+  border-color: transparent !important;
+}
+.golem-checkbox[data-anima='ready'] > .onyx-checkbox::after { opacity: 0 !important; }
+.golem-checkbox[data-disabled] > .golem-checkbox__motion { opacity: 0.5; }

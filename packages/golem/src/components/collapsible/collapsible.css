@@ -1,0 +1,13 @@
+/* Keep Onyx's inherited icon dimensions, spacing, focus ring and content animation. */
+[data-golem-part='collapsible'] > [data-slot='collapsible-chevron'] {
+  position: relative;
+}
+[data-golem-part='collapsible'][data-anima='ready'] > [data-slot='collapsible-chevron'] {
+  transform: none;
+}
+[data-golem-part='collapsible'][data-anima='ready'] > [data-slot='collapsible-chevron']::before {
+  visibility: hidden;
+}
+.golem-chevron__motion { visibility: hidden; }
+[data-anima='ready'] > [data-slot$='-chevron'] > .golem-chevron__motion { visibility: visible; }
+[data-golem-part='collapsible'][data-anima='ready'] > [data-slot='collapsible-chevron'] { transition: none; }

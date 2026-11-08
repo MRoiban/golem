@@ -1,0 +1,79 @@
+<!-- Golem section-select: measured Onyx geometry in px, normalized to the list's box.
+     bind is required: core has no numeric-input geometry expressions (SPEC bind).
+     Nested reciprocal transforms let core timelines animate measured travel without JS tweening.
+     Travel is 200ms, with a leading-edge stretch at 55ms and trailing catch-up at 200ms.
+     rx is core (unlike paint/corners). Editor tabs use border + panel; line tabs use focusRing.
+     Onyx alone owns focus and selection; only its active painting is replaced. -->
+<anima version="0.1" name="golem-section-select" grid="1000" viewBox="0 0 1000 1000" requires="bind">
+  <color name="selected" value="#343331"/>
+  <color name="panel" value="#1c1b1a"/>
+  <color name="border" value="#403e3c"/>
+  <color name="focusRing" value="#4385be"/>
+  <number name="listWidth" default="200"/><number name="listHeight" default="32"/>
+  <number name="startX" default="0"/><number name="startY" default="0"/>
+  <number name="dx" default="1"/><number name="dy" default="1"/>
+  <number name="width" default="60"/><number name="height" default="24"/>
+  <number name="radius" default="4"/><number name="border" default="0"/>
+  <number name="alpha" default="1"/>
+  <number name="direction" default="1"/>
+  <bool name="vertical" default="false"/><bool name="editor" default="false"/><bool name="present" default="true"/>
+  <trigger name="travel"/>
+  <group id="canvas">
+    <group id="origin">
+      <group id="xUnits"><group id="travelX"><group id="undoX">
+        <group id="yUnits"><group id="travelY"><group id="undoY">
+          <group id="axis"><group id="stretch">
+            <rect id="pill" x0="0" y0="0" width="60" height="24" rx="4" fill="selected"/>
+            <rect id="editorBorder" x0="0" y0="0" width="60" height="24" rx="4" fill="border"/>
+            <rect id="editorBase" x0="0" y0="0" width="60" height="18" fill="border"/>
+            <rect id="editorPanel" x0="0" y0="0" width="58" height="24" rx="3" fill="panel"/>
+            <rect id="editorFoot" x0="0" y0="0" width="58" height="18" fill="panel"/>
+            <rect id="line" x0="0" y0="0" width="60" height="2" fill="focusRing"/>
+          </group></group>
+        </group></group></group>
+      </group></group></group>
+    </group>
+  </group>
+  <bind target="canvas.scaleX" value="1000 / listWidth"/><bind target="canvas.scaleY" value="1000 / listHeight"/>
+  <bind target="canvas.opacity" value="present * alpha"/>
+  <bind target="origin.x" value="startX"/><bind target="origin.y" value="startY"/>
+  <bind target="xUnits.scaleX" value="dx"/><bind target="undoX.scaleX" value="1 / dx"/>
+  <bind target="yUnits.scaleY" value="dy"/><bind target="undoY.scaleY" value="1 / dy"/>
+
+  <bind target="pill.w" value="width"/><bind target="pill.h" value="height"/>
+  <bind target="pill.rx" value="radius"/>
+  <bind target="pill.opacity" value="not editor and border == 0"/>
+  <bind target="editorBorder.w" value="width"/><bind target="editorBorder.h" value="height"/>
+  <bind target="editorBorder.rx" value="radius"/><bind target="editorBorder.opacity" value="editor"/>
+  <bind target="editorBase.y" value="radius"/><bind target="editorBase.w" value="width"/>
+  <bind target="editorBase.h" value="height - radius"/><bind target="editorBase.opacity" value="editor"/>
+  <bind target="editorFoot.x" value="border"/><bind target="editorFoot.y" value="radius"/>
+  <bind target="editorFoot.w" value="width - 2 * border"/><bind target="editorFoot.h" value="height - radius"/>
+  <bind target="editorFoot.opacity" value="editor"/>
+  <bind target="editorPanel.x" value="border"/><bind target="editorPanel.y" value="border"/>
+  <bind target="editorPanel.w" value="width - 2 * border"/><bind target="editorPanel.h" value="height - border"/>
+  <bind target="editorPanel.rx" value="max(0, radius - border)"/><bind target="editorPanel.opacity" value="editor"/>
+  <bind target="line.w" value="width"/><bind target="line.h" value="height"/><bind target="line.opacity" value="not editor and border > 0"/>
+  <bind target="axis.scaleX" value="1 + (direction - 1) * (not vertical)"/>
+  <bind target="axis.x" value="(1 - direction) * 0.5 * width * (not vertical)"/>
+  <bind target="axis.scaleY" value="1 + (direction - 1) * vertical"/>
+  <bind target="axis.y" value="(1 - direction) * 0.5 * height * vertical"/>
+  <ease name="std" curve="cubic(0.2, 0, 0, 1)"/>
+  <timeline name="journeyX" duration="0.2" reducedMotion="end">
+    <track target="travelX.x">0 -1 std; 0.2 0</track>
+    <track target="travelY.y">0 -1 std; 0.2 0</track>
+    <track target="stretch.scaleX">0 1 std; 0.055 1.12 std; 0.2 1</track>
+  </timeline>
+  <timeline name="journeyY" duration="0.2" reducedMotion="end">
+    <track target="travelX.x">0 -1 std; 0.2 0</track>
+    <track target="travelY.y">0 -1 std; 0.2 0</track>
+    <track target="stretch.scaleY">0 1 std; 0.055 1.12 std; 0.2 1</track>
+  </timeline>
+  <layer name="motion" initial="rest">
+    <state name="rest"><on when="travel &amp;&amp; !vertical" to="h1"/><on when="travel &amp;&amp; vertical" to="v1"/></state>
+    <state name="h1" play="journeyX"><on when="travel &amp;&amp; !vertical" to="h2"/><on when="travel &amp;&amp; vertical" to="v1"/><on when="@end" to="rest"/></state>
+    <state name="h2" play="journeyX"><on when="travel &amp;&amp; !vertical" to="h1"/><on when="travel &amp;&amp; vertical" to="v1"/><on when="@end" to="rest"/></state>
+    <state name="v1" play="journeyY"><on when="travel &amp;&amp; !vertical" to="h1"/><on when="travel &amp;&amp; vertical" to="v2"/><on when="@end" to="rest"/></state>
+    <state name="v2" play="journeyY"><on when="travel &amp;&amp; !vertical" to="h1"/><on when="travel &amp;&amp; vertical" to="v1"/><on when="@end" to="rest"/></state>
+  </layer>
+</anima>
