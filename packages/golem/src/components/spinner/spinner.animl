@@ -1,0 +1,18 @@
+<!-- Onyx outer boxes xs=10, sm=12, md=14, lg=20; border xs=1.5, otherwise 2px.
+     Sizes read from Onyx's data-size. Normalized radii preserve the exact border weight.
+     .7s linear turn; currentColor inherits Onyx and caller styles. Core only. -->
+<anima version="0.1" name="golem-spinner" grid="14" viewBox="0 0 14 14">
+  <bool name="xs" default="false"/><bool name="sm" default="false"/><bool name="lg" default="false"/>
+  <circle id="track" cx="7" cy="7" r="6" fill="#00000000" stroke="currentColor" stroke-width="2" opacity="0.25"/>
+  <group id="turn" x="7" y="7">
+    <circle id="arc" cx="0" cy="0" r="6" fill="#00000000" stroke="currentColor" stroke-width="2" trimEnd="0.25" rotate="-90"/>
+  </group>
+  <timeline name="spin" duration="0.7" loop="loop"><track target="turn.rotate">0 0; 0.7 360</track></timeline>
+  <layer name="spin" initial="go"><state name="go" play="spin"/></layer>
+  <layer name="size" initial="md">
+    <state name="md"><pose track.r="6.0" arc.r="6.0" track.stroke.width="2" arc.stroke.width="2"/><on when="xs" to="xs"/><on when="sm" to="sm"/><on when="lg" to="lg"/></state>
+    <state name="xs"><pose track.r="5.95" arc.r="5.95" track.stroke.width="2.1" arc.stroke.width="2.1"/><on when="sm" to="sm"/><on when="lg" to="lg"/><on when="!xs &amp;&amp; !sm &amp;&amp; !lg" to="md"/></state>
+    <state name="sm"><pose track.r="5.833333333333333" arc.r="5.833333333333333" track.stroke.width="2.3333333333333335" arc.stroke.width="2.3333333333333335"/><on when="xs" to="xs"/><on when="lg" to="lg"/><on when="!xs &amp;&amp; !sm &amp;&amp; !lg" to="md"/></state>
+    <state name="lg"><pose track.r="6.3" arc.r="6.3" track.stroke.width="1.4" arc.stroke.width="1.4"/><on when="xs" to="xs"/><on when="sm" to="sm"/><on when="!xs &amp;&amp; !sm &amp;&amp; !lg" to="md"/></state>
+  </layer>
+</anima>

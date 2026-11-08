@@ -1,0 +1,45 @@
+<!-- Onyx's 5.25px compact track is retained, including clipping, radius and header.
+     requires bind: numeric DOM-derived input controls the fill's scaleX continuously.
+     Bind has no easing operator (F9); the wrapper eases its drawing input for 240ms with Onyx emphasis.
+     Tone shapes cross-fade for 160ms: colour slots cannot animate (F4). -->
+<anima version="0.1" name="golem-progress" grid="100" viewBox="0 0 100 5.25" requires="bind">
+  <color name="fg" value="#cecdc3"/>
+  <color name="infoFg" value="#66a0c8"/><color name="successFg" value="#879a39"/>
+  <color name="warningFg" value="#d0a215"/><color name="dangerFg" value="#e8705f"/>
+  <number name="level" default="0" min="0" max="1"/>
+  <bool name="indeterminate" default="false"/>
+  <bool name="info" default="false"/>
+  <bool name="success" default="false"/>
+  <bool name="warning" default="false"/>
+  <bool name="danger" default="false"/>
+  <group id="fill">
+    <path id="neutralfill" d="M0 0H100V5.25H0Z" fill="fg" opacity="1"/>
+    <path id="infofill" d="M0 0H100V5.25H0Z" fill="infoFg" opacity="0"/>
+    <path id="successfill" d="M0 0H100V5.25H0Z" fill="successFg" opacity="0"/>
+    <path id="warningfill" d="M0 0H100V5.25H0Z" fill="warningFg" opacity="0"/>
+    <path id="dangerfill" d="M0 0H100V5.25H0Z" fill="dangerFg" opacity="0"/>
+  </group>
+  <bind target="fill.scaleX" value="level"/>
+  <group id="sweep" x="-30" opacity="0">
+    <path id="neutralsweep" d="M0 0H30V5.25H0Z" fill="fg" opacity="1"/>
+    <path id="infosweep" d="M0 0H30V5.25H0Z" fill="infoFg" opacity="0"/>
+    <path id="successsweep" d="M0 0H30V5.25H0Z" fill="successFg" opacity="0"/>
+    <path id="warningsweep" d="M0 0H30V5.25H0Z" fill="warningFg" opacity="0"/>
+    <path id="dangersweep" d="M0 0H30V5.25H0Z" fill="dangerFg" opacity="0"/>
+  </group>
+  <ease name="emph" curve="cubic(0.2, 0, 0.16, 1)"/>
+  <ease name="std" curve="cubic(0.2, 0, 0, 1)"/>
+  <timeline name="sweep" duration="1.12" loop="loop"><track target="sweep.x">0 -30 std; 1.12 120</track></timeline>
+  <layer name="mode" initial="value">
+    <state name="value"><on when="indeterminate" to="sweep"/></state>
+    <state name="sweep"><pose fill.opacity="0" sweep.opacity="1"/><on when="not indeterminate" to="value"/></state>
+  </layer>
+  <layer name="travel" initial="idle"><state name="idle"><on when="indeterminate" to="go"/></state><state name="go" play="sweep"><on when="not indeterminate" to="idle"/></state></layer>
+  <layer name="tone" initial="neutral">
+    <state name="neutral"><pose neutralfill.opacity="1" neutralsweep.opacity="1" infofill.opacity="0" infosweep.opacity="0" successfill.opacity="0" successsweep.opacity="0" warningfill.opacity="0" warningsweep.opacity="0" dangerfill.opacity="0" dangersweep.opacity="0"/><on when="info" to="info" blend="0.16" ease="std"/><on when="success" to="success" blend="0.16" ease="std"/><on when="warning" to="warning" blend="0.16" ease="std"/><on when="danger" to="danger" blend="0.16" ease="std"/></state>
+    <state name="info"><pose neutralfill.opacity="0" neutralsweep.opacity="0" infofill.opacity="1" infosweep.opacity="1" successfill.opacity="0" successsweep.opacity="0" warningfill.opacity="0" warningsweep.opacity="0" dangerfill.opacity="0" dangersweep.opacity="0"/><on when="not info and not success and not warning and not danger" to="neutral" blend="0.16" ease="std"/><on when="success" to="success" blend="0.16" ease="std"/><on when="warning" to="warning" blend="0.16" ease="std"/><on when="danger" to="danger" blend="0.16" ease="std"/></state>
+    <state name="success"><pose neutralfill.opacity="0" neutralsweep.opacity="0" infofill.opacity="0" infosweep.opacity="0" successfill.opacity="1" successsweep.opacity="1" warningfill.opacity="0" warningsweep.opacity="0" dangerfill.opacity="0" dangersweep.opacity="0"/><on when="not info and not success and not warning and not danger" to="neutral" blend="0.16" ease="std"/><on when="info" to="info" blend="0.16" ease="std"/><on when="warning" to="warning" blend="0.16" ease="std"/><on when="danger" to="danger" blend="0.16" ease="std"/></state>
+    <state name="warning"><pose neutralfill.opacity="0" neutralsweep.opacity="0" infofill.opacity="0" infosweep.opacity="0" successfill.opacity="0" successsweep.opacity="0" warningfill.opacity="1" warningsweep.opacity="1" dangerfill.opacity="0" dangersweep.opacity="0"/><on when="not info and not success and not warning and not danger" to="neutral" blend="0.16" ease="std"/><on when="info" to="info" blend="0.16" ease="std"/><on when="success" to="success" blend="0.16" ease="std"/><on when="danger" to="danger" blend="0.16" ease="std"/></state>
+    <state name="danger"><pose neutralfill.opacity="0" neutralsweep.opacity="0" infofill.opacity="0" infosweep.opacity="0" successfill.opacity="0" successsweep.opacity="0" warningfill.opacity="0" warningsweep.opacity="0" dangerfill.opacity="1" dangersweep.opacity="1"/><on when="not info and not success and not warning and not danger" to="neutral" blend="0.16" ease="std"/><on when="info" to="info" blend="0.16" ease="std"/><on when="success" to="success" blend="0.16" ease="std"/><on when="warning" to="warning" blend="0.16" ease="std"/></state>
+  </layer>
+</anima>

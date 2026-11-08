@@ -1,0 +1,7 @@
+.golem-spinner { display: inline-flex; width: max-content; height: max-content; vertical-align: middle; justify-self: start; }
+.golem-spinner > .onyx-spinner { position: relative; }
+/* Keep the border in layout: it is part of Onyx's declared outer size. */
+.golem-spinner[data-anima='ready'] > .onyx-spinner { border-color: transparent; animation: none; }
+.golem-spinner .golem-spinner__motion { inset: calc(-1 * var(--onyx-spinner-width, 2px)); visibility: hidden; }
+.golem-spinner > [data-size='xs'] > .golem-spinner__motion { inset: calc(-1 * var(--onyx-spinner-width-xs, 1.5px)); }
+.golem-spinner[data-anima='ready'] .golem-spinner__motion { visibility: visible; }

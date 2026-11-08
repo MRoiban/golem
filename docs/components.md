@@ -14,10 +14,10 @@ Golem does not wrap it; use Onyx's directly).
 | Checkbox | Check stroke draws in; indeterminate dash morphs; box pops | choice | planned |
 | RadioGroup | Selected dot grows in with a small overshoot; old dot shrinks | choice | planned |
 | Toggle | Pressed state eases in, press squash | choice | planned |
-| Button | Press squash; `loading` morphs label space into a spinner; optional success check / error shake | actions | planned |
-| Spinner | Anima-drawn arc spinner (Onyx timing) | actions | planned |
-| Progress | Fill eases to value; indeterminate sweep | actions | planned |
-| Meter | Fill eases to value, tone colour follows thresholds | actions | planned |
+| Button | Press squash; foreground loading arc beside label; optional drawn success check / error shake | actions | done |
+| Spinner | Anima-drawn arc spinner (Onyx timing) | actions | done |
+| Progress | Fill eases to value; indeterminate sweep | actions | done |
+| Meter | Fill eases to value, tone colour follows thresholds | actions | done |
 | Tabs | Selected indicator travels between tabs and stretches | indicators | planned |
 | ToggleGroup | Selected pill travels between items | indicators | planned |
 | SectionSelect | Selected pill travels between sections | indicators | planned |
