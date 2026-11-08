@@ -1,21 +1,20 @@
 # Work log
 
 ## Now
-Goal (owner 2026-11-08): every component in docs/components.md's catalogue, each milestone validated with screenshots and state tests, then proven to the owner.
-State: PR #9 merged. PR #14 (integrate/components) = main + #10 choice, #11 indicators, #12 disclosure, #13 actions + review fixes: all 17 catalogue components; local: 600 e2e passed / 0 failed, typecheck, 36 unit, sizes, pack + smoke ok. All 5 agents done.
-Next: review each agent PR with the protocol below as it arrives; merge one at a time; then the full suite + gallery + sheets on main, and a proof page for the owner (an artifact: per component its sheet, test counts per browser, size line).
+Goal (owner 2026-11-08): every component in docs/components.md's catalogue, validated with screenshots and state tests, proven to the owner. Done: all 17 merged (PRs #9–#14); CI on main 844f6dc: 600 passed / 0 failed, pack 73.4 KB + smoke ok. Proof page: https://claude.ai/artifact/KQ5iRrXWqpe353iGeEoNzE (private; republish from the session scratchpad file, or pass the URL).
+Next (owner): tag v0.1.0 (publishes a GitHub release) — waiting for a yes. Follow-up: move Progress/Meter fill easing from the JS interpolation into Anima (Tabs' reciprocal-transform technique, F10).
 Don't: commit .anima/, release/ or .cache/; edit Anima/Onyx/@bedrock/ui; involve Harmony; push a v* tag without the owner; let agents merge.
 
 ## Agents
-GPT-6.1-sol, xhigh, via T3 delegate_task (worktree, branch `comp/<group>`, PR, no merge). Briefs: session scratchpad briefs/<group>.md (= docs/components.md + setup + rules + done). Their notes: worklog/<group>.md on their branch. A completion wakes me; never poll.
+All 5 finished. GPT-6.1-sol, xhigh, via T3 delegate_task (worktree, branch `comp/<group>`, PR, no merge). Briefs: session scratchpad briefs/<group>.md (= docs/components.md + setup + rules + done). Their notes: worklog/<group>.md on their branch. A completion wakes me; never poll.
 
 | Group | Components | Port | PR | Status |
 | --- | --- | --- | --- | --- |
-| choice | Checkbox, RadioGroup, Toggle | 4641 | #10 | reviewed; Toggle fill → growing circle (square corners mid-growth) |
-| actions | Button, Spinner, Progress, Meter | 4642 | #13 | reviewed; finding renumbered F11; spinner frames re-shot at 8×; follow-up: Progress/Meter fill eases by a 240 ms JS interpolation (React re-renders), Tabs-style reciprocal transforms could move it into Anima |
-| indicators | Tabs, ToggleGroup, SectionSelect | 4643 | #11 | reviewed; its finding renumbered F10 |
-| ranges | Slider, PasswordField | 4644 | #9 | reviewed; eye redrawn on Codicon geometry + blink; slider frames cropped |
-| disclosure | Collapsible, Accordion, Toast, Alert | 4645 | #12 | reviewed; no changes |
+| choice | Checkbox, RadioGroup, Toggle | 4641 | #10 | merged via #14; Toggle fill → growing circle (square corners mid-growth) |
+| actions | Button, Spinner, Progress, Meter | 4642 | #13 | merged via #14; finding renumbered F11; spinner frames re-shot at 8×; follow-up: Progress/Meter fill eases by a 240 ms JS interpolation (React re-renders), Tabs-style reciprocal transforms could move it into Anima |
+| indicators | Tabs, ToggleGroup, SectionSelect | 4643 | #11 | merged via #14; its finding renumbered F10 |
+| ranges | Slider, PasswordField | 4644 | #9 | merged; eye redrawn on Codicon geometry + blink; slider frames cropped |
+| disclosure | Collapsible, Accordion, Toast, Alert | 4645 | #12 | merged via #14; Accordion/CollapsibleTrigger annotated (TS2742) |
 
 ## Review protocol (per agent PR)
 1. Read the PR description and diff; reject shared-code changes that aren't minimal and additive.
@@ -80,3 +79,4 @@ GPT-6.1-sol, xhigh, via T3 delegate_task (worktree, branch `comp/<group>`, PR, n
 - 2026-11-08 21:00 [claude]: reviewed PRs #9–#12 (descriptions, shared-file diff, sheets, full-size frames); fixes: PasswordField eye on Codicon geometry with blink (76/76 ranges e2e), slider frames cropped, Toggle growing circle; merged all four into integrate/components; static checks pass: 13 components, JS 8.34 KB, CSS 1.26 KB, runtime+bind 22.60 KB, app-UI 43.49 KB gz
 - 2026-11-08 21:40 [claude]: PR #9 merged. #13 (actions) reviewed and integrated into PR #14; findings F9/F10/F11 reconciled; CI on #14 failed at pack (TS2742 on Accordion/CollapsibleTrigger) → annotated; pack 73.4 KB from pin, smoke ok; full e2e 600 passed / 0 failed / 66 skipped (Chromium + Firefox); sizes: JS 9.58 KB, CSS 1.71 KB, runtime+bind 22.60 KB, app-UI 48.72 KB gz
 - 2026-11-08 22:10 [claude]: PR #14 CI flakes fixed at the root, all in tests: Meter/Progress retarget timing, drawingBox throw inside poll, Radix roving-focus race (ToggleGroup vertical; also Tabs, SectionSelect). Indicator specs 294/294 over 3 repeats
+- 2026-11-08 22:25 [claude]: PR #14 merged (844f6dc), closing #10–#13; CI: 600 passed / 0 failed / 66 skipped, pack 73.4 KB from pin, smoke ok. Proof page published and updated with CI numbers
