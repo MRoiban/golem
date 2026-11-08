@@ -10,7 +10,8 @@ export type RadioGroupItemProps = React.ComponentPropsWithoutRef<typeof OnyxRadi
 export const RadioGroup = OnyxRadioGroup;
 
 /** One drawing per item, so Onyx's card/default layouts and independently changing items stay intact. */
-export const RadioGroupItem = React.forwardRef<HTMLButtonElement, RadioGroupItemProps>(function RadioGroupItem(props, ref) {
+// Keep declaration emit on Onyx's public prop alias, rather than Bun's private Radix path.
+export const RadioGroupItem: React.ForwardRefExoticComponent<RadioGroupItemProps & React.RefAttributes<HTMLButtonElement>> = React.forwardRef<HTMLButtonElement, RadioGroupItemProps>(function RadioGroupItem(props, ref) {
   const item = React.useRef<HTMLButtonElement | null>(null);
   const refs = useMergedRef(item, ref);
   const on = useDomState(item, ["data-state", "aria-checked"],
