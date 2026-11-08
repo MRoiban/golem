@@ -1,10 +1,10 @@
 # Work log
 
 ## Now
-Goal: Anima is public (owner, 2026-11-08): pin it and run the full suite in CI. Package naming is still open (ideas given to the owner).
-State: branch anima-public: anima-pin.json (main 8ffd714), CI checks out the pin and runs build:anima + full e2e (Chromium + Firefox); docs updated. Built against the pin locally: identical output (runtime 21,196 B gz).
-Next: PR, merge when CI is green.
-Don't: commit .anima/ or compiled .ani; edit Anima/Onyx/@bedrock/ui; involve Harmony.
+Goal: milestone 1 plus the owner's decisions are merged. Waiting on the owner: the package name (suggested: a single `@mroiban/golem` with subpath exports, as a release tarball that also carries the pinned Anima runtime and scenes).
+State: main has tokens (6 themes), the bridge (provider-free, meta-tag runtime), Switch, demo, e2e and docs; CI checks out the pinned Anima (anima-pin.json) and runs the full suite (46 pass in CI).
+Next: rename the packages and add a release step once the name is chosen; then Button, Tabs, Checkbox.
+Don't: commit .anima/; edit Anima/Onyx/@bedrock/ui; involve Harmony.
 
 ## Gotchas
 - Harmony and derived dark modes are out of scope; dark themes, including custom ones, are authored by hand. — owner instruction 2026-11-08
@@ -27,7 +27,7 @@ Don't: commit .anima/ or compiled .ani; edit Anima/Onyx/@bedrock/ui; involve Har
 - The local ../anima checkout moves under another agent (seen at p7 05f37885 and 6b5a4245); build-anima warns when it isn't at the pin. For pin-exact local builds, use a clean clone: `git clone https://github.com/MRoiban/anima` + `npm ci --ignore-scripts`. — build-anima warning
 
 - `bun test <word>` is a path *filter*, not a directory: `bun test packages` also ran Anima's tests in CI's ./anima checkout. Use `bun test ./packages/`. — CI run 42468759108
-- GitHub release downloads (the Onyx tarball) returned 504 for a while on 2026-11-08; CI now caches ~/.bun/install/cache and retries bun install. — CI runs 42466033831, 42468553844
+- GitHub release downloads (the Onyx tarball) returned 504 for over an hour on 2026-11-08, while the API asset download worked. CI's scripts/ci-install.sh falls back to `gh api` and checks the sha512 against bun.lock. A cache saved on a PR branch is not visible to other PRs, so the cache alone doesn't help. — CI runs 42466033831, 42468553844, 42469148126; local fallback test
 
 ## Log
 - 2026-11-08 09:36 [claude]: survey + scaffold → core-only Switch scene prototype compiles (3,972 B .ani) and renders the stretch correctly (evidence: scratchpad/s/sheet.png via `anima render --sheet 8`).
@@ -37,3 +37,5 @@ Don't: commit .anima/ or compiled .ani; edit Anima/Onyx/@bedrock/ui; involve Har
 - 2026-11-08 11:20 [claude]: owner decisions applied on flexoki-theme → e2e 46 pass (incl. ?provider=off in Chromium + Firefox), bridge 3.68 KB gz, golem.css 2.73 KB gz with 6 themes; Flexoki screenshots reviewed (evidence: e2e3.log, bun run sizes)
 - 2026-11-08 11:20 [claude]: PR #2 CI failed 3× on GitHub 504/5xx downloading Bun and the Onyx release tarball; reproduced locally with curl (504), so not a code problem → retry later
 - 2026-11-08 11:45 [claude]: Anima public → anima-pin.json (8ffd714), CI checks out the pin + full e2e; built from a clean clone at the pin: switch.ani 823 B gz, runtime 21,196 B gz, identical to p7 (evidence: build-anima with ANIMA_DIR=clone)
+- 2026-11-08 12:00 [claude]: PR #4 merged; CI on the pinned Anima 8ffd7148: build-anima ok, e2e 46 passed / 18 skipped (screenshots spec only) (evidence: CI log of b03729a)
+- 2026-11-08 12:20 [claude]: CI install fallback (scripts/ci-install.sh) → tested locally against the real 504: the API download's hash matches bun.lock and Onyx installs (evidence: scratch copy run)
