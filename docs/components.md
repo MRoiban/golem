@@ -18,9 +18,9 @@ Golem does not wrap it; use Onyx's directly).
 | Spinner | Anima-drawn arc spinner (Onyx timing) | actions | planned |
 | Progress | Fill eases to value; indeterminate sweep | actions | planned |
 | Meter | Fill eases to value, tone colour follows thresholds | actions | planned |
-| Tabs | Selected indicator travels between tabs and stretches | indicators | planned |
-| ToggleGroup | Selected pill travels between items | indicators | planned |
-| SectionSelect | Selected pill travels between sections | indicators | planned |
+| Tabs | Selected indicator travels between tabs and stretches | indicators | done |
+| ToggleGroup | Selected pill travels between items | indicators | done |
+| SectionSelect | Selected pill travels between sections | indicators | done |
 | Slider | Thumb squashes while dragged; range fill follows | ranges | planned |
 | PasswordField | Eye opens/closes when visibility toggles | ranges | planned |
 | Collapsible | Chevron rotates with overshoot | disclosure | planned |

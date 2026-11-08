@@ -13,6 +13,7 @@ edit Anima; each item lists Golem's workaround. Measured against Anima `05f37885
 | F6 | Missing tool | No supported way to build one bundle with chosen modules | Calls `tools/browser-build.ts` `bundle()` |
 | F7 | Authoring trap | Core guards use `!x`, bind expressions use `not x` | None needed (the validator hint is clear) |
 | F8 | Cost | Rounded-rect `corners` need the `paint` module | Uses paths and circles |
+| F9 | Bug | SVG matrix rounding collapses tiny reciprocal transforms | Quantizes travel distances and clamps near-zero axes to 0.001 |
 
 ## F1. Non-square viewBox scenes are drawn squashed
 
@@ -97,3 +98,17 @@ module (runtime 20.7 KB gz).
   scratchpad (`/tmp/claude-1000/...`). The build only works on that machine and session.
 - `web/vendor/anima.js` (318 KB, 30 modules) is a vendored runtime. Golem builds its own
   from a checkout instead (`scripts/build-anima.ts`).
+
+## F9. SVG transform quantization can collapse reciprocal geometry transforms
+
+Measured against pinned `8ffd7148`: the web SVG renderer serializes a scale of `0.000001` as
+`matrix(0 0 0 1 0 0)`, although `Player.values()["xUnits.scaleX"]` still reports `0.000001`.
+A nested inverse scale of `1000000` cannot recover the lost geometry: the initial indicator is
+invisible. The indicators use reciprocal transforms to let core timelines travel across a
+numeric distance supplied by bind. Quantize measured distances to 0.001 px before inversion to avoid amplifying renderer rounding.
+For near-zero-distance axes, use `0.001` (inverse `1000`), which
+survives serialization and introduces only 0.001 px of movement on that axis. Numeric inputs
+remain the source of geometry; no JavaScript tweening or runtime modification is needed.
+
+Related authoring clarification: `<rect rx="…">` is core and can bind `rx`; the extended
+`corners` syntax in F8 requires paint. Indicators use core `rx` to match Onyx's measured radius.

@@ -1,0 +1,15 @@
+.golem-toggle-group {
+  position: relative;
+  isolation: isolate;
+}
+.golem-toggle-group > [data-slot="toggle-group-item"] {
+  position: relative;
+  z-index: 1;
+}
+.golem-toggle-group > .golem-selection__motion {
+  z-index: 0;
+}
+.golem-toggle-group[data-anima="ready"]
+  > [data-slot="toggle-group-item"][data-state="on"] {
+  background-color: transparent;
+}

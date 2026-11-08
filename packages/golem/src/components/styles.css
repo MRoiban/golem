@@ -3,6 +3,9 @@
    the golem.components layer. The release flattens this file (scripts/pack.ts). */
 @layer onyx.base, onyx.components, golem.tokens, golem.components;
 @import "./switch/switch.css" layer(golem.components);
+@import "./tabs/tabs.css" layer(golem.components);
+@import "./toggle-group/toggle-group.css" layer(golem.components);
+@import "./section-select/section-select.css" layer(golem.components);
 
 @layer golem.components {
   .golem-anima > anima-icon {
