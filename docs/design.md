@@ -65,8 +65,9 @@ packages/golem/  @mroiban/golem
                    glyphy-style.toml); anima.ts (names only)
   src/anima/       ./anima: GolemProvider, <AnimaControl>, runtime loader, model cache, mount
                    scheduler, theme bridge, motion
-  src/components/  . (with GolemProvider, useGolem, configureAnima) and ./styles.css: Switch
-  scenes/          switch.animl; compiled into the tarball's runtime/scenes/
+  src/components/  . (with GolemProvider, useGolem, configureAnima) and ./styles.css; one folder
+                   per component: <name>.tsx, <name>.css, <name>.animl (compiled into the
+                   tarball's runtime/scenes/). Catalogue and authoring guide: docs/components.md
 demo/            the demo page (Bun.serve + HTML import); also the Playwright target
 e2e/             Playwright tests (Chromium, Firefox)
 scripts/         build-anima.ts (runtime + scenes from an Anima checkout), sizes.ts,
@@ -269,7 +270,7 @@ The pattern, shown by `Switch`:
 - At comfortable density the drawing scales uniformly. Onyx keeps its 2 px padding fixed, so the
   thumb is about 1 px off at 36 px controls. That is acceptable for now; a density input can fix it.
 
-Candidates next, in the order anima-kit proved them: Button (spinner → check), Tabs and ToggleGroup
+The catalogue of components and the authoring contract are in `docs/components.md`. Candidates were, in the order anima-kit proved them: Button (spinner → check), Tabs and ToggleGroup
 (travelling indicator), Checkbox (wipe-in check). Each gets the same treatment: an Onyx primitive, a
 core-only scene where possible, a fallback test, and a size line.
 

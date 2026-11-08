@@ -1,6 +1,6 @@
 // Builds everything Golem needs from a local Anima checkout into .anima/ (gitignored):
 //   .anima/anima.js          the browser runtime: core + web + the modules Golem's scenes require
-//   .anima/scenes/<n>.ani    each packages/*/scenes/<n>.animl compiled by the Anima CLI
+//   .anima/scenes/<n>.ani    each packages/golem/src/components/*/<n>.animl compiled by the Anima CLI
 //   .anima/build.json        Anima commit, module list and sizes
 // Anima (github.com/MRoiban/anima, MIT) is still changing, so Golem pins a commit in anima-pin.json,
 // builds from a checkout by path and never commits the runtime or compiled scenes. Set ANIMA_DIR,
@@ -46,19 +46,22 @@ console.log("golem-theme.animl: valid");
 
 // 2. Scenes.
 const scenes: { name: string; file: string; bytes: number; gz: number; requires: string[] }[] = [];
-for (const pkg of readdirSync(join(root, "packages"))) {
-  const dir = join(root, "packages", pkg, "scenes");
-  if (!existsSync(dir)) continue;
+// Every component's scene: packages/golem/src/components/<name>/<name>.animl (several files per
+// component are fine: each .animl compiles to its own .ani).
+const components = join(root, "packages/golem/src/components");
+for (const comp of readdirSync(components, { withFileTypes: true }).filter((d) => d.isDirectory())) {
+  const dir = join(components, comp.name);
   for (const f of readdirSync(dir).filter((f) => f.endsWith(".animl"))) {
     const name = basename(f, ".animl");
     const target = join(out, "scenes", `${name}.ani`);
     cli("build", join(dir, f), "-o", target);
     const text = readFileSync(target, "utf8");
     const requires: string[] = JSON.parse(text).requires ?? [];
-    scenes.push({ name, file: `packages/${pkg}/scenes/${f}`, bytes: text.length, gz: gz(text), requires });
+    scenes.push({ name, file: `packages/golem/src/components/${comp.name}/${f}`, bytes: text.length, gz: gz(text), requires });
     console.log(`${name}.ani: ${text.length} B, ${gz(text)} B gz, requires [${requires.join(" ")}]`);
   }
 }
+if (new Set(scenes.map((s) => s.name)).size !== scenes.length) throw new Error("two scenes share a name");
 if (process.argv.includes("--check")) process.exit(0);
 
 // 3. Runtime: the base element plus each required module's web entry.

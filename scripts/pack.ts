@@ -59,9 +59,14 @@ writeFileSync(tsconfig, JSON.stringify({
 execFileSync(join(root, "node_modules/.bin/tsc"), ["-p", tsconfig], { stdio: "inherit" });
 
 // 3. CSS and token files.
-cpSync(join(src, "src/components/styles.css"), join(pkgDir, "dist/styles.css"));
+// styles.css @imports each component's CSS into the golem.components layer: flatten it.
+const css = await Bun.build({ entrypoints: [join(src, "src/components/styles.css")], outdir: join(out, "css"), experimental: { css: true } } as never);
+if (!css.success) fail(css.logs.join("\n"));
+// Bun hoists the imported layers above the file's own @layer order statement; restate the order first.
+writeFileSync(join(pkgDir, "dist/styles.css"), "@layer onyx.base, onyx.components, golem.tokens, golem.components;\n" + readFileSync(css.outputs[0]!.path, "utf8"));
 cpSync(join(src, "dist/tokens"), join(pkgDir, "dist/tokens"), { recursive: true });
-cpSync(join(src, "scenes"), join(pkgDir, "scenes"), { recursive: true });
+mkdirSync(join(pkgDir, "scenes"));
+for (const s of build.scenes as { name: string; file: string }[]) cpSync(join(root, s.file), join(pkgDir, "scenes", `${s.name}.animl`));
 
 // 4. The Anima runtime and scenes, with Anima's licence.
 mkdirSync(join(pkgDir, "runtime"));

@@ -1,5 +1,8 @@
-/* Golem components. Import after Onyx's (or @bedrock/ui's) styles.css and @mroiban/golem/tokens.css. */
+/* Golem components. Import after Onyx's (or @bedrock/ui's) styles.css and @mroiban/golem/tokens.css.
+   Each component's CSS lives next to it (components/<name>/<name>.css) and is imported here into
+   the golem.components layer. The release flattens this file (scripts/pack.ts). */
 @layer onyx.base, onyx.components, golem.tokens, golem.components;
+@import "./switch/switch.css" layer(golem.components);
 
 @layer golem.components {
   .golem-anima > anima-icon {
@@ -7,33 +10,11 @@
     width: 100%;
     height: 100%;
   }
-
-  .golem-switch {
-    position: relative;
-    display: inline-flex;
-    flex-shrink: 0;
-    vertical-align: middle;
-    /* Shrink-wrap the Onyx button: the overlay fills this box, so it must never be stretched
-       (grid and flex items stretch by default). */
-    width: max-content;
-    height: max-content;
-    justify-self: start;
-    align-self: center;
-  }
-  .golem-switch__motion {
+  /* A motion part fills its wrapper and never takes input. */
+  .golem-part__motion {
     position: absolute;
     inset: 0;
     pointer-events: none;
-  }
-  /* Once the Anima drawing is ready it paints track and thumb; Onyx keeps the button and focus ring. */
-  .golem-switch[data-anima='ready'] > .onyx-switch {
-    background-color: transparent;
-  }
-  .golem-switch[data-anima='ready'] > .onyx-switch > [data-slot='switch-thumb'] {
-    visibility: hidden;
-  }
-  .golem-switch[data-disabled] > .golem-switch__motion {
-    opacity: 0.5;
   }
 }
 

@@ -1,0 +1,23 @@
+/* Switch: the Anima drawing paints track and thumb once ready; Onyx keeps the button and focus ring. */
+.golem-switch {
+  position: relative;
+  display: inline-flex;
+  flex-shrink: 0;
+  vertical-align: middle;
+  /* Shrink-wrap the Onyx button: the overlay fills this box, so it must never be stretched
+     (grid and flex items stretch by default). */
+  width: max-content;
+  height: max-content;
+  justify-self: start;
+  align-self: center;
+}
+/* Once the Anima drawing is ready it paints track and thumb; Onyx keeps the button and focus ring. */
+.golem-switch[data-anima='ready'] > .onyx-switch {
+  background-color: transparent;
+}
+.golem-switch[data-anima='ready'] > .onyx-switch > [data-slot='switch-thumb'] {
+  visibility: hidden;
+}
+.golem-switch[data-disabled] > .golem-switch__motion {
+  opacity: 0.5;
+}
