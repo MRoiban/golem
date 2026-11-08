@@ -59,6 +59,8 @@ GPT-6.1-sol, xhigh, via T3 delegate_task (worktree, branch `comp/<group>`, PR, n
 
 - `bun run typecheck` does not emit declarations; only `bun run pack` does. Exported forwardRef wrappers of Radix-based Onyx parts need an explicit `React.ForwardRefExoticComponent<…>` annotation or pack fails with TS2742 (CI on PR #14). Agents now run pack + smoke (docs/components.md). — CI run 42514904665
 
+- Polled drawing reads must not throw: inside `expect.poll` a throw fails at once, a wrong value retries. Mid-transition an indicator can have no visible shape (e2e/indicators.ts returns NaN then). Retarget checks on eased values need ≥ half the duration, not one or two frames. — CI runs 42515781193 (Meter, Firefox), 42516569229 (ToggleGroup, Chromium)
+
 ## Log
 - 2026-11-08 09:36 [claude]: survey + scaffold → core-only Switch scene prototype compiles (3,972 B .ani) and renders the stretch correctly (evidence: scratchpad/s/sheet.png via `anima render --sheet 8`).
 - 2026-11-08 10:05 [claude]: tokens (Onyx parity + completeness, 27 tests), bridge, Switch, demo, e2e (38 tests, Chromium + Firefox), sizes script, docs → bridge 3.52 KB gz after moving the token tables out (was 6.11); runtime 20.70 KB gz core-only; switch.ani 0.80 KB gz; first mount 15.6 ms compile + 8.4 ms instantiate, cached 0.77 ms per control, 28 controls all drawn 393 ms after navigation start (evidence: bun scripts/sizes.ts; demo metrics, Chromium)

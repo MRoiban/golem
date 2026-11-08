@@ -12,7 +12,10 @@ export async function drawingBox(part: Locator) {
         node = node.parentElement;
       }
       return true;
-    })!;
+    });
+    // Mid-transition every indicator shape can be fully transparent: report "nothing yet" (NaN)
+    // so a surrounding expect.poll retries instead of failing on a throw.
+    if (!rect) return { x: NaN, y: NaN, width: NaN, height: NaN };
     const b = rect.getBoundingClientRect();
     return { x: b.x, y: b.y, width: b.width, height: b.height };
   });
