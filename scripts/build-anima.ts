@@ -2,8 +2,9 @@
 //   .anima/anima.js          the browser runtime: core + web + the modules Golem's scenes require
 //   .anima/scenes/<n>.ani    each packages/*/scenes/<n>.animl compiled by the Anima CLI
 //   .anima/build.json        Anima commit, module list and sizes
-// Anima is private and still changing, so Golem never commits its runtime or compiled scenes; it
-// depends on a checkout by path. Set ANIMA_DIR, or keep anima next to golem (../anima).
+// Anima (github.com/MRoiban/anima, MIT) is still changing, so Golem pins a commit in anima-pin.json,
+// builds from a checkout by path and never commits the runtime or compiled scenes. Set ANIMA_DIR,
+// or keep anima next to golem (../anima). CI checks out the pinned commit.
 //   bun scripts/build-anima.ts [--check]   --check: validate the scenes and theme library only
 import { execFileSync } from "node:child_process";
 import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
@@ -21,7 +22,11 @@ const out = join(root, ".anima");
 mkdirSync(join(out, "scenes"), { recursive: true });
 const cli = (...args: string[]) =>
   execFileSync("node", [join(ANIMA, "packages/cli/src/main.ts"), ...args], { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] });
-const commit = execFileSync("git", ["-C", ANIMA, "rev-parse", "--short", "HEAD"], { encoding: "utf8" }).trim();
+const head = execFileSync("git", ["-C", ANIMA, "rev-parse", "HEAD"], { encoding: "utf8" }).trim();
+const commit = head.slice(0, 8);
+const pinned: string = JSON.parse(readFileSync(join(root, "anima-pin.json"), "utf8")).commit;
+if (head !== pinned)
+  console.warn(`warning: Anima checkout is at ${commit}, anima-pin.json pins ${pinned.slice(0, 8)}. CI tests the pin.`);
 const gz = (s: string) => gzipSync(s, { level: 9 }).length;
 
 // 1. The Anima theme library generated from Golem's tokens must validate in a document that uses it.

@@ -1,0 +1,5 @@
+{
+  "repository": "MRoiban/anima",
+  "commit": "8ffd7148eff7d39bfa2d9a7ef263362516cc1ce7",
+  "note": "The Anima commit Golem is built and tested against (CI checks it out). Bump it in a PR that runs the full e2e suite."
+}

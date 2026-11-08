@@ -1,6 +1,8 @@
 node_modules/
-# Built from the private Anima checkout (see docs/design.md "Consuming Anima"); never committed.
+# Built from the pinned Anima checkout (see docs/design.md "Consuming Anima"); never committed.
 .anima/
+# CI checks out the pinned Anima here (anima-pin.json).
+/anima/
 packages/components/scenes/dist/
 demo/public/vendor/
 # Generated token outputs are rebuilt from packages/tokens/src (bun run build:tokens).

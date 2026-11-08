@@ -21,8 +21,8 @@ scope for now; see "App shell: what to extract later".
    output lacks a token.
 4. **Abstractions come from real apps.** The app shell will be extracted from Typewriter and
    babel-ui, not designed ahead. Components are added one at a time, each proven end to end.
-5. **Anima is a moving, private dependency.** Golem consumes it by path, declares the small part of
-   its API it uses, and measures what it loads.
+5. **Anima is a moving dependency.** Golem pins an Anima commit, builds from a checkout, declares
+   the small part of its API it uses, and measures what it loads.
 
 ## 2. What the sources teach
 
@@ -297,7 +297,11 @@ proposals are in `docs/proposals.md`.
 
 ## 8. Consuming Anima while it changes
 
-- **By path, never vendored.** `scripts/build-anima.ts` reads `ANIMA_DIR` (default `../anima`). It
+- **Pinned, built from a checkout, never vendored.** Anima is public (github.com/MRoiban/anima,
+  MIT). `anima-pin.json` names the commit Golem is built and tested against. (It is not called
+  `anima.json`: the Anima CLI reads any `anima.json` above a source file as its project
+  configuration.) `scripts/build-anima.ts` reads `ANIMA_DIR` (default `../anima`) and warns when
+  the checkout is not at the pin. It
   validates the generated theme library, compiles every `packages/*/scenes/*.animl` with the Anima
   CLI, and bundles the runtime (core + web + exactly the modules the scenes' `requires` name) with
   Anima's own production bundler. Output goes to `.anima/` (gitignored) with `build.json` recording
@@ -307,10 +311,10 @@ proposals are in `docs/proposals.md`.
   `data`). The rest of Anima can change freely. The scenes use only core AniML.
 - **Feature detection over version checks.** `compile()` is optional (with a fallback), `data` is
   optional, and a load failure means fallback.
-- **CI on a public repo.** GitHub Actions has no access to the private Anima repo. CI therefore runs
-  tokens and bridge unit tests, typecheck, the size report, and the Playwright suite in its
-  no-Anima mode. The Anima-dependent e2e tests run locally. Options to close the gap are open
-  questions.
+- **CI runs everything.** CI checks out Anima at the pinned commit, installs its build tools
+  (`npm ci`), runs `build:anima`, and runs the full Playwright suite in Chromium and Firefox. The
+  Anima tests skip themselves only where there is no `.anima/` (a contributor without a checkout).
+- **Bumping Anima** is a PR that changes `anima-pin.json`; CI shows whether Golem still works with it.
 - **Findings**, not patches: `docs/anima-findings.md`.
 
 ## 9. Size budgets
@@ -365,18 +369,10 @@ Decided (2026-11-08):
 - **First real custom theme**: Flexoki, light and dark, authored in the token source from the public
   Flexoki palette and its UI roles. Rose stays as a demonstration.
 - **Harmony and derived dark modes**: out of scope; dark themes are authored.
+- **Anima is public** (MIT). Golem pins a commit and CI builds and tests against it (§8).
 
 Open:
 
-1. **Private Anima from a public repo.** Golem builds Anima from a sibling checkout and commits
-   nothing from it. Anima's repo now carries an MIT licence but is still private. This also decides
-   how Bedrock serves the runtime (§7). Options:
-   - (a) keep Anima-dependent tests local-only (current);
-   - (b) add a deploy key or token secret so CI can check out Anima;
-   - (c) publish the Anima runtime (and the CLI, for compiling scenes) as a release tarball, as Onyx
-     does, and depend on that;
-   - (d) allow Golem to commit its compiled `.ani` scenes, which are built from Golem's own public
-     AniML.
-2. **Package scope and publishing**: undecided. `@golem/*` stays a private workspace name and
+1. **Package scope and publishing**: undecided. `@golem/*` stays a private workspace name and
    nothing is published. It needs deciding before `@bedrock/ui` can depend on Golem other than by
    path or git URL.
