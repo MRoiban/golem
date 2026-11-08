@@ -1,14 +1,14 @@
 import { expect, test } from "@playwright/test";
 import { HAS_ANIMA, NEEDS_ANIMA, resolvedColor, settled, watchConsole } from "./helpers";
 
-const THEMES = ["dark", "light", "rose", "rose-dark", "flexoki", "flexoki-dark"] as const;
+import { THEMES } from "./helpers";
 
 test.describe("no console errors", () => {
   for (const q of ["motion=anima", "motion=css", "motion=reduced", "anima=off&motion=anima"]) {
     test(q, async ({ page }) => {
       test.skip(q === "motion=anima" && !HAS_ANIMA, NEEDS_ANIMA);
       const c = watchConsole(page);
-      await page.goto(`/?${q}`);
+      await page.goto(`/?c=switch&${q}`);
       await settled(page, q === "motion=anima");
       for (const id of ["autosave", "sync", "beta"]) await page.getByTestId(id).click();
       for (const t of ["Light", "Rose", "Rose dark", "Flexoki", "Flexoki dark", "Dark"]) await page.getByRole("radio", { name: t, exact: true }).click();
@@ -22,7 +22,7 @@ test.describe("roles and keyboard", () => {
   for (const motion of ["anima", "css"]) {
     test(`motion=${motion}`, async ({ page }) => {
       test.skip(motion === "anima" && !HAS_ANIMA, NEEDS_ANIMA);
-      await page.goto(`/?motion=${motion}&many=0`);
+      await page.goto(`/?c=switch&motion=${motion}&many=0`);
       await settled(page, motion === "anima");
       const autosave = page.getByRole("switch", { name: "Auto save" });
       await expect(autosave).toHaveAttribute("aria-checked", "true");
@@ -55,7 +55,7 @@ test.describe("roles and keyboard", () => {
 
 test("the Anima drawing follows the Onyx state", async ({ page }) => {
   test.skip(!HAS_ANIMA, NEEDS_ANIMA);
-  await page.goto("/?motion=anima&many=6");
+  await page.goto("/?c=switch&motion=anima&many=6");
   await settled(page, true);
   const thumbX = (id: string) => page.getByTestId(id).evaluate((b) => {
     const icon = b.parentElement!.querySelector("anima-icon") as HTMLElement & { values(): Record<string, number> };
@@ -80,7 +80,7 @@ test.describe("themes", () => {
   test.skip(!HAS_ANIMA, NEEDS_ANIMA);
   for (const theme of THEMES) {
     test(theme, async ({ page }) => {
-      await page.goto(`/?motion=anima&theme=${theme}&many=0`);
+      await page.goto(`/?c=switch&motion=anima&theme=${theme}&many=0`);
       await settled(page, true);
       await expect(page.locator("html")).toHaveAttribute("data-theme", theme);
       const onFill = await page.getByTestId("autosave").evaluate((b) => {
@@ -95,7 +95,7 @@ test.describe("themes", () => {
   }
 
   test("theme changes reach mounted Anima controls live", async ({ page }) => {
-    await page.goto("/?motion=anima&many=0");
+    await page.goto("/?c=switch&motion=anima&many=0");
     await settled(page, true);
     const handle = await page.getByTestId("autosave").evaluateHandle((b) => b.parentElement!.querySelector("anima-icon")!);
     const fill = () => handle.evaluate((icon) => getComputedStyle(icon.shadowRoot!.querySelector("[fill*=buttonBg]")!).fill);
@@ -111,7 +111,7 @@ test.describe("reduced motion", () => {
   test.use({ reducedMotion: "reduce" });
   test("system preference: plain Onyx, 1 ms transitions", async ({ page }) => {
     const c = watchConsole(page);
-    await page.goto("/?motion=system");
+    await page.goto("/?c=switch&motion=system");
     await expect(page.getByTestId("motion")).toHaveText("reduced");
     await expect(page.locator("html")).toHaveAttribute("data-golem-motion", "reduced");
     await expect(page.locator("anima-icon")).toHaveCount(0);
@@ -125,7 +125,7 @@ test.describe("reduced motion", () => {
 
 test("in-app reduced motion without an OS preference", async ({ page }) => {
   test.skip(!HAS_ANIMA, NEEDS_ANIMA);
-  await page.goto("/?motion=anima&many=0");
+  await page.goto("/?c=switch&motion=anima&many=0");
   await settled(page, true);
   await page.getByRole("radio", { name: "Reduced" }).click();
   await expect(page.locator("anima-icon")).toHaveCount(0); // motion parts unmount
@@ -138,7 +138,7 @@ test("in-app reduced motion without an OS preference", async ({ page }) => {
 test.describe("fallback without Anima", () => {
   test("no runtime configured", async ({ page }) => {
     const c = watchConsole(page);
-    await page.goto("/?motion=anima&anima=off");
+    await page.goto("/?c=switch&motion=anima&anima=off");
     await expect(page.getByTestId("runtime")).toHaveText("absent");
     await expect(page.locator("anima-icon")).toHaveCount(0);
     await expect(page.locator(".golem-switch[data-anima='ready']")).toHaveCount(0);
@@ -151,7 +151,7 @@ test.describe("fallback without Anima", () => {
   test("runtime fails to load (404)", async ({ page }) => {
     await page.route("**/anima/anima.js", (r) => r.fulfill({ status: 404, body: "" }));
     const c = watchConsole(page);
-    await page.goto("/?motion=anima");
+    await page.goto("/?c=switch&motion=anima");
     await expect(page.getByTestId("runtime")).toHaveText("absent");
     await expect(page.locator("anima-icon")).toHaveCount(0);
     await page.getByTestId("beta").click();
@@ -162,7 +162,7 @@ test.describe("fallback without Anima", () => {
   test.skip(!HAS_ANIMA, NEEDS_ANIMA);
     await page.route("**/anima/scenes/switch.ani", (r) => r.fulfill({ status: 500, body: "" }));
     const c = watchConsole(page);
-    await page.goto("/?motion=anima&many=0");
+    await page.goto("/?c=switch&motion=anima&many=0");
     await expect(page.getByTestId("runtime")).toHaveText("ready");
     await expect(page.locator(".golem-switch[data-anima='off']")).toHaveCount(4);
     await expect(page.getByTestId("beta").locator("[data-slot='switch-thumb']")).toBeVisible();
@@ -175,7 +175,7 @@ test.describe("phone width", () => {
   for (const motion of ["anima", "css"]) {
     test(`no horizontal overflow, motion=${motion}`, async ({ page }) => {
       test.skip(motion === "anima" && !HAS_ANIMA, NEEDS_ANIMA);
-      await page.goto(`/?motion=${motion}`);
+      await page.goto(`/?c=switch&motion=${motion}`);
       await settled(page, motion === "anima");
       const { sw, cw } = await page.evaluate(() => ({ sw: document.documentElement.scrollWidth, cw: document.documentElement.clientWidth }));
       expect(sw).toBeLessThanOrEqual(cw);
@@ -189,7 +189,7 @@ test.describe("no provider, no code (pebble that only swapped imports)", () => {
   test("motion from the page's meta tags, theme from <html data-theme>", async ({ page }) => {
     test.skip(!HAS_ANIMA, NEEDS_ANIMA);
     const c = watchConsole(page);
-    await page.goto("/?provider=off&many=0");
+    await page.goto("/?c=switch&provider=off&many=0");
     await expect(page.getByTestId("no-provider")).toBeVisible();
     await settled(page, true);
     await expect(page.locator("html")).not.toHaveAttribute("data-golem-motion", /./);
@@ -202,7 +202,7 @@ test.describe("no provider, no code (pebble that only swapped imports)", () => {
   test.describe("with the OS asking for reduced motion", () => {
     test.use({ reducedMotion: "reduce" });
     test("plain Onyx", async ({ page }) => {
-      await page.goto("/?provider=off&many=0");
+      await page.goto("/?c=switch&provider=off&many=0");
       await expect(page.getByTestId("motion")).toHaveText("reduced");
       await expect(page.locator("anima-icon")).toHaveCount(0);
     });

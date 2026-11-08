@@ -1,9 +1,9 @@
 # Work log
 
 ## Now
-Goal: one package, `@mroiban/golem` (owner said yes 2026-11-08), released as a GitHub release tarball that carries the pinned Anima runtime and scenes.
-State: branch single-package: packages/golem (src/tokens, src/anima, src/components, scenes), scripts/pack.ts + smoke-pack.ts, CI packs and smoke-tests; a v* tag creates the GitHub release. Typecheck, 36 unit, 46 e2e, smoke all pass locally.
-Next: PR → merge; ask the owner before pushing the first tag (v0.1.0) — that publishes. Then Button, Tabs, Checkbox.
+Goal (owner 2026-11-08): implement all components in docs/components.md's catalogue; per milestone validate with screenshots and state tests, then prove it to the owner. Orchestrated: GPT-6.1-sol agents via delegate_task, ≤5 at a time, one worktree + branch + PR per group; I review (screenshots, tests) and merge.
+State: branch component-kit: per-component folders, shared hooks, demo sections (?c=), e2e helpers + gallery spec, docs/components.md. Switch suite 46/46 on it.
+Next: merge component-kit; delegate groups choice / actions / indicators / ranges / disclosure.
 Don't: commit .anima/ or release/; edit Anima/Onyx/@bedrock/ui; involve Harmony; push a v* tag without the owner.
 
 ## Gotchas
@@ -32,6 +32,9 @@ Don't: commit .anima/ or release/; edit Anima/Onyx/@bedrock/ui; involve Harmony;
 - `bun run pack` reads packages/golem/package.json from git HEAD, not the working copy: CI's install fallback rewrites the Onyx URL to a local `file:` path, which must never ship. Commit manifest changes before packing. — scripts/ci-install.sh line 24
 - The release tarball's runtime must come from the pin: pack refuses otherwise (`--allow-unpinned` for local tries; the local ../anima moves). — pack output "NOT the pin" at 2efbf239
 
+- Parallel agents need distinct Playwright ports: GOLEM_E2E_PORT (default 4621); and a pinned Anima checkout outside ../anima, which moves: ~/.cache/golem/anima-8ffd7148 (clean clone + npm ci). — this session
+- Bun's CSS bundler hoists @import-ed layer blocks above the file's own `@layer a, b;` statement; pack.ts restates the order at the top of dist/styles.css. — bun build of styles.css
+
 ## Log
 - 2026-11-08 09:36 [claude]: survey + scaffold → core-only Switch scene prototype compiles (3,972 B .ani) and renders the stretch correctly (evidence: scratchpad/s/sheet.png via `anima render --sheet 8`).
 - 2026-11-08 10:05 [claude]: tokens (Onyx parity + completeness, 27 tests), bridge, Switch, demo, e2e (38 tests, Chromium + Firefox), sizes script, docs → bridge 3.52 KB gz after moving the token tables out (was 6.11); runtime 20.70 KB gz core-only; switch.ani 0.80 KB gz; first mount 15.6 ms compile + 8.4 ms instantiate, cached 0.77 ms per control, 28 controls all drawn 393 ms after navigation start (evidence: bun scripts/sizes.ts; demo metrics, Chromium)
@@ -43,3 +46,4 @@ Don't: commit .anima/ or release/; edit Anima/Onyx/@bedrock/ui; involve Harmony;
 - 2026-11-08 12:00 [claude]: PR #4 merged; CI on the pinned Anima 8ffd7148: build-anima ok, e2e 46 passed / 18 skipped (screenshots spec only) (evidence: CI log of b03729a)
 - 2026-11-08 12:20 [claude]: CI install fallback (scripts/ci-install.sh) → tested locally against the real 504: the API download's hash matches bun.lock and Onyx installs (evidence: scratch copy run)
 - 2026-11-08 19:10 [claude]: merged the 3 workspace packages into packages/golem (@mroiban/golem, subpaths . /anima /tokens + CSS) and added pack/smoke/tag-release → typecheck ok, 36 unit, 46 e2e pass, tarball 46.4 KB, smoke (tsc strict without skipLibCheck, Bun.build, SSR) ok incl. ONYX_TGZ override; main entry 3.90 KB gz (evidence: bun run sizes, bun run smoke)
+- 2026-11-08 19:40 [claude]: PR #6 merged (single package; CI: pack from pin 8ffd7148, smoke ok, 46 e2e). component-kit groundwork → Switch e2e 46/46 on ?c=switch, gallery writes docs/screenshots/switch/*.png (looked at light.png: correct)

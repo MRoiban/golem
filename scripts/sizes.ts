@@ -19,23 +19,27 @@ async function bundle(entry: string, external: string[]): Promise<string> {
 const ext = ["react", "react-dom", "react/jsx-runtime", "@mroiban/onyx"];
 const pkg = "packages/golem/src";
 const bridge = await bundle(`${pkg}/anima/index.ts`, ext);
-const main = await bundle(`${pkg}/index.ts`, ext); // Switch + the bridge it uses
-const css = readFileSync(join(root, pkg, "components/styles.css"), "utf8");
+const main = await bundle(`${pkg}/index.ts`, ext); // every component + the bridge
+// styles.css @imports each component's CSS: measure it flattened and minified, as shipped.
+const cssBuild = await Bun.build({ entrypoints: [join(root, pkg, "components/styles.css")], minify: true });
+if (!cssBuild.success) throw new Error(cssBuild.logs.join("\n"));
+const css = await cssBuild.outputs[0]!.text();
 
 type Row = { what: string; bytes: number; gz: number; budget?: number; note?: string };
 const rows: Row[] = [
   { what: "@mroiban/golem/anima (bridge, JS)", bytes: bridge.length, gz: gz(bridge), budget: 4 * KB },
-  { what: "@mroiban/golem (Switch + bridge, JS)", bytes: main.length, gz: gz(main), budget: 6 * KB },
-  { what: "@mroiban/golem/styles.css", bytes: css.length, gz: gz(css), budget: 1 * KB },
+  { what: "@mroiban/golem (all components + bridge, JS)", bytes: main.length, gz: gz(main), budget: 20 * KB },
+  { what: "@mroiban/golem/styles.css (all components)", bytes: css.length, gz: gz(css), budget: 4 * KB },
   { what: "@mroiban/golem/tokens.css (6 themes)", bytes: onyxCss().length, gz: gz(onyxCss()), budget: 6 * KB, note: "replaces Onyx's own token blocks when used" },
   { what: "@mroiban/golem/anima-slots.css", bytes: animaSlotsCss().length, gz: gz(animaSlotsCss()), budget: 1 * KB },
 ];
 const build = join(root, ".anima/build.json");
 if (existsSync(build)) {
   const info = JSON.parse(readFileSync(build, "utf8"));
-  for (const s of info.scenes) rows.push({ what: `scene ${s.name}.ani`, bytes: s.bytes, gz: s.gz, budget: 64 * KB, note: "Anima gate: each scene ≤ 64 KB (scene file only here)" });
+  for (const s of info.scenes) rows.push({ what: `scene ${s.name}.ani`, bytes: s.bytes, gz: s.gz, budget: 4 * KB, note: "Golem: each scene ≤ 4 KB (Anima gate 64 KB)" });
   rows.push({ what: `Anima runtime (core + web${info.runtime.modules.length ? " + " + info.runtime.modules.join(", ") : ""}) @ ${info.anima.commit}`,
-    bytes: info.runtime.bytes, gz: info.runtime.gz, budget: 24 * KB, note: "Anima gate: core + web ≤ 24 KB" });
+    bytes: info.runtime.bytes, gz: info.runtime.gz, budget: info.runtime.modules.length ? 32 * KB : 24 * KB,
+    note: info.runtime.modules.length ? "Golem: core + web + modules ≤ 32 KB (Anima gate: core + web ≤ 24 KB)" : "Anima gate: core + web ≤ 24 KB" });
   const golem = rows[1]!.gz + rows[2]!.gz + rows[4]!.gz;
   const scenes = info.scenes.reduce((a: number, s: { gz: number }) => a + s.gz, 0);
   rows.push({ what: "app-UI total: Golem JS+CSS + runtime + scenes", bytes: 0, gz: golem + info.runtime.gz + scenes, budget: 128 * KB, note: "Anima gate: app-UI ≤ 128 KB" });
