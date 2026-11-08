@@ -1,0 +1,31 @@
+{
+  "name": "golem",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "packages/*",
+    "demo"
+  ],
+  "scripts": {
+    "build:tokens": "bun packages/tokens/scripts/build.ts",
+    "build:anima": "bun scripts/build-anima.ts",
+    "build": "bun run build:tokens && bun run build:anima",
+    "dev": "bun demo/server.ts",
+    "test": "bun test packages",
+    "e2e": "playwright test",
+    "typecheck": "tsc --noEmit -p .",
+    "sizes": "bun scripts/sizes.ts"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.64.1",
+    "@types/bun": "^1.3.10",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "typescript": "^5.9.3",
+    "@mroiban/onyx": "https://github.com/MRoiban/onyx/releases/download/v0.2.2/mroiban-onyx-0.2.2.tgz"
+  },
+  "dependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  }
+}

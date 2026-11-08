@@ -1,0 +1,19 @@
+{
+  "name": "@golem/components",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./styles.css": "./src/styles.css"
+  },
+  "peerDependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "dependencies": {
+    "@golem/anima-react": "workspace:*",
+    "@golem/tokens": "workspace:*",
+    "@mroiban/onyx": "https://github.com/MRoiban/onyx/releases/download/v0.2.2/mroiban-onyx-0.2.2.tgz"
+  }
+}

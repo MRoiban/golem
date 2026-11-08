@@ -1,0 +1,12 @@
+{
+  "name": "@golem/tokens",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./anima": "./src/anima.ts",
+    "./golem.css": "./dist/golem.css",
+    "./anima-slots.css": "./dist/anima-slots.css"
+  }
+}

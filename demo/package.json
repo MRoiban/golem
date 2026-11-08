@@ -1,0 +1,13 @@
+{
+  "name": "@golem/demo",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@golem/anima-react": "workspace:*",
+    "@golem/components": "workspace:*",
+    "@golem/tokens": "workspace:*",
+    "@mroiban/onyx": "https://github.com/MRoiban/onyx/releases/download/v0.2.2/mroiban-onyx-0.2.2.tgz",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  }
+}

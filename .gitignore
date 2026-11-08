@@ -1,0 +1,10 @@
+node_modules/
+# Built from the private Anima checkout (see docs/design.md "Consuming Anima"); never committed.
+.anima/
+packages/components/scenes/dist/
+demo/public/vendor/
+# Generated token outputs are rebuilt from packages/tokens/src (bun run build:tokens).
+packages/tokens/dist/
+test-results/
+playwright-report/
+.cache/
