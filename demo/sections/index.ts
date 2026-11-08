@@ -5,6 +5,9 @@ import SwitchSection from "./switch";
 import CheckboxSection from "./checkbox";
 import RadioGroupSection from "./radio-group";
 import ToggleSection from "./toggle";
+import TabsSection from "./tabs";
+import ToggleGroupSection from "./toggle-group";
+import SectionSelectSection from "./section-select";
 import SliderSection from "./slider";
 import PasswordFieldSection from "./password-field";
 
@@ -13,6 +16,9 @@ export const SECTIONS: { id: string; Component: React.ComponentType }[] = [
   { id: "checkbox", Component: CheckboxSection },
   { id: "radio-group", Component: RadioGroupSection },
   { id: "toggle", Component: ToggleSection },
+  { id: "tabs", Component: TabsSection },
+  { id: "toggle-group", Component: ToggleGroupSection },
+  { id: "section-select", Component: SectionSelectSection },
   { id: "slider", Component: SliderSection },
   { id: "password-field", Component: PasswordFieldSection },
 ];

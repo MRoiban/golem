@@ -1,0 +1,20 @@
+.golem-tabs-list {
+  position: relative;
+  isolation: isolate;
+}
+.golem-tabs-list > [data-slot="tabs-trigger"] {
+  position: relative;
+  z-index: 1;
+}
+.golem-tabs-list > .golem-selection__motion {
+  z-index: 0;
+}
+.golem-tabs-list[data-anima="ready"]
+  > [data-slot="tabs-trigger"][aria-selected="true"] {
+  background-color: transparent;
+  border-color: transparent;
+}
+
+.golem-tabs-list[data-variant="editor"] > .golem-selection__motion {
+  --anima-border: var(--onyx-shell-tabs-border);
+}

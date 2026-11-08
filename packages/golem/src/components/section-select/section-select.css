@@ -1,0 +1,17 @@
+.golem-section-select {
+  display: inline-flex;
+}
+.golem-section-select-menu {
+  position: relative;
+  isolation: isolate;
+}
+.golem-section-select-menu > [data-slot="section-select-item"] {
+  z-index: 1;
+}
+.golem-section-select-menu .golem-selection__motion {
+  z-index: 0;
+}
+.golem-section-select-menu[data-anima="ready"]
+  > [data-slot="section-select-item"][data-active="true"] {
+  background-color: transparent;
+}

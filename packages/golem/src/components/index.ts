@@ -4,3 +4,6 @@ export { PasswordField, type PasswordFieldProps } from "./password-field/passwor
 export { Checkbox, type CheckboxProps } from "./checkbox/checkbox";
 export { RadioGroup, RadioGroupItem, type RadioGroupProps, type RadioGroupItemProps } from "./radio-group/radio-group";
 export { Toggle, type ToggleProps } from "./toggle/toggle";
+export { Tabs, TabsList, TabsTrigger, TabsContent, TabClose, TabBadge, type TabsProps, type TabsListProps, type TabsTriggerProps, type TabsContentProps } from "./tabs/tabs";
+export { ToggleGroup, ToggleGroupItem, type ToggleGroupProps } from "./toggle-group/toggle-group";
+export { SectionSelect, type SectionSelectProps } from "./section-select/section-select";
