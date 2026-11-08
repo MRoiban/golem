@@ -19,7 +19,18 @@ jobs:
         with: { node-version: 24 }
       - uses: oven-sh/setup-bun@v2
         with: { bun-version: 1.4.3 }
-      - run: bun install --frozen-lockfile
+      # Onyx comes from a GitHub release tarball; cache it, and retry when the release CDN is down.
+      - uses: actions/cache@v4
+        with:
+          path: ~/.bun/install/cache
+          key: bun-${{ runner.os }}-${{ hashFiles('bun.lock') }}
+      - name: bun install (with retries)
+        run: |
+          for i in 1 2 3 4 5; do
+            bun install --frozen-lockfile && exit 0
+            echo "bun install failed (attempt $i); retrying in $((i * 30)) s"; sleep $((i * 30))
+          done
+          exit 1
       - name: Install Anima's build tools
         run: npm ci --ignore-scripts --no-audit --no-fund
         working-directory: anima
