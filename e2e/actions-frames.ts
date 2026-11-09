@@ -1,6 +1,7 @@
 import type { Page } from "@playwright/test";
 /** Reset the paused debug player to a known phase, preserving inputs from the Onyx DOM.
- * The host has no public settle/reset API (F3); this is test-only deterministic stepping. */
+ * Test-only deterministic stepping: settle() would run once-timelines to their end, and these
+ * frames need fixed times inside them. */
 export async function resetActionParts(page: Page, name: string) {
   await page.locator(`.golem-${name}`).evaluateAll((wrappers, name) => {
     type Player = { model: object; step(dt: number): void };

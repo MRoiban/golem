@@ -12,7 +12,8 @@ export function ToneIcon({ tone, scene, fallback }: { tone: Tone; scene: "alert"
       played.current = true;
       anima.current?.fire("draw");
       // Begin the entrance before revealing the drawing: no full-icon flash before trim=0.
-      // Uses the same F3 workaround as AnimaControl's initial settle (no host settle API).
+      // settle() would finish the draw-in; step(0) + invalidate() applies only its first frame
+      // (Anima's documented way to resolve pending changes synchronously, docs/WEB.md).
       const icon = anima.current?.icon();
       icon?.player?.step(0);
       icon?.invalidate();

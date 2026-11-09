@@ -74,22 +74,17 @@ export const AnimaControl = React.forwardRef<AnimaHandle, AnimaControlProps>(fun
           node.setAttribute("aria-hidden", "true");
           el.append(node);
           node.loadModel(model);
+          // Inputs written before the player exists are queued by Anima; Golem still waits for the
+          // load, because it reports "ready" (and hides Onyx's paint) only once the drawing exists.
           if (!node.player) await new Promise((r) => node.addEventListener("anima:load", r, { once: true }));
-          // Workaround (docs/anima-findings.md F1): the host sizes its SVG to viewBox/grid on each
-          // axis, which squashes non-square scenes. Golem parts always fill their box.
-          const fill = document.createElement("style");
-          fill.textContent = "svg{left:0!important;top:0!important;width:100%!important;height:100%!important}";
-          node.shadowRoot?.append(fill);
           if (!alive) { node.destroy(); node.remove(); return; }
           icon.current = node;
-          // Start at rest in the current state: write inputs, then settle every blend before the
-          // first paint (a checked switch must not animate from off on mount).
+          // Start at rest in the current state: write inputs and theme data, then settle every blend
+          // silently before the first paint (a checked switch must not animate from off on mount).
           written.current = { ...latest.current };
           for (const [k, v] of Object.entries(written.current)) node.set(k, v);
-          node.player?.step(0);
-          node.player?.step(5);
           writeThemeData(node, true);
-          node.invalidate();
+          node.settle();
           mountMetrics.push({ scene, cached, waitMs: t1 - t0, ms: performance.now() - t1, at: performance.now() });
           setStatus("ready");
         } catch (e) {

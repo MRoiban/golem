@@ -3,6 +3,7 @@
 ## Now
 Goal (owner 2026-11-08): every component in docs/components.md's catalogue, validated with screenshots and state tests, proven to the owner. Done: all 17 merged (PRs #9–#14); CI on main 844f6dc: 600 passed / 0 failed, pack 73.4 KB + smoke ok. Proof page: https://claude.ai/artifact/KQ5iRrXWqpe353iGeEoNzE (private; republish from the session scratchpad file, or pass the URL).
 Playground (owner asked 2026-11-09, modelled on anima-kit's page): demo/play.tsx at /play, every component in a gallery with state readouts, Stress buttons, an event log and URL-kept settings. Live at https://golem.mc2.onl, a public Bedrock pebble deployed from ~/.cache/golem/pebble (outside the repo, so no bedrock dependency here): `bun run site`, copy release/site to that folder's site/, `bedrock deploy` there. The owner is using it to hunt bugs; their reports come next.
+Anima pin bumped 8ffd7148 → c2b870ae (owner asked 2026-11-09: the big review-fix sweep, 194 fixes, plus issues #23–#35 that answered F1–F8). Golem now uses settle(), ::part(svg) and `anima bundle --modules`; F9–F11 still open at c2b870ae (docs/anima-findings.md has the table). Playground redeployed on it.
 Next (owner): tag v0.1.0 (publishes a GitHub release) — waiting for a yes. Follow-up: move Progress/Meter fill easing from the JS interpolation into Anima (Tabs' reciprocal-transform technique, F10).
 Don't: commit .anima/, release/ or .cache/; edit Anima/Onyx/@bedrock/ui; involve Harmony; push a v* tag without the owner; let agents merge.
 
@@ -19,7 +20,7 @@ All 5 finished. GPT-6.1-sol, xhigh, via T3 delegate_task (worktree, branch `comp
 
 ## Review protocol (per agent PR)
 1. Read the PR description and diff; reject shared-code changes that aren't minimal and additive.
-2. Check out the branch; `ANIMA_DIR=~/.cache/golem/anima-8ffd7148 bun run build:anima`; typecheck, unit, sizes.
+2. Check out the branch; `ANIMA_DIR=~/.cache/golem/anima-c2b870ae bun run build:anima`; typecheck, unit, sizes.
 3. Run its specs + e2e/switch.spec.ts myself (GOLEM_E2E_PORT 4631, my port). Timeouts under load: rerun before calling it a failure.
 4. Regenerate its gallery + frames, `bun scripts/contact-sheet.ts <ids>`, look at each sheet.png; open originals for anything suspicious, and measure (getBoundingClientRect inside the shadow root) before believing a pixel offset.
 5. Thin or doubtful PR: an independent GPT-6.1-sol reviewer that gets the code and sheets, not the author's summary.
@@ -37,7 +38,7 @@ All 5 finished. GPT-6.1-sol, xhigh, via T3 delegate_task (worktree, branch `comp
 - AniML document colour slots are `<color name="x" value="#hex"/>` (no `<colors>` wrapper). They render as `var(--anima-x, default)` and cannot be animated (SPEC §6). — anima validate; spec/SPEC.md:239
 - Each `packages/web/dist/anima-*.js` in Anima is a standalone bundle that includes core. Measure a module's cost against anima-icon.js (21.1 KB gz), not its standalone size. — gzip sizes
 - The machine is shared (load average 50–70 from other agents): use Playwright with 2 workers, a 180 s webServer timeout and 45 s waits for the runtime. — e2e timeouts, `uptime`
-- `<anima-icon>` sizes its SVG to w/grid × h/grid of the host, which squashes non-square scenes. Golem injects a fill style into the shadow root (findings F1). — svg measured 31.0×9.6 in a 31.5×17.5 host
+- Since Anima c2b870ae `<anima-icon>` scales both axes by the viewBox's long axis over `grid`; Golem's parts must fill their box exactly, so `styles.css` sets `.golem-anima > anima-icon::part(svg)` to fill (!important: Anima places the SVG inline). Without it the switch draws 0.5 px short and Progress/Meter 21.7 px tall in a 6 px bar. — .cache/f1.ts measured all 81 playground drawings
 - Onyx's Field `id` is not the wrapper div's id; select switches by data-testid or role. — e2e selector failure
 - Firefox reports a failed dynamic import as a console *warning*: "Loading failed for the module …". — e2e log
 - Grid and flex items stretch a Golem wrapper (seen on `.golem-switch`), and the overlay fills the wrapper, so wrappers must be `width/height: max-content` with `justify-self: start`. — screenshot showed stretched pills; e2e now asserts wrapper box == button box
@@ -48,10 +49,12 @@ All 5 finished. GPT-6.1-sol, xhigh, via T3 delegate_task (worktree, branch `comp
 - GitHub release downloads (the Onyx tarball) returned 504 for over an hour on 2026-11-08, while the API asset download worked. CI's scripts/ci-install.sh falls back to `gh api` and checks the sha512 against bun.lock. A cache saved on a PR branch is not visible to other PRs, so the cache alone doesn't help. — CI runs 42466033831, 42468553844, 42469148126; local fallback test
 - `bun run pack` reads packages/golem/package.json from git HEAD, not the working copy: CI's install fallback rewrites the Onyx URL to a local `file:` path, which must never ship. Commit manifest changes before packing. — scripts/ci-install.sh line 24
 - The release tarball's runtime must come from the pin: pack refuses otherwise (`--allow-unpinned` for local tries; the local ../anima moves). — pack output "NOT the pin" at 2efbf239
-- Parallel agents need distinct Playwright ports: GOLEM_E2E_PORT (default 4621); and a pinned Anima checkout outside ../anima, which moves: ~/.cache/golem/anima-8ffd7148 (clean clone + npm ci). — this session
+- Parallel agents need distinct Playwright ports: GOLEM_E2E_PORT (default 4621); and a pinned Anima checkout outside ../anima, which moves: ~/.cache/golem/anima-<pin8> (clean clone + `npm ci --ignore-scripts`), now anima-c2b870ae. — this session
 - Bun's CSS bundler hoists @import-ed layer blocks above the file's own `@layer a, b;` statement; pack.ts restates the order at the top of dist/styles.css. — bun build of styles.css
 
 - Playwright element screenshots at half-pixel positions look shifted by up to ~1 CSS px: the switch frames looked offset right, but wrapper, button, overlay and shadow SVG all measured 935.5,343.75,31.5×17.5. Measure before "fixing" alignment. — .cache/measure.ts
+- Meter/Progress motion frames are not reproducible run to run (±a few px at 40–160 ms): the fill easing is JS through React, whose scheduler runs on MessageChannel tasks that Playwright's fake clock doesn't control; flushing them after each clock step did not make it stable. Moving the easing into Anima fixes it. — 3 runs of meter-frames at c2b870ae
+- `pkill -f <pattern>` kills the shell running it when the pattern is in its own command line (exit 144). Kill by port: `kill $(lsof -t -i:<port> -sTCP:LISTEN)`. — this session, twice
 - A Playwright script outside the repo (e.g. in the scratchpad) resolves Bun's global playwright-core 1.65, whose browsers aren't installed; run ad-hoc scripts from the repo (.cache/ is gitignored). — "Executable doesn't exist … chromium_headless_shell-1254"
 
 - Integrating parallel component branches: merge them all into one branch; conflicts are only list files: keep both sides; rewrite demo/sections/index.ts in catalogue order (a single conflict there spans imports and the array); dedupe catalogue rows in docs/components.md by hand; renumber clashing anima-findings IDs. — integrate/components
@@ -81,3 +84,5 @@ All 5 finished. GPT-6.1-sol, xhigh, via T3 delegate_task (worktree, branch `comp
 - 2026-11-08 21:40 [claude]: PR #9 merged. #13 (actions) reviewed and integrated into PR #14; findings F9/F10/F11 reconciled; CI on #14 failed at pack (TS2742 on Accordion/CollapsibleTrigger) → annotated; pack 73.4 KB from pin, smoke ok; full e2e 600 passed / 0 failed / 66 skipped (Chromium + Firefox); sizes: JS 9.58 KB, CSS 1.71 KB, runtime+bind 22.60 KB, app-UI 48.72 KB gz
 - 2026-11-08 22:10 [claude]: PR #14 CI flakes fixed at the root, all in tests: Meter/Progress retarget timing, drawingBox throw inside poll, Radix roving-focus race (ToggleGroup vertical; also Tabs, SectionSelect). Indicator specs 294/294 over 3 repeats
 - 2026-11-08 22:25 [claude]: PR #14 merged (844f6dc), closing #10–#13; CI: 600 passed / 0 failed / 66 skipped, pack 73.4 KB from pin, smoke ok. Proof page published and updated with CI numbers
+- 2026-11-09 [claude]: playground PR #16 merged; live at golem.mc2.onl
+- 2026-11-09 [claude]: Anima pin → c2b870ae. With the old workarounds: e2e 616 passed / 0 failed. Then F1/F5 → ::part(svg), F3 → settle(), F6 → anima bundle (runtime 24.69 KB gz, was 22.60): e2e 616 / 0, all 81 playground drawings fill their box exactly, gallery + frames regenerated (Switch/Checkbox/Radio/Toggle pixel-identical; the rest run noise), pack 75.0 KB + smoke ok. F9, F10 re-measured with anima render: unchanged. F11: convert/interpolate would need data+convert (36.0 KB gz runtime, over budget)

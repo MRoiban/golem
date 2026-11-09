@@ -26,6 +26,15 @@
     width: 100%;
     height: 100%;
   }
+  /* The drawing fills the part's box on both axes. Anima scales a non-square viewBox by its long
+     axis over the grid, which leaves the Switch 0.5 px short and stretched scenes (Progress, Meter)
+     the wrong height. Anima sets the placement inline, so this needs !important. */
+  .golem-anima > anima-icon::part(svg) {
+    left: 0 !important;
+    top: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+  }
   /* A motion part fills its wrapper and never takes input. */
   .golem-part__motion {
     position: absolute;
