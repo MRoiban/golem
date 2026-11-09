@@ -295,9 +295,9 @@ What "no code changes" needs, and where each part lives:
 | --- | --- | --- |
 | Golem components work without a `GolemProvider` (motion follows `prefers-reduced-motion`; colours follow the page CSS) | Golem `useGolem()` | Done, e2e `?provider=off` |
 | The runtime is found without app code: `<meta name="golem-anima-runtime">` and `<meta name="golem-anima-scenes">` | Golem `runtime.ts` | Done, e2e |
-| `@bedrock/ui` exports Golem's `Switch` (and later components) in place of Onyx's, same props | `@bedrock/ui` `src/index.ts` | Proposal |
-| `@bedrock/ui/styles.css` appends `golem.css`, `anima-slots.css` and `@mroiban/golem/styles.css` | `@bedrock/ui` `scripts/build-css.ts` | Proposal |
-| Bedrock serves the Anima runtime and Golem's compiled scenes, and injects the two meta tags into every pebble page | Bedrock dev server and deploy | Proposal; the files ship in Golem's tarball (`runtime/`) |
+| `@bedrock/ui` exports Golem's 18 wrapped components in place of Onyx's, same props (checked: `packages/golem/test/onyx-compat.*`) | `@bedrock/ui` `src/index.ts`, `src/golem.ts` | bedrock#10 |
+| `@bedrock/ui/styles.css` appends `anima-slots.css` and `@mroiban/golem/styles.css` (not `golem.css`: they define no `--onyx-*`, so pebble themes are unchanged) | `@bedrock/ui` `scripts/build-css.ts` | bedrock#10 |
+| Each pebble serves its installed Golem's `runtime/` at `/_bedrock/anima/<golem version>/`, and `@bedrock/ui` points Golem there with `configureAnima` (no HTML injection; the version in the path keeps a cached runtime from meeting a newer page) | Bedrock `src/runtime/anima.ts` | bedrock#10 |
 
 Golem's CSS already layers on top of `@bedrock/ui/styles.css` without changes (the `golem.tokens`
 and `golem.components` layers come after `onyx.*`), so the stylesheet change is an append. The

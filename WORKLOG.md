@@ -4,7 +4,8 @@
 Goal (owner 2026-11-08): every component in docs/components.md's catalogue, validated with screenshots and state tests, proven to the owner. Done: all 17 merged (PRs #9–#14); CI on main 844f6dc: 600 passed / 0 failed, pack 73.4 KB + smoke ok. Proof page: https://claude.ai/artifact/KQ5iRrXWqpe353iGeEoNzE (private; republish from the session scratchpad file, or pass the URL).
 Playground (owner asked 2026-11-09, modelled on anima-kit's page): demo/play.tsx at /play, every component in a gallery with state readouts, Stress buttons, an event log and URL-kept settings. Live at https://golem.mc2.onl, a public Bedrock pebble deployed from ~/.cache/golem/pebble (outside the repo, so no bedrock dependency here): `bun run site`, copy release/site to that folder's site/, `bedrock deploy` there. The owner is using it to hunt bugs; their reports come next.
 Anima pin bumped 8ffd7148 → c2b870ae (owner asked 2026-11-09: the big review-fix sweep, 194 fixes, plus issues #23–#35 that answered F1–F8). Golem now uses settle(), ::part(svg) and `anima bundle --modules`; F9–F11 still open at c2b870ae (docs/anima-findings.md has the table). Playground redeployed on it.
-Next (owner): tag v0.1.0 (publishes a GitHub release) — waiting for a yes. Follow-up: move Progress/Meter fill easing from the JS interpolation into Anima (Tabs' reciprocal-transform technique, F10).
+Released: v0.1.0 (2026-11-09), v0.1.1 (production JSX: v0.1.0's dist imported react/jsx-dev-runtime and crashed consumer production builds). Pebbles: bedrock#10 (owner go-ahead 2026-11-09) puts Golem in @bedrock/ui and serves the runtime per pebble at /_bedrock/anima/<version>/; work clone /data/playground/bedrock-golem; not deployed to the live daemon (~/.bedrock/src) — ask the owner first. Upgrading Golem in Bedrock = release URL in packages/ui/package.json, bun install, bun run build:css.
+Next: WebKit (Safari) in CI; follow-up: move Progress/Meter fill easing from the JS interpolation into Anima (Tabs' reciprocal-transform technique, F10).
 Don't: commit .anima/, release/ or .cache/; edit Anima/Onyx/@bedrock/ui; involve Harmony; push a v* tag without the owner; let agents merge.
 
 ## Agents
@@ -27,7 +28,7 @@ All 5 finished. GPT-6.1-sol, xhigh, via T3 delegate_task (worktree, branch `comp
 6. Fix small findings myself; send big ones back to the agent's thread. Merge; resolve the one-line conflicts; update the table and Log.
 
 ## Open decisions (owner)
-- First release tag v0.1.0 (publishes a GitHub release): waiting for a yes.
+- Deploying bedrock#10 to the live daemon (restarts every pebble): waiting for a yes.
 - Decided (me, 2026-11-08): Anima's `bind` module is allowed repo-wide for measured geometry (Tabs/ToggleGroup/SectionSelect). Runtime core+web+bind = 22.60 KB gz, still inside Anima's own 24 KB core+web gate. Everything else stays core.
 
 ## Gotchas
@@ -90,3 +91,4 @@ All 5 finished. GPT-6.1-sol, xhigh, via T3 delegate_task (worktree, branch `comp
 - 2026-11-09 [claude]: playground PR #16 merged; live at golem.mc2.onl
 - 2026-11-09 [claude]: Anima pin → c2b870ae. With the old workarounds: e2e 616 passed / 0 failed. Then F1/F5 → ::part(svg), F3 → settle(), F6 → anima bundle (runtime 24.69 KB gz, was 22.60): e2e 616 / 0, all 81 playground drawings fill their box exactly, gallery + frames regenerated (Switch/Checkbox/Radio/Toggle pixel-identical; the rest run noise), pack 75.0 KB + smoke ok. F9, F10 re-measured with anima render: unchanged. F11: convert/interpolate would need data+convert (36.0 KB gz runtime, over budget)
 - 2026-11-09 [claude]: v0.1.0 tagged and released (owner yes); anima#39 (F9) and anima#40 (F10) opened. Owner's iPhone: playground drew doubled, stale parts → cached old runtime + no cleanup on failed mount; fixed (versioned runtime URL, API check, cleanup) with e2e proving both paths fail without the fix. Button labels clipped while loading is Onyx's width lock (button.tsx:86–136), shown side by side in the playground now
+- 2026-11-09 [claude]: v0.1.1 released. bedrock#10: @bedrock/ui exports Golem's controls, pebbles serve /_bedrock/anima/<version>/. Typewriter unchanged under bedrock dev: 21 buttons + tabs drawn, editor pixel-identical; chrono/cloudly/discord-reader/netflix-code typecheck unchanged. Bedrock suite 851/3 (known failures)

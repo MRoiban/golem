@@ -20,25 +20,11 @@ bugs and missing APIs are in [anima-findings.md](anima-findings.md).
 
 ## `@bedrock/ui` and Bedrock
 
-The owner decided that pebbles get Anima motion without any code changes (design.md §7). Golem's
-side is done (no provider needed; the runtime is found through meta tags). These changes are needed
-in `@bedrock/ui` and Bedrock:
-
-1. **Re-export Golem components in place of Onyx's**, with identical props. Today:
-   `export * from "@mroiban/onyx"`, then `export { Switch } from "@mroiban/golem"` (an explicit
-   export takes precedence over the star export).
-2. **Append Golem's CSS to the prebuilt stylesheet** in `scripts/build-css.ts`, after Onyx's:
-   `@mroiban/golem/tokens.css`, `@mroiban/golem/anima-slots.css`, `@mroiban/golem/styles.css`
-   (about 3.9 KB gz together).
-3. **Serve Anima and inject the meta tags.** Bedrock's dev server and deployed pebbles serve the
-   Anima runtime and Golem's compiled scenes at a fixed path (e.g. `/_bedrock/anima/`) and add
-   `<meta name="golem-anima-runtime" content="/_bedrock/anima/anima.js">` and
-   `<meta name="golem-anima-scenes" content="/_bedrock/anima/scenes/">` to every pebble page.
-   The files ship in Golem's release tarball: `@mroiban/golem/runtime/anima.js` and
-   `runtime/scenes/*.ani`, built from the pinned Anima commit (MIT, licence in
-   `runtime/ANIMA-LICENSE`). Bedrock serves that folder from `node_modules`.
-
-Without item 3, pebbles still work and show plain Onyx.
+Done in [bedrock#10](https://github.com/MRoiban/bedrock/pull/10) (owner go-ahead 2026-11-09);
+design.md §7 has the table. It differs from the first proposal in one way: no meta-tag injection.
+`@bedrock/ui` calls `configureAnima` with `/_bedrock/anima/<golem version>/`, and each pebble serves
+that path from its installed Golem's `runtime/`. A fixed path let a cached runtime meet a newer page
+(the playground broke that way on an iPhone, 2026-11-09).
 
 ## Anima
 
