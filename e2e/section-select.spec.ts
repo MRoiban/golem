@@ -56,7 +56,10 @@ for (const motion of ["anima", "css"])
     await expect(trigger).toBeFocused();
     await expect(page.getByTestId("select-value")).toHaveText("activity");
     await trigger.click();
+    // Radix moves focus into the popup after it opens; keys pressed before that land on the old focus.
+    await expect(page.getByRole("option", { name: "Activity log" })).toBeFocused();
     await page.keyboard.press("ArrowUp");
+    await expect(page.getByRole("option", { name: "Notes", exact: true })).toBeFocused();
     await page.keyboard.press("Space");
     await expect(page.getByTestId("select-value")).toHaveText("notes");
     await trigger.click();
