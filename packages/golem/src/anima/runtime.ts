@@ -43,10 +43,26 @@ export const animaConfig = () => { fromDocument(); return config; };
 export const runtimeState = () => state;
 export function onRuntimeState(f: () => void) { listeners.add(f); return () => { listeners.delete(f); }; }
 
-/** Resolves true once <anima-icon> is defined; false when Anima is unavailable (never throws). */
+/** The <anima-icon> methods Golem calls. settle() arrived in Anima c2b870ae (golem findings F3). */
+const REQUIRED = ["loadModel", "set", "settle", "invalidate", "destroy"] as const;
+/** Names of required methods the registered runtime lacks: an older runtime, e.g. a stale cached copy. */
+function missingApi(): string[] {
+  const proto = (customElements.get("anima-icon") as CustomElementConstructor | undefined)?.prototype as Record<string, unknown> | undefined;
+  return REQUIRED.filter((m) => typeof proto?.[m] !== "function");
+}
+function accept(url: string): boolean {
+  const missing = missingApi();
+  if (!missing.length) { if (state !== "ready") setState("ready"); return true; }
+  console.warn(`[golem] The Anima runtime at ${url} lacks ${missing.join(", ")}: it is older than this Golem `
+    + "(a cached copy from before an update?). Using plain Onyx. Serve the runtime under a versioned URL.");
+  setState("absent");
+  return false;
+}
+
+/** Resolves true once a compatible <anima-icon> is defined; false when Anima is unavailable or too old (never throws). */
 export function loadAnima(): Promise<boolean> {
   if (typeof window === "undefined") return Promise.resolve(false);
-  if (customElements.get("anima-icon")) { if (state !== "ready") setState("ready"); return Promise.resolve(true); }
+  if (customElements.get("anima-icon")) return loading ??= Promise.resolve(accept("(already registered)"));
   if (loading) return loading;
   fromDocument();
   if (!config.runtime) { setState("absent"); return (loading = Promise.resolve(false)); }
@@ -54,7 +70,7 @@ export function loadAnima(): Promise<boolean> {
   const url = config.runtime;
   loading = import(/* @vite-ignore */ url)
     .then(() => customElements.whenDefined("anima-icon"))
-    .then(() => { setState("ready"); return true; })
+    .then(() => accept(url))
     .catch((e: unknown) => {
       console.info(`[golem] Anima runtime unavailable (${url}); using plain Onyx.`, e);
       setState("absent");

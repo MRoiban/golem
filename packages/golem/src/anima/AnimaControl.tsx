@@ -64,11 +64,13 @@ export const AnimaControl = React.forwardRef<AnimaHandle, AnimaControlProps>(fun
       cancel = enqueueMount(el, async () => {
         const t0 = performance.now();
         const cached = hasModel(src, component);
+        let mounted: AnimaIconElement | null = null;
         try {
           const model = await getModel(src, component);
           const t1 = performance.now();
           if (!alive) return;
           const node = document.createElement("anima-icon") as AnimaIconElement;
+          mounted = node;
           if (component) node.setAttribute("component", component);
           node.setAttribute("fit", "fill");
           node.setAttribute("aria-hidden", "true");
@@ -89,6 +91,10 @@ export const AnimaControl = React.forwardRef<AnimaHandle, AnimaControlProps>(fun
           setStatus("ready");
         } catch (e) {
           console.warn(`[golem] ${scene}: Anima mount failed; using plain Onyx.`, e);
+          // Take the half-mounted drawing out, or it would sit stale over Onyx's own painting.
+          const broken: AnimaIconElement | null = mounted;
+          if (broken) { try { broken.destroy(); } catch { /* already broken */ } broken.remove(); }
+          if (icon.current === broken) icon.current = null;
           if (alive) setStatus("off");
         }
       });

@@ -16,8 +16,8 @@ Status re-checked at Anima `c2b870ae` (main, 2026-11-09), the commit Golem now p
 | F6 | Missing tool | No supported way to build one bundle with chosen modules | Fixed (#28): `anima bundle --modules` | `build-anima.ts` uses it |
 | F7 | Authoring trap | Core guards use `!x`, bind expressions use `not x` | Addressed (#29): validator hint | Nothing needed |
 | F8 | Cost | Rounded-rect `corners` need the `paint` module | Addressed (#30): `corners` is its own module | Keeps paths and circles (core) |
-| F9 | Bug | Partial stroke trim repeats a round-cap dot at the far endpoint | Open: same dash arrays (`9.18642 5.31581`) | Workarounds unchanged |
-| F10 | Bug | SVG matrix rounding collapses tiny reciprocal transforms | Open: `scaleX="0.000001"` still renders `matrix(0 0 0 1 0 0)` | Workaround unchanged |
+| F9 | Bug | Partial stroke trim repeats a round-cap dot at the far endpoint | Open ([anima#39](https://github.com/MRoiban/anima/issues/39)): same dash arrays (`9.18642 5.31581`) | Workarounds unchanged |
+| F10 | Bug | SVG matrix rounding collapses tiny reciprocal transforms | Open ([anima#40](https://github.com/MRoiban/anima/issues/40)): `scaleX="0.000001"` still renders `matrix(0 0 0 1 0 0)` | Workaround unchanged |
 | F11 | Gap | Numeric bindings have no temporal smoothing | Partly: the `convert` module's `interpolate` (with `ease`) smooths a binding, but needs `data` + `convert`: runtime 24.7 → 36.0 KB gz, over Golem's 32 KB budget | Keeps the 240 ms JS interpolation |
 
 Repros for F9 and F10 at both pins: render a one-path scene with `anima render <file> -o out.svg` and

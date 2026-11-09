@@ -12,8 +12,8 @@ a { color: var(--onyx-text-link, var(--onyx-accent-fg, inherit)); }
 .bar h1 { margin: 0; font-size: var(--onyx-text-lg); font-weight: var(--onyx-weight-semibold); white-space: nowrap; }
 .bar h1 span { color: var(--onyx-text-description); font-weight: normal; }
 .bar-controls { display: flex; align-items: center; flex-wrap: wrap; gap: 8px 12px; min-width: 0; }
-.bar-controls [role='group'] { flex-wrap: wrap; }
-.bar-controls [role='group'] > * { flex-shrink: 0; white-space: nowrap; }
+.bar-controls .onyx-toggle-group { flex-wrap: wrap; }
+.bar-controls button { flex-shrink: 0; white-space: nowrap; }
 
 .page { max-width: 1440px; margin: 0 auto; padding: 16px 16px 48px; }
 .intro { max-width: 760px; color: var(--onyx-text-description); line-height: 1.55; }

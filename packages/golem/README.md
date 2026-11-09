@@ -37,6 +37,12 @@ or in code: `configureAnima({ runtime: "/anima/anima.js", scenes: "/anima/scenes
 
 With Bun, for example: `cp -r node_modules/@mroiban/golem/runtime public/anima`.
 
+Serve the runtime under a URL that changes with each Golem version (for example
+`/anima/<version>/anima.js`), or with `Cache-Control: no-cache`. A browser that keeps an older
+runtime cached under the same URL would pair it with newer Golem code. Golem detects a runtime that
+lacks the methods it needs and falls back to plain Onyx, with a console warning, but you lose the
+motion until the cache expires.
+
 `runtime/build.json` names the Anima commit the runtime was built from. Anima is MIT; its licence is in `runtime/ANIMA-LICENSE`.
 
 ### Themes and motion preference
