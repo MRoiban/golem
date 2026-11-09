@@ -52,4 +52,6 @@ if (!html.includes('role="switch"') || !html.includes('aria-checked="true"')) th
 console.log("ssr ok");
 `);
 run("bun", ["ssr.tsx"]);
+// Again with React's production build, as a consumer's production bundle gets it.
+execFileSync("bun", ["ssr.tsx"], { cwd: dir, stdio: "inherit", env: { ...process.env, NODE_ENV: "production" } });
 console.log(`smoke ok: ${tgz}`);

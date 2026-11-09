@@ -43,8 +43,12 @@ const js = await Bun.build({
   format: "esm",
   splitting: true,
   external: ["react", "react-dom", "react/jsx-runtime", "@mroiban/onyx"],
-});
+  // Production JSX: jsxDEV (react/jsx-dev-runtime) is undefined in React's production build, so a
+  // consumer's production bundle crashed on the first Golem component (v0.1.0, found in a pebble).
+  jsx: { development: false },
+} as Parameters<typeof Bun.build>[0]);
 if (!js.success) fail(js.logs.join("\n"));
+for (const out of js.outputs) if ((await out.text()).includes("jsx-dev-runtime")) fail(`${out.path} imports react/jsx-dev-runtime`);
 // Bun names entries by their path under root: index.js, anima/index.js, tokens/index.js.
 const entryJs = { index: "./dist/index.js", anima: "./dist/anima/index.js", tokens: "./dist/tokens/index.js" };
 for (const f of Object.values(entryJs)) if (!existsSync(join(pkgDir, f))) fail(`missing ${f}`);
