@@ -10,12 +10,15 @@ export type AnimaData = {
 };
 export interface AnimaIconElement extends HTMLElement {
   ready: Promise<void>;
+  /** Exists once a model has loaded. step(0) + invalidate() applies pending changes at once (docs/WEB.md). */
   player?: { model: AnimaModel; step(dt: number): unknown };
   load(doc: object | string, markup?: boolean): AnimaDiagnostic[] | undefined;
   loadModel(model: AnimaModel): void;
   set(name: string, value: boolean | number): void;
   fire(name: string): void;
   invalidate(): void;
+  /** Resolve the current inputs, blends and once-timelines silently, then draw (true if at rest). */
+  settle(): boolean;
   destroy(): void;
   /** Present when the data-host module is loaded. */
   data?: AnimaData;

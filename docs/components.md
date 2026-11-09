@@ -141,8 +141,8 @@ you looked at and what you fixed because of it.
 ```sh
 bun install
 bun run build:tokens
-ANIMA_DIR=~/.cache/golem/anima-8ffd7148 bun run build:anima   # a clean clone at the pinned commit
-node ~/.cache/golem/anima-8ffd7148/packages/cli/src/main.ts validate <file.animl>
+ANIMA_DIR=~/.cache/golem/anima-c2b870ae bun run build:anima   # a clean clone at the pinned commit
+node ~/.cache/golem/anima-c2b870ae/packages/cli/src/main.ts validate <file.animl>
 bun run typecheck && bun run test && bun run sizes
 bun run pack && bun run smoke   # declaration emit + a fresh consumer install; typecheck alone misses TS2742
 GOLEM_E2E_PORT=<your port> bunx playwright test e2e/<name>.spec.ts

@@ -7,7 +7,7 @@
 // or keep anima next to golem (../anima). CI checks out the pinned commit.
 //   bun scripts/build-anima.ts [--check]   --check: validate the scenes and theme library only
 import { execFileSync } from "node:child_process";
-import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs";
 import { basename, join, resolve } from "node:path";
 import { gzipSync } from "node:zlib";
 import { animaThemeLibrary } from "../packages/golem/src/tokens/generate";
@@ -64,7 +64,7 @@ for (const comp of readdirSync(components, { withFileTypes: true }).filter((d) =
 if (new Set(scenes.map((s) => s.name)).size !== scenes.length) throw new Error("two scenes share a name");
 if (process.argv.includes("--check")) process.exit(0);
 
-// 3. Runtime: the base element plus each required module's web entry.
+// 3. Runtime: the base element plus each required module's web entry, in one bundle.
 const entries = readdirSync(join(ANIMA, "packages/web/src")).filter((f) => f.endsWith(".ts")).map((f) => basename(f, ".ts"));
 const byFeature = new Map(entries.map((e) => [e.replace(/-/g, ""), e]));
 const modules = [...new Set(scenes.flatMap((s) => s.requires))].map((r) => {
@@ -72,12 +72,11 @@ const modules = [...new Set(scenes.flatMap((s) => s.requires))].map((r) => {
   if (!e) throw new Error(`no Anima web entry for required feature "${r}"`);
   return e;
 });
-const entry = join(out, "entry.ts");
-writeFileSync(entry, ["index", ...modules].map((m) => `import ${JSON.stringify(join(ANIMA, "packages/web/src", `${m}.ts`))};`).join("\n") + "\n");
-// Anima's own production bundler (esbuild + terser, terse diagnostics), used read-only.
-const code = execFileSync("node", ["--input-type=module", "-e",
-  `const { bundle } = await import(${JSON.stringify(join(ANIMA, "tools/browser-build.ts"))});
-   process.stdout.write(await bundle(${JSON.stringify(entry)}));`], { encoding: "utf8", cwd: ANIMA, maxBuffer: 1 << 26 });
+// Anima's own chosen-module bundler (`anima bundle --modules`, the same pipeline as its dist files).
+const bundled = join(out, "anima.bundle.js");
+cli("bundle", ...(modules.length ? ["--modules", modules.join(",")] : []), "-o", bundled, "--format=json");
+const code = readFileSync(bundled, "utf8");
+rmSync(bundled);
 const header = `// Anima runtime ${commit} (core + web${modules.length ? " + " + modules.join(", ") : ""}), built by golem/scripts/build-anima.ts. Anima is MIT licensed (github.com/MRoiban/anima).\n`;
 writeFileSync(join(out, "anima.js"), header + code);
 const info = { anima: { dir: ANIMA, commit }, runtime: { modules, bytes: code.length, gz: gz(code) }, scenes };

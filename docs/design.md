@@ -46,7 +46,7 @@ anima-kit's measured lessons, and how Golem applies them:
   visible ones first (IntersectionObserver, 200 px margin). The Onyx control is already drawn, so the
   page never waits.
 - **Off-screen hosts don't step.** Golem's switch draws with colour slots, which are CSS and correct
-  before any step. Golem also settles each scene synchronously on mount (findings F3). For
+  before any step. Golem also settles each scene synchronously on mount with Anima's `settle()`. For
   data-model scenes, the generated Theme library defaults to the dark theme.
 - **Theme tokens via `icon.data.color("$theme:x").set(...)`.** Golem supports this as the second
   theme path (§5.4) and prefers slots.
@@ -197,7 +197,7 @@ handle.current?.fire("pop");
   imperatively. The icon is `aria-hidden`, has `pointer-events: none` through the caller's CSS, and
   never takes focus.
 - Status is `off`, `pending` or `ready`. Callers switch their CSS on `ready` only.
-- On mount it writes the inputs, settles the scene to rest (findings F3), syncs theme data, then
+- On mount it writes the inputs and theme data, then `settle()`s the scene to rest, then
   reports `ready`. Later input changes are diffed and written with `set()`.
 - With motion not `anima`, it renders nothing.
 - Unmount calls `destroy()` and removes the icon.
