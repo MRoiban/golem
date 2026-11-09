@@ -4,12 +4,13 @@
 import { existsSync } from "node:fs";
 import { join, normalize } from "node:path";
 import index from "./index.html";
+import play from "./play.html";
 
 const anima = join(import.meta.dir, "..", ".anima");
 const server = Bun.serve({
   port: Number(process.env.PORT ?? 4620),
   development: process.env.NODE_ENV !== "production",
-  routes: { "/": index },
+  routes: { "/": index, "/play": play },
   fetch(req) {
     const { pathname } = new URL(req.url);
     if (pathname.startsWith("/anima/")) {

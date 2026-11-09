@@ -17,7 +17,8 @@
     "typecheck": "tsc --noEmit -p .",
     "sizes": "bun scripts/sizes.ts",
     "pack": "bun scripts/pack.ts",
-    "smoke": "bun scripts/smoke-pack.ts"
+    "smoke": "bun scripts/smoke-pack.ts",
+    "site": "bun scripts/build-site.ts"
   },
   "devDependencies": {
     "@playwright/test": "1.64.1",

@@ -2,6 +2,7 @@
 
 ## Now
 Goal (owner 2026-11-08): every component in docs/components.md's catalogue, validated with screenshots and state tests, proven to the owner. Done: all 17 merged (PRs #9–#14); CI on main 844f6dc: 600 passed / 0 failed, pack 73.4 KB + smoke ok. Proof page: https://claude.ai/artifact/KQ5iRrXWqpe353iGeEoNzE (private; republish from the session scratchpad file, or pass the URL).
+Playground (owner asked 2026-11-09, modelled on anima-kit's page): demo/play.tsx at /play, every component in a gallery with state readouts, Stress buttons, an event log and URL-kept settings. Live at https://golem.mc2.onl, a public Bedrock pebble deployed from ~/.cache/golem/pebble (outside the repo, so no bedrock dependency here): `bun run site`, copy release/site to that folder's site/, `bedrock deploy` there. The owner is using it to hunt bugs; their reports come next.
 Next (owner): tag v0.1.0 (publishes a GitHub release) — waiting for a yes. Follow-up: move Progress/Meter fill easing from the JS interpolation into Anima (Tabs' reciprocal-transform technique, F10).
 Don't: commit .anima/, release/ or .cache/; edit Anima/Onyx/@bedrock/ui; involve Harmony; push a v* tag without the owner; let agents merge.
 
