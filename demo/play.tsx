@@ -20,7 +20,11 @@ import {
 
 const params = new URLSearchParams(location.search);
 const ANIMA_OFF = params.get("anima") === "off";
-const ANIMA = { runtime: ANIMA_OFF ? null : "/anima/anima.js", scenes: "/anima/scenes/" };
+// Where Anima lives comes from the page's <meta> tags: the dev server serves /anima/, and the static
+// site (scripts/build-site.ts) rewrites them to a per-commit path, so a cached runtime can never be
+// paired with newer Golem code.
+const meta = (name: string) => document.querySelector<HTMLMetaElement>(`meta[name="${name}"]`)?.content;
+const ANIMA = { runtime: ANIMA_OFF ? null : meta("golem-anima-runtime") ?? "/anima/anima.js", scenes: meta("golem-anima-scenes") ?? "/anima/scenes/" };
 const on = (b: boolean) => (b ? "on" : "off");
 
 // ---- the event log: an external store, so logging never re-renders the cells ----
@@ -222,8 +226,8 @@ function ButtonCell() {
   return (
     <Cell id="button" title="Button" tag="idle · loading · success · error" wide
       state={`samples ${loading ? "loading" : "idle"} · result=${result ?? "none"} · clicks=${clicks}`} onStress={stress}
-      note="Press squash; a loading arc in the foreground colour beside the label; a drawn check on success, a shake on error. The label and the button's size never change."
-      reference={<span className="row"><Onyx.Button>Plain</Onyx.Button><Onyx.Button loading>Plain loading</Onyx.Button><Onyx.Button variant="outline">Outline</Onyx.Button></span>}>
+      note="Press squash; a loading arc in the foreground colour beside the label; a drawn check on success, a shake on error. The button keeps its width while loading: that is Onyx's rule, which also squeezes a short label to make room for the spinner (compare with plain Onyx beside)."
+      reference={<span className="row">{(["default", "secondary", "outline"] as const).map((v) => <Onyx.Button key={v} variant={v} loading={loading}>{v}</Onyx.Button>)}</span>}>
       <div className="row"><PublishButton /><PublishButton fail /><Button disabled>Disabled</Button></div>
       <div className="row">
         {VARIANTS.map((v) => <Button key={v} variant={v} loading={loading} result={result} onClick={() => setClicks((c) => c + 1)}>{v}</Button>)}
