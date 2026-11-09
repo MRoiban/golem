@@ -1,6 +1,6 @@
 {
   "name": "@mroiban/golem",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Onyx components with Anima motion, and the design tokens that theme both.",
   "license": "MIT",
   "private": true,
