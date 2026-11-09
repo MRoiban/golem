@@ -37,6 +37,8 @@ bun run build:tokens      # packages/golem/dist/tokens
 bun run build:anima       # .anima/: Anima runtime + compiled scenes, from ANIMA_DIR (default ../anima),
                           # at the commit pinned in anima-pin.json
 bun run dev               # demo on http://localhost:4620 (?theme= ?motion= ?anima=off ?many=N)
+                          # playground: /play, every component on one page to try and break
+bun run site              # the playground as a static site in release/site/ (live: https://golem.mc2.onl)
 bun run test              # unit tests
 bun run e2e               # Playwright, Chromium + Firefox (Anima tests skip without .anima/)
 bun run sizes             # size report and budgets
